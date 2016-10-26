@@ -99,6 +99,11 @@ int main(int argc, char* argv[]){
   unsigned int cache_size = stoi(argv[++x]);
   unsigned int rw_rate = stoi(argv[++x]);
   size_t cache_elements = cache_size / cache_line;
+
+  if (numa_run_on_node(node_a) == -1) {
+    cerr << "failed to pin this task to node " << node_a << endl;
+    return 1;
+  }
   auto mem = vector_mem(
     vector_mem_num_of_elements_for_on_gb(), 1,
     generic_allocator<uint64_t>(
@@ -127,7 +132,7 @@ int main(int argc, char* argv[]){
   else if (pattern == "random")
     mem_access(num_access, mem, rw_rate, random_pattern);
   else {
-    cout << "unknown access pattern " << pattern << endl;
+    cerr << "unknown access pattern " << pattern << endl;
     return 1; 
   }
 }
