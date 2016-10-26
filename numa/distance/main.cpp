@@ -55,13 +55,13 @@ constexpr const size_t rand_array_size = sizeof(rand_array) /
                                          sizeof(rand_array[0]);
 
 void usage() {
-  cout << "usage: measure_distance PATTERN NODEA NODEB NUMACCESS CACHESIZE RWRATE" << endl
-       << "       PATTERN:    access pattern (iterate, iterate_offset, random)" << endl
-       << "       NODEA:      NUMA node of the process"                         << endl
-       << "       NODEB:      NUMA node for the memory"                         << endl
-       << "       NUMACCESS:  numer of memory access"                           << endl
-       << "       CACHESIZE:  size of the cach which should be ignored"         << endl
-       << "       RWRATE:     read/write rate in percent (100 means no writes)" << endl
+  cout << "usage: measure_distance PATTERN NODE_A NODE_B NUM_ACCESS CACHE_SIZE RW_RATE" << endl
+       << "       PATTERN:     access pattern (iterate, iterate_offset, random)" << endl
+       << "       NODE_A:      NUMA node of the process"                         << endl
+       << "       NODE_B:      NUMA node for the memory"                         << endl
+       << "       NUM_ACCESS:  numer of memory access"                           << endl
+       << "       CACHE_SIZE:  size of the cach which should be ignored"         << endl
+       << "       RW_RATE:     read/write rate in percent (100 means no writes)" << endl
        << endl
        << " examples: " << endl
        << "  CSIZE=$(lscpu | grep L1 | head -n 1 | awk '{ print $3 }' | sed 's/K/*1024/g' | bc)" << endl
