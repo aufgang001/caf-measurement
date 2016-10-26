@@ -11,7 +11,7 @@ public:
   using alloc_fun = std::function<void*(size_t)>;
   using free_fun = std::function<void(void*, size_t)>;
 
-  generic_allocator(alloc_fun a, free_fun f)
+  generic_allocator(const alloc_fun& a, const free_fun& f)
       : alloc_(a)
       , free_(f) {
   } 

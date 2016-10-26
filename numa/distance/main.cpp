@@ -99,15 +99,15 @@ int main(int argc, char* argv[]){
   unsigned int cache_size = stoi(argv[++x]);
   unsigned int rw_rate = stoi(argv[++x]);
   size_t cache_elements = cache_size / cache_line;
-  auto alloc_fun = [node_b](size_t n) -> void* {
-    return numa_alloc_onnode(n, node_b);
-  };
-  auto free_fun = [] (void* ptr, size_t n) {
-    numa_free(ptr, n);
-  };
   auto mem = vector_mem(
     vector_mem_num_of_elements_for_on_gb(), 1,
-    generic_allocator<uint64_t>(alloc_fun, free_fun)); 
+    generic_allocator<uint64_t>(
+      [node_b](size_t n) -> void* { 
+        return numa_alloc_onnode(n, node_b); 
+      },
+      [](void* ptr, size_t n) { 
+        numa_free(ptr, n); 
+      }));
   auto iterate_pattern = [](size_t&, uint64_t i) -> size_t {
     return i;
   };
