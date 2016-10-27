@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# update and compile caf
+cd actor-framework
+git fetch
+git checkout -f origin/topic/update_benchmarks
+
+cd benchmarks
+git fetch
+git checkout -f origin/topic/update_benchmarks
+
+cd ..
+./configure
+make -j
+
+cd ..
+
+# update and complie my benchmarks
+cd caf-measurement
+git fetch
+git checkout -f master
+
+cd numa/distance
+qmake
+make
+
+cd ..
+cd numa_test
+qmake
+make
+
+cd ..
+cd ..
+cd ..
+
