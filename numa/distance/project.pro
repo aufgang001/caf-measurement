@@ -20,7 +20,8 @@ QMAKE_CXXFLAGS_DEBUG += -Wpedantic
 #QMAKE_CXXFLAGS_DEBUG += -Weverything #clang only
 
 
-LIBS += -lnuma
+LIBS += -lnuma \
+        -lpthread
 
 
 

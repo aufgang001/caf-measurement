@@ -3,6 +3,14 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include <iomanip>
+#include <limits>
+#include <thread>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <getopt.h>
+#include <string.h>
 
 #include "generic_allocator.hpp"
 #include "numa.h"
@@ -54,21 +62,45 @@ constexpr const uint32_t rand_array[] = {
 constexpr const size_t rand_array_size = sizeof(rand_array) / 
                                          sizeof(rand_array[0]);
 
-void usage() {
-  cout << "usage: measure_distance PATTERN NODE_A NODE_B NUM_ACCESS CACHE_SIZE RW_RATE" << endl
-       << "       PATTERN:     access pattern (iterate, iterate_offset, random)" << endl
-       << "       NODE_A:      NUMA node of the process"                         << endl
-       << "       NODE_B:      NUMA node for the memory"                         << endl
-       << "       NUM_ACCESS:  numer of memory access"                           << endl
-       << "       CACHE_SIZE:  size of the cach which should be ignored"         << endl
-       << "       RW_RATE:     read/write rate in percent (100 means no writes)" << endl
-       << endl
-       << " examples: " << endl
-       << "  CSIZE=$(lscpu | grep L1 | head -n 1 | awk '{ print $3 }' | sed 's/K/*1024/g' | bc)" << endl
-       << "  ./measure_distance iterate 1 64 1000000000 $CSIZE 50"
-       << "  "
+enum class access_pattern {
+  none = 0,
+  iterate = 1, 
+  random = 2
+};                                  
+
+const vector<string> access_pattern_strings = { 
+  "none", 
+  "iterate", 
+  "random"
+};
+
+std::string to_string(access_pattern pattern) {
+  return access_pattern_strings[static_cast<uint8_t>(pattern)];
+}
+
+access_pattern access_pattern_from_string(const char* pattern) {
+  for (size_t x = 0; x < access_pattern_strings.size(); ++x) {
+    if (access_pattern_strings[x] == pattern) {
+      return static_cast<access_pattern>(x); 
+    }
+  }  
+  return access_pattern::none; 
+}
+
+void usage(int node_a, int node_b, uint64_t num_access, unsigned int rw_rate) {
+  cout << "usage: measure_distance [OPTION]..." << endl
+       << "" << endl
+       << "  Options:" << endl
+       << "    --patter=access pattern: iterate, random (default: iterate)"                         << endl
+       << "    --node-a=node-ID:        NUMA node of the process (default: " << node_a << ")"       << endl
+       << "    --node-b=node-ID:        NUMA node for the memory (default: " << node_b << ")"       << endl
+       << "    --num-access=count:      numer of memory access (default: " << num_access << ")"     << endl
+       << "    --rw-rate:               read/write rate in percent (100 means reads only, default: " << rw_rate << ")" << endl
+       << "    --overload=mode:         overload the system, start for each cpu a thread,"  << endl
+       << "                             mode is the distance between running task and allocated memory" << endl
+       << "    --no-numa:               ignores numa functionality"                         << endl
        << endl;
-  exit(1);
+  exit(0);
 }
 
 void mem_access(uint64_t num_access, 
@@ -85,54 +117,163 @@ void mem_access(uint64_t num_access,
   }
 }
 
-int main(int argc, char* argv[]){
-  if (argc != 7) {
-    usage();
-    return 1;
-  }
-  uint32_t cache_line = 64;
-  int x = 0;
-  string pattern = argv[++x];
-  int node_a = stoi(argv[++x]);
-  int node_b = stoi(argv[++x]);
-  uint64_t num_access = stoll(argv[++x]);
-  unsigned int cache_size = stoi(argv[++x]);
-  unsigned int rw_rate = stoi(argv[++x]);
-  size_t cache_elements = cache_size / cache_line;
-
-  if (numa_run_on_node(node_a) == -1) {
-    cerr << "failed to pin this task to node " << node_a << endl;
-    return 1;
-  }
+void run_measurment_distance(access_pattern pattern, int node_a, int node_b,
+                             uint64_t num_access, unsigned int rw_rate,
+                             bool use_numa) {
+  if (use_numa)
+    if (numa_run_on_node(node_a) == -1) {
+      cerr << "failed to pin this task to node " << node_a << endl;
+      exit(1);
+    }
   auto mem = vector_mem(
     vector_mem_num_of_elements_for_on_gb(), 1,
     generic_allocator<uint64_t>(
-      [node_b](size_t n) -> void* { 
-        return numa_alloc_onnode(n, node_b); 
+      [node_b, use_numa](size_t n) -> void* { 
+        if (use_numa)
+          return numa_alloc_onnode(n, node_b); 
+        else
+          return malloc(n); 
       },
-      [](void* ptr, size_t n) { 
-        numa_free(ptr, n); 
+      [use_numa](void* ptr, size_t n) { 
+        if (use_numa)
+          numa_free(ptr, n); 
+        else
+          free(ptr);
       }));
-  auto iterate_pattern = [](size_t&, uint64_t i) -> size_t {
+  auto iterate_pattern = [] (size_t&, uint64_t i) -> size_t {
     return i;
   };
-  auto iterate_offset_pattern = [cache_elements](size_t& idx,
-                                                 uint64_t) -> size_t {
-    idx += cache_elements;
-    return idx;
-  };
-  auto random_pattern = [cache_elements](size_t& idx, uint64_t i) -> size_t {
+  auto random_pattern = [] (size_t& idx, uint64_t i) -> size_t {
     idx += rand_array[i % rand_array_size];
     return idx;
   };
-  if (pattern == "iterate")
+  if (pattern == access_pattern::iterate)
     mem_access(num_access, mem, rw_rate, iterate_pattern);
-  else if (pattern == "iterate_offset")
-    mem_access(num_access, mem, rw_rate, iterate_offset_pattern);
-  else if (pattern == "random")
+  else if (pattern == access_pattern::random)
     mem_access(num_access, mem, rw_rate, random_pattern);
   else {
-    cerr << "unknown access pattern " << pattern << endl;
-    return 1; 
+    cerr << "unknown access pattern " << to_string(pattern) << endl;
+    exit(1); 
+  }
+}
+
+void overload(int overload_distance, int exclude_node_a, int exclude_node_b,
+              int rw_rate, access_pattern pattern, bool use_numa) {
+  int num_nodes = numa_num_configured_nodes();
+  if (numa_num_task_nodes() != num_nodes) {
+    cout << "some numa nodes are disabled" << endl;
+    exit(1);
+  }
+
+  int num_cpus = numa_num_configured_cpus();
+  if (numa_num_task_cpus() != num_cpus) {
+    cout << "some cpus are disabled" << endl; 
+    exit(1);
+  }
+
+  int num_started_task = 0;
+  for (;;)
+  for (int a = 0; a < num_cpus; ++a)
+  for (int b = 0; b < num_cpus; ++b)
+  if (numa_distance(a, b) == overload_distance)
+    if (a != exclude_node_a || b != exclude_node_b) {
+      thread(run_measurment_distance, pattern, a, b,
+             numeric_limits<uint64_t>::max(), rw_rate, use_numa);
+      ++num_started_task;
+      // started tast musst be one less then num_cpus as e.g.
+      // if we have 64 cpus we want to start 63 overload tasks
+      // and one measurment task
+      //while(num_started_task < (num_cpus - 1)) {
+      if (num_started_task >= (num_cpus - 1)) {
+        return;
+      }
+    }
+}
+
+int main(int argc, char* argv[]) {
+  access_pattern pattern = access_pattern::iterate;
+  int node_a = 0;
+  int node_b = 0;
+  uint64_t num_access = 1000000000;
+  unsigned int rw_rate = 100;
+  bool use_numa = true;
+
+  int overload_distance = -1;
+  bool verbose=false;
+  int c;
+  while (1) {
+    static struct option long_options[] = {
+      {"help", no_argument, 0, 'h'},
+      {"pattern", required_argument, 0, 'p'},
+      {"node-a", required_argument, 0, 'a'},
+      {"node-b", required_argument, 0, 'b'},
+      {"num-access", required_argument, 0, 'n'},
+      {"rw-rate", required_argument, 0, 'r'},
+      {"overload", required_argument, 0, 'o'},
+      {"no-numa", required_argument, 0, 'x'},
+      {"verbose", required_argument, 0, 'v'},
+      {0, 0, 0, 0}};
+
+    int option_index = 0;
+    c = getopt_long(argc, argv, "hp:a:b:n:r:o:v", long_options, &option_index);
+
+    // Detect the end of the options.
+    if (c == -1)
+      break;
+
+    switch (c) {
+      case 'h':
+        usage(node_a, node_b, num_access, rw_rate);
+        break;
+      case 'p':
+        pattern = access_pattern_from_string(optarg);
+        break;
+      case 'a':
+        node_a = stoi(optarg);
+        break;
+      case 'b':
+        node_b = stoi(optarg);
+        break;
+      case 'n':
+        num_access = stoll(optarg);
+        break;
+      case 'r':
+        rw_rate = stoi(optarg);
+        break;
+      case 'o':
+        overload_distance = stoi(optarg);
+        break;
+      case 'x':
+        use_numa = false;
+        break;
+      case 'v':
+        verbose = true;
+        break;
+      case '?':
+        cout << "unkown command" << endl;
+        break;
+      default:
+        abort();
+    }
+  }
+  if (verbose) {
+    int width=15;
+    cout << left << setw(width) << "pattern"    << ": " << to_string(pattern) << endl
+         << left << setw(width) << "node-a"     << ": " << node_a << endl
+         << left << setw(width) << "node-b"     << ": " << node_b << endl
+         << left << setw(width) << "num-access" << ": " << num_access << endl
+         << left << setw(width) << "rw-rate"    << ": " << rw_rate << endl
+         << left << setw(width) << "overload"   << ": " << overload_distance << endl
+         << left << setw(width) << "no-numa"    << ": " << !use_numa << endl;
+  
+  }
+  if (numa_available() != -1) {
+    if (overload_distance != -1) {
+      overload(overload_distance, node_a, node_b, rw_rate, pattern, use_numa); 
+    }
+    run_measurment_distance(pattern, node_a, node_b, num_access, rw_rate, use_numa);
+  } else {
+    cout << "numa not available" << endl; 
+    exit(1);
   }
 }
