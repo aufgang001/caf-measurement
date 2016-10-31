@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DRY_RUN=true
+
 CAF_HOME="/users/localadmin/woelke/actor-framework"
 BENCH_USER="localadmin"
 OUT_DIR="/users/localadmin/woelke/test_data/"
@@ -10,24 +12,35 @@ cd ${CAF_HOME}/benchmarks/scripts
 X_LABEL="mem_access"
 BENCH="measure_distance"
 B_NODE_A=0
-B_CACHE_SIZE=$(lscpu | grep L1d | head -n 1 | awk '{ print $3 }' | sed 's/K/*1024/g' | bc)
 
-x_value_array="100000000 500000000 1000000000 2000000000" #"10 100"
-b_rw_rate_array="0 100" #"0 100"
-b_node_b_array="0 1 3" #"0 1 3"
-b_pattern_array="iterate random" #"iterate random"
+if [ $DDRY_RUN = true ]; then
+  x_value_array="10"
+  b_rw_rate_array="100"
+  b_node_b_array="0"
+  b_pattern_array="iterate"
+  b_overload_mode_array="10"
+else
+  x_value_array="100000000 500000000 1000000000 2000000000"
+  b_rw_rate_array="0 100"
+  b_node_b_array="0 1 3"
+  b_pattern_array="iterate random" #"iterate random"
+  b_overload_mode_array="10 16 22"
+fi
+
 for x_value in $x_value_array ; do
-  for b_rw_rate in $b_rw_rate_array ; do
-  for b_node_b in $b_node_b_array ; do
-  for b_pattern in $b_pattern_array ; do
-    echo "x_value: $x_value"
-    B_NUM_ACCESS=$x_value
-    BENCH_ARGS="$b_pattern $B_NODE_A $b_node_b $B_NUM_ACCESS $B_CACHE_SIZE $b_rw_rate"
-    label="numa${B_NODE_A}to${b_node_b}rw${b_rw_rate}p${b_pattern}"
-    ./caf_run_benchmarks custom $BENCH_USER $OUT_DIR $X_LABEL $x_value $label $BIN_PATH $BENCH $BENCH_ARGS
-  done
-  done
-  done
+for b_rw_rate in $b_rw_rate_array ; do
+for b_node_b in $b_node_b_array ; do
+for b_pattern in $b_pattern_array ; do
+for b_overload_mode in $b_overload_mode_array ; do
+  echo "x_value: $x_value"
+  B_NUM_ACCESS=$x_value
+  BENCH_ARGS="--pattern=$b_pattern --node-a=$B_NODE_A --node-b=$b_node_b --num-access=$B_NUM_ACCESS -rw-rate=$b_rw_rate --overload=$b_overload_mode"
+  label="numa${B_NODE_A}to${b_node_b}rw${b_rw_rate}p${b_pattern}o{$b_overload_mode}"
+  ./caf_run_benchmarks custom $BENCH_USER $OUT_DIR $X_LABEL $x_value $label $BIN_PATH $BENCH $BENCH_ARGS
+done
+done
+done
+done
 done
 
 cd $OUT_DIR

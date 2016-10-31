@@ -91,7 +91,7 @@ void usage(int node_a, int node_b, uint64_t num_access, unsigned int rw_rate) {
   cout << "usage: measure_distance [OPTION]..." << endl
        << "" << endl
        << "  Options:" << endl
-       << "    --patter=access pattern: iterate, random (default: iterate)"                         << endl
+       << "    --pattern=access pattern: iterate, random (default: iterate)"                         << endl
        << "    --node-a=node-ID:        NUMA node of the process (default: " << node_a << ")"       << endl
        << "    --node-b=node-ID:        NUMA node for the memory (default: " << node_b << ")"       << endl
        << "    --num-access=count:      numer of memory access (default: " << num_access << ")"     << endl

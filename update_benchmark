@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd ..
 # update and compile caf
 cd actor-framework
 git fetch
