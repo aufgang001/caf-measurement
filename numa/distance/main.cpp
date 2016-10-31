@@ -229,19 +229,44 @@ int main(int argc, char* argv[]) {
         pattern = access_pattern_from_string(optarg);
         break;
       case 'a':
-        node_a = stoi(optarg);
+        try {
+          node_a = stoi(optarg);
+        } catch (...) {
+          cout << "wrong argument (" << optarg << ") for node_a" << endl;
+          exit(1);
+        }
         break;
       case 'b':
-        node_b = stoi(optarg);
+        try {
+          node_b = stoi(optarg);
+        } catch (...) {
+          cout << "wrong argument (" << optarg << ") for node_b" << endl;
+          exit(1);
+        }
         break;
       case 'n':
-        num_access = stoll(optarg);
+        try {
+          num_access = stoll(optarg);
+        } catch (...) {
+          cout << "wrong argument (" << optarg << ") for num_access" << endl;
+          exit(1);
+        }
         break;
       case 'r':
-        rw_rate = stoi(optarg);
+        try {
+          rw_rate = stoi(optarg);
+        } catch (...) {
+          cout << "wrong argument (" << optarg << ") for rw_rate" << endl;
+          exit(1);
+        }
         break;
       case 'o':
-        overload_distance = stoi(optarg);
+        try {
+          overload_distance = stoi(optarg);
+        } catch (...) {
+          cout << "wrong argument (" << optarg << ") for overload_distance" << endl;
+          exit(1);
+        }
         break;
       case 'x':
         use_numa = false;
