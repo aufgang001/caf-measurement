@@ -1,36 +1,34 @@
 #!/bin/bash
 
-cd ..
-# update and compile caf
-cd actor-framework
-git fetch
-git checkout -f origin/topic/update_benchmarks
+if [ $# == 0 ]; then
+  $0 "caf-measurement"
+  $0 "actor-framework"
+fi
 
-cd benchmarks
-git fetch
-git checkout -f origin/topic/update_benchmarks
+if [ "$1" == "caf-measurement" ]; then
+  cd caf-measurement
+  git fetch
+  git checkout -f origin/master
 
-cd ..
-./configure
-make -j
+  cd numa/distance
+  qmake
+  make
 
-cd ..
+  cd ../numa_test
+  qmake
+  make
+fi
 
-# update and complie my benchmarks
-cd caf-measurement
-git fetch
-git checkout -f master
+if [ "$1" == "actor-framework" ]; then
+  cd actor-framework
+  git fetch
+  git checkout -f origin/topic/update_benchmarks
 
-cd numa/distance
-qmake
-make
+  cd benchmarks
+  git fetch
+  git checkout -f origin/topic/update_benchmarks
 
-cd ..
-cd numa_test
-qmake
-make
-
-cd ..
-cd ..
-cd ..
-
+  cd ..
+  ./configure
+  make -j
+fi
