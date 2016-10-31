@@ -232,7 +232,7 @@ int main(int argc, char* argv[]) {
         try {
           node_a = stoi(optarg);
         } catch (...) {
-          cerr << "wrong argument (" << optarg << ") for node_a" << endl;
+          cerr << "wrong argument: " << optarg  << endl;
           exit(1);
         }
         break;
@@ -240,7 +240,7 @@ int main(int argc, char* argv[]) {
         try {
           node_b = stoi(optarg);
         } catch (...) {
-          cerr << "wrong argument (" << optarg << ") for node_b" << endl;
+          cerr << "wrong argument: " << optarg << endl;
           exit(1);
         }
         break;
@@ -248,7 +248,7 @@ int main(int argc, char* argv[]) {
         try {
           num_access = stoll(optarg);
         } catch (...) {
-          cerr << "wrong argument (" << optarg << ") for num_access" << endl;
+          cerr << "wrong argument: " << optarg << endl;
           exit(1);
         }
         break;
@@ -256,7 +256,7 @@ int main(int argc, char* argv[]) {
         try {
           rw_rate = stoi(optarg);
         } catch (...) {
-          cerr << "wrong argument (" << optarg << ") for rw_rate" << endl;
+          cerr << "wrong argument: " << optarg << endl;
           exit(1);
         }
         break;
@@ -264,7 +264,7 @@ int main(int argc, char* argv[]) {
         try {
           overload_distance = stoi(optarg);
         } catch (...) {
-          cerr << "wrong argument (" << optarg << ") for overload_distance" << endl;
+          cerr << "wrong argument: " << optarg << endl;
           exit(1);
         }
         break;
