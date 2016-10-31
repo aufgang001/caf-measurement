@@ -35,7 +35,7 @@ for b_overload_mode in $b_overload_mode_array ; do
   echo "x_value: $x_value"
   B_NUM_ACCESS=$x_value
   BENCH_ARGS="--pattern=$b_pattern --node-a=$B_NODE_A --node-b=$b_node_b --num-access=$B_NUM_ACCESS -rw-rate=$b_rw_rate --overload=$b_overload_mode"
-  label="numa${B_NODE_A}to${b_node_b}rw${b_rw_rate}p${b_pattern}o${b_overload_mode}"
+  label="numa${B_NODE_A}to${b_node_b}rw${b_rw_rate}ov${b_overload_mode}p${b_pattern}"
   ./caf_run_benchmarks custom $BENCH_USER $OUT_DIR $X_LABEL $x_value $label $BIN_PATH $BENCH $BENCH_ARGS
 done
 done

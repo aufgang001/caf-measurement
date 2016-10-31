@@ -161,13 +161,13 @@ void overload(int overload_distance, int exclude_node_a, int exclude_node_b,
               int rw_rate, access_pattern pattern, bool use_numa) {
   int num_nodes = numa_num_configured_nodes();
   if (numa_num_task_nodes() != num_nodes) {
-    cout << "some numa nodes are disabled" << endl;
+    cerr << "some numa nodes are disabled" << endl;
     exit(1);
   }
 
   int num_cpus = numa_num_configured_cpus();
   if (numa_num_task_cpus() != num_cpus) {
-    cout << "some cpus are disabled" << endl; 
+    cerr << "some cpus are disabled" << endl; 
     exit(1);
   }
 
@@ -232,7 +232,7 @@ int main(int argc, char* argv[]) {
         try {
           node_a = stoi(optarg);
         } catch (...) {
-          cout << "wrong argument (" << optarg << ") for node_a" << endl;
+          cerr << "wrong argument (" << optarg << ") for node_a" << endl;
           exit(1);
         }
         break;
@@ -240,7 +240,7 @@ int main(int argc, char* argv[]) {
         try {
           node_b = stoi(optarg);
         } catch (...) {
-          cout << "wrong argument (" << optarg << ") for node_b" << endl;
+          cerr << "wrong argument (" << optarg << ") for node_b" << endl;
           exit(1);
         }
         break;
@@ -248,7 +248,7 @@ int main(int argc, char* argv[]) {
         try {
           num_access = stoll(optarg);
         } catch (...) {
-          cout << "wrong argument (" << optarg << ") for num_access" << endl;
+          cerr << "wrong argument (" << optarg << ") for num_access" << endl;
           exit(1);
         }
         break;
@@ -256,7 +256,7 @@ int main(int argc, char* argv[]) {
         try {
           rw_rate = stoi(optarg);
         } catch (...) {
-          cout << "wrong argument (" << optarg << ") for rw_rate" << endl;
+          cerr << "wrong argument (" << optarg << ") for rw_rate" << endl;
           exit(1);
         }
         break;
@@ -264,7 +264,7 @@ int main(int argc, char* argv[]) {
         try {
           overload_distance = stoi(optarg);
         } catch (...) {
-          cout << "wrong argument (" << optarg << ") for overload_distance" << endl;
+          cerr << "wrong argument (" << optarg << ") for overload_distance" << endl;
           exit(1);
         }
         break;
@@ -275,7 +275,7 @@ int main(int argc, char* argv[]) {
         verbose = true;
         break;
       case '?':
-        cout << "unkown command" << endl;
+        cerr << "unkown command" << endl;
         break;
       default:
         abort();
@@ -283,7 +283,7 @@ int main(int argc, char* argv[]) {
   }
   if (verbose) {
     int width=15;
-    cout << left << setw(width) << "pattern"    << ": " << to_string(pattern) << endl
+    cerr << left << setw(width) << "pattern"    << ": " << to_string(pattern) << endl
          << left << setw(width) << "node-a"     << ": " << node_a << endl
          << left << setw(width) << "node-b"     << ": " << node_b << endl
          << left << setw(width) << "num-access" << ": " << num_access << endl
@@ -298,7 +298,7 @@ int main(int argc, char* argv[]) {
     }
     run_measurment_distance(pattern, node_a, node_b, num_access, rw_rate, use_numa);
   } else {
-    cout << "numa not available" << endl; 
+    cerr << "numa not available" << endl; 
     exit(1);
   }
 }
