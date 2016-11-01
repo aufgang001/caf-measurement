@@ -7,6 +7,7 @@
 #include <limits>
 #include <thread>
 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -168,25 +169,30 @@ vector<thread> overload(int overload_distance, int exclude_node_a, int exclude_n
     cerr << "some cpus are disabled" << endl; 
     exit(1);
   }
+  bool one_shot_guard = true;
   int num_started_task = 0;
   vector<thread> overload_threads;
-  for (int max_tries = 0; max_tries < num_cpus; ++max_tries)
+  for (;;)
     for (int a = 0; a < num_nodes; ++a)
       for (int b = 0; b < num_nodes; ++b)
-        if (numa_distance(a, b) == overload_distance)
-          if (a != exclude_node_a || b != exclude_node_b) {
-            overload_threads.emplace_back(
-              thread(run_measurment_distance, pattern, a, b,
-                     numeric_limits<uint64_t>::max(), rw_rate, use_numa, std::ref(running)));
-            ++num_started_task;
-            // started tast musst be one less then num_cpus as e.g.
-            // if we have 64 cpus we want to start 63 overload tasks
-            // and one measurment task
-            // while(num_started_task < (num_cpus - 1)) {
-            if (num_started_task >= (num_cpus - 1)) {
-              return overload_threads;
-            }
+        if (numa_distance(a, b) == overload_distance) {
+          // reserve this resoruce for the main mem_access thread
+          if (a == exclude_node_a && b == exclude_node_b && one_shot_guard) {
+            one_shot_guard = false;
+            break;
           }
+          overload_threads.emplace_back(
+            thread(run_measurment_distance, pattern, a, b,
+                   numeric_limits<uint64_t>::max(), rw_rate, use_numa,
+                   std::ref(running)));
+          ++num_started_task;
+          // started tast musst be one less then num_cpus as e.g.
+          // if we have 64 cpus we want to start 63 overload tasks
+          // and the main mem_access thread
+          if (num_started_task >= (num_cpus - 1)) {
+            return overload_threads;
+          }
+        }
   cerr << "could not overload system" << endl;  
   exit(1);
 }
