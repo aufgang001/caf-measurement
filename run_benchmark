@@ -4,8 +4,8 @@ DRY_RUN=true
 
 CAF_HOME="/users/localadmin/woelke/actor-framework"
 BENCH_USER="localadmin"
-OUT_DIR="/users/localadmin/woelke/test_data/"
-BIN_PATH="/users/localadmin/woelke/caf-measurement/numa/distance/"
+OUT_DIR="/users/localadmin/woelke/test_data"
+BIN_PATH="/users/localadmin/woelke/caf-measurement/numa/distance"
 
 cd ${CAF_HOME}/benchmarks/scripts
 
@@ -48,4 +48,4 @@ cd $OUT_DIR
 ${CAF_HOME}/build/bin/to_csv *
 
 cd ${CAF_HOME}/benchmarks/scripts
-./plot performance "${OUT_DIR}measure_distance.csv" --out="${OUT_DIR}performance_plot.pdf" --xlabel="Memory Access [#]"
+./plot performance "${OUT_DIR}/measure_distance.csv" --out="${OUT_DIR}/performance_plot.pdf" --xlabel="Memory Access [#]"
