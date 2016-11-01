@@ -14,7 +14,7 @@ BENCH="measure_distance"
 B_NODE_A=0
 
 if [ $DRY_RUN = true ]; then
-  rm -f ${OUT_DIR}/test_data/*
+  rm -f ${OUT_DIR}/*
   x_value_array="10"
   b_rw_rate_array="100"
   b_node_b_array="0"
