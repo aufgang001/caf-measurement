@@ -91,7 +91,7 @@ void usage(int node_a, int node_b, uint64_t num_access, unsigned int rw_rate) {
   cout << "usage: measure_distance [OPTION]..." << endl
        << "" << endl
        << "  Options:" << endl
-       << "    --pattern=access pattern: iterate, random (default: iterate)"                         << endl
+       << "    --pattern=access pattern: iterate, random (default: iterate)"                        << endl
        << "    --node-a=node-ID:        NUMA node of the process (default: " << node_a << ")"       << endl
        << "    --node-b=node-ID:        NUMA node for the memory (default: " << node_b << ")"       << endl
        << "    --num-access=count:      numer of memory access (default: " << num_access << ")"     << endl
@@ -103,13 +103,12 @@ void usage(int node_a, int node_b, uint64_t num_access, unsigned int rw_rate) {
   exit(0);
 }
 
-void mem_access(uint64_t num_access, 
-                vector_mem& mem,
-                unsigned int rw_rate,
-                const function<size_t(size_t&, uint64_t)>& access_pattern) {
+void mem_access(uint64_t num_access, vector_mem& mem, unsigned int rw_rate,
+                const function<size_t(size_t&, uint64_t)>& access_pattern,
+                bool& running) {
   volatile uint64_t tmp = 1;
   size_t idx = 0;
-  for (uint64_t i = 1; i <= num_access; ++i) {
+  for (uint64_t i = 1; i <= num_access && running; ++i) {
     if (i % 100 < rw_rate)
       tmp = mem[access_pattern(idx, i) % mem.size()]; //read
     else
@@ -119,7 +118,7 @@ void mem_access(uint64_t num_access,
 
 void run_measurment_distance(access_pattern pattern, int node_a, int node_b,
                              uint64_t num_access, unsigned int rw_rate,
-                             bool use_numa) {
+                             bool use_numa, bool& running) {
   if (use_numa)
     if (numa_run_on_node(node_a) == -1) {
       cerr << "failed to pin this task to node " << node_a << endl;
@@ -148,46 +147,48 @@ void run_measurment_distance(access_pattern pattern, int node_a, int node_b,
     return idx;
   };
   if (pattern == access_pattern::iterate)
-    mem_access(num_access, mem, rw_rate, iterate_pattern);
+    mem_access(num_access, mem, rw_rate, iterate_pattern, running);
   else if (pattern == access_pattern::random)
-    mem_access(num_access, mem, rw_rate, random_pattern);
+    mem_access(num_access, mem, rw_rate, random_pattern, running);
   else {
     cerr << "unknown access pattern " << to_string(pattern) << endl;
     exit(1); 
   }
 }
 
-void overload(int overload_distance, int exclude_node_a, int exclude_node_b,
-              int rw_rate, access_pattern pattern, bool use_numa) {
+vector<thread> overload(int overload_distance, int exclude_node_a, int exclude_node_b,
+              int rw_rate, access_pattern pattern, bool use_numa, bool& running) {
   int num_nodes = numa_num_configured_nodes();
   if (numa_num_task_nodes() != num_nodes) {
     cerr << "some numa nodes are disabled" << endl;
     exit(1);
   }
-
   int num_cpus = numa_num_configured_cpus();
   if (numa_num_task_cpus() != num_cpus) {
     cerr << "some cpus are disabled" << endl; 
     exit(1);
   }
-
   int num_started_task = 0;
-  for (;;)
-  for (int a = 0; a < num_cpus; ++a)
-  for (int b = 0; b < num_cpus; ++b)
-  if (numa_distance(a, b) == overload_distance)
-    if (a != exclude_node_a || b != exclude_node_b) {
-      thread(run_measurment_distance, pattern, a, b,
-             numeric_limits<uint64_t>::max(), rw_rate, use_numa);
-      ++num_started_task;
-      // started tast musst be one less then num_cpus as e.g.
-      // if we have 64 cpus we want to start 63 overload tasks
-      // and one measurment task
-      //while(num_started_task < (num_cpus - 1)) {
-      if (num_started_task >= (num_cpus - 1)) {
-        return;
-      }
-    }
+  vector<thread> overload_threads;
+  for (int max_tries = 0; max_tries < num_cpus; ++max_tries)
+    for (int a = 0; a < num_nodes; ++a)
+      for (int b = 0; b < num_nodes; ++b)
+        if (numa_distance(a, b) == overload_distance)
+          if (a != exclude_node_a || b != exclude_node_b) {
+            overload_threads.emplace_back(
+              thread(run_measurment_distance, pattern, a, b,
+                     numeric_limits<uint64_t>::max(), rw_rate, use_numa, std::ref(running)));
+            ++num_started_task;
+            // started tast musst be one less then num_cpus as e.g.
+            // if we have 64 cpus we want to start 63 overload tasks
+            // and one measurment task
+            // while(num_started_task < (num_cpus - 1)) {
+            if (num_started_task >= (num_cpus - 1)) {
+              return overload_threads;
+            }
+          }
+  cerr << "could not overload system" << endl;  
+  exit(1);
 }
 
 int main(int argc, char* argv[]) {
@@ -210,12 +211,12 @@ int main(int argc, char* argv[]) {
       {"num-access", required_argument, 0, 'n'},
       {"rw-rate", required_argument, 0, 'r'},
       {"overload", required_argument, 0, 'o'},
-      {"no-numa", required_argument, 0, 'x'},
+      {"no-numa", no_argument, 0, 'x'},
       {"verbose", required_argument, 0, 'v'},
       {0, 0, 0, 0}};
 
     int option_index = 0;
-    c = getopt_long(argc, argv, "hp:a:b:n:r:o:v", long_options, &option_index);
+    c = getopt_long(argc, argv, "hp:a:b:n:r:o:xv", long_options, &option_index);
 
     // Detect the end of the options.
     if (c == -1)
@@ -276,7 +277,7 @@ int main(int argc, char* argv[]) {
         break;
       case '?':
         cerr << "unkown command" << endl;
-        break;
+        exit(1);
       default:
         abort();
     }
@@ -290,15 +291,22 @@ int main(int argc, char* argv[]) {
          << left << setw(width) << "rw-rate"    << ": " << rw_rate << endl
          << left << setw(width) << "overload"   << ": " << overload_distance << endl
          << left << setw(width) << "no-numa"    << ": " << !use_numa << endl;
-  
   }
+  vector<thread> overload_threads;
+  bool running = true;
   if (numa_available() != -1) {
     if (overload_distance != -1) {
-      overload(overload_distance, node_a, node_b, rw_rate, pattern, use_numa); 
+      overload_threads = overload(overload_distance, node_a, node_b, rw_rate,
+                                  pattern, use_numa, running);
     }
-    run_measurment_distance(pattern, node_a, node_b, num_access, rw_rate, use_numa);
+    run_measurment_distance(pattern, node_a, node_b, num_access, rw_rate,
+                            use_numa, running);
+    running = false;
+    for (auto& x : overload_threads) {
+      x.join();
+    }
   } else {
-    cerr << "numa not available" << endl; 
+    cerr << "numa not available" << endl;
     exit(1);
   }
 }
