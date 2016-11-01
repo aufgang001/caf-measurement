@@ -46,5 +46,4 @@ done
 
 cd $OUT_DIR
 ${CAF_HOME}/build/bin/to_csv *
-
-${CAF_HOME}/benchmarks/scripts/plot performance "${OUT_DIR}/measure_distance.csv" --out="${OUT_DIR}/performance_plot.pdf" --xlabel="Memory Access [#]"
+${CAF_HOME}/benchmarks/scripts/plot performance "measure_distance.csv" --out="performance_plot.pdf" --xlabel="Memory Access [#]"
