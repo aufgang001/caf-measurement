@@ -14,7 +14,7 @@ BENCH="measure_distance"
 B_NODE_A=0
 
 if [ $DRY_RUN = true ]; then
-  rm -f test_data/*
+  rm -f ${OUT_DIR}/test_data/*
   x_value_array="10"
   b_rw_rate_array="100"
   b_node_b_array="0"
@@ -47,5 +47,4 @@ done
 cd $OUT_DIR
 ${CAF_HOME}/build/bin/to_csv *
 
-cd ${CAF_HOME}/benchmarks/scripts
-./plot performance "${OUT_DIR}/measure_distance.csv" --out="${OUT_DIR}/performance_plot.pdf" --xlabel="Memory Access [#]"
+${CAF_HOME}/benchmarks/scripts/plot performance "${OUT_DIR}/measure_distance.csv" --out="${OUT_DIR}/performance_plot.pdf" --xlabel="Memory Access [#]"
