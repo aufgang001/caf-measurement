@@ -14,7 +14,11 @@ if [ "$1" == "caf-measurement" ]; then
   qmake
   make
 
-  cd ../numa_test
+  cd ../libnuma
+  qmake
+  make
+
+  cd ../hwloc
   qmake
   make
 fi
