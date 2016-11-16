@@ -7,13 +7,18 @@
 TARGET = numa_test 
 
 SOURCES += main.cpp \
-           numa_test.cpp
+           numa_test.cpp \
+           hwloc_bitmap_wrapper.cpp \
+           numa_tutorial.cpp
 HEADERS += numa_test.hpp \
+           numa_tutorial.hpp \
+           hwloc_bitmap_wrapper.hpp \
            generic_allocator.hpp
 
 #QMAKE_CXX = clang
 
 CONFIG -= qt
+CONFIG += debug
 QMAKE_CXXFLAGS += -std=c++11
 
 QMAKE_CXXFLAGS_DEBUG -= -g 
