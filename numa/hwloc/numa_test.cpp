@@ -117,14 +117,15 @@ void numa_test::bind_current_thread() const{
     cerr <<  "hwloc_set_cpubind failed" << endl;
   }
 
+  hwloc_bitmap_wrapper new_nodeset;
+  hwloc_cpuset_to_nodeset (topology_, new_cpuset.get(), new_nodeset.get());
+  cout << "### test node_set: " << new_nodeset << endl;
   cout << "bind memory allocation to numa node:" << new_cpuset << endl;
-  if (hwloc_set_membind_nodeset(topology_, new_cpuset.get(), HWLOC_MEMBIND_BIND,
-                    HWLOC_MEMBIND_THREAD) != 0) {
+  if (hwloc_set_membind_nodeset(topology_, new_nodeset.get(),
+                                HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD)
+      != 0) {
     cerr <<  "hwloc_set_membind failed" << endl;
   }
-
-  // int 	hwloc_set_membind_nodeset (hwloc_topology_t topology,
-  // hwloc_const_nodeset_t nodeset, hwloc_membind_policy_t policy, int flags)
 }
 
 void numa_test::test_pin_thread() {
@@ -145,7 +146,6 @@ void numa_test::test_pin_thread() {
 }
 
 void numa_test::test_allocate_memory() {
-  
 }
 
 void numa_test::test_create_scheduling_hierarchy() {
