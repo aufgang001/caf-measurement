@@ -144,13 +144,13 @@ void numa_test::test_distance(){
  
   cout << "index ";
   for (unsigned int i = 0; i < dm->nbobjs; ++i) {
-    cout << setw(4) << i << " ";
+    cout << setw(5) << i << " ";
   }
   cout << endl;
   for (unsigned int i = 0; i < dm->nbobjs; ++i) {
-    cout << setw(4) << i << " ";
+    cout << setw(5) << i << " ";
     for (unsigned int j = 0; j < dm->nbobjs; ++j) {
-      cout << dm->latency[i * dm->nbobjs + j] << " ";
+      cout << setw(5) << dm->latency[i * dm->nbobjs + j] << " ";
     }
     cout << endl;
   }
