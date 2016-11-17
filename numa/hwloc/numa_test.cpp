@@ -131,7 +131,7 @@ void numa_test::bind_current_thread() const{
 
 void numa_test::test_distance(){
   cout << "##-- test_distance --##" << endl;
-  const hwloc_distances_s* dm = hwloc_get_whole_distance_matrix_by_type(topology_, HWLOC_OBJ_PU);
+  const hwloc_distances_s* dm = hwloc_get_whole_distance_matrix_by_type(topology_, HWLOC_OBJ_NUMANODE);
   if (!dm || !dm->latency) {
     cout << "hwloc_get_whole_distance_matrix_by_type failed" << endl;
     return;
@@ -141,8 +141,18 @@ void numa_test::test_distance(){
   cout << "  latency_max: " << dm->nbobjs << endl;
   cout << "  latency_base: " << dm->nbobjs << endl;
   cout << "  latencies: " << endl;
+ 
+  cout << "index ";
   for (unsigned int i = 0; i < dm->nbobjs; ++i) {
-    cout << "    idx: " << i << " = " << dm->latency[i] << endl;
+    cout << setw(4) << i << " ";
+  }
+  cout << endl;
+  for (unsigned int i = 0; i < dm->nbobjs; ++i) {
+    cout << setw(4) << i << " ";
+    for (unsigned int j = 0; j < dm->nbobjs; ++j) {
+      cout << dm->latency[i * dm->nbobjs + j] << " ";
+    }
+    cout << endl;
   }
 }
 
