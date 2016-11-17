@@ -9,10 +9,12 @@ TARGET = numa_test
 SOURCES += main.cpp \
            numa_test.cpp \
            hwloc_bitmap_wrapper.cpp \
+           hierarchical_scheduler_topo.cpp \
            numa_tutorial.cpp
 HEADERS += numa_test.hpp \
            numa_tutorial.hpp \
            hwloc_bitmap_wrapper.hpp \
+           hierarchical_scheduler_topo.hpp \
            generic_allocator.hpp
 
 #QMAKE_CXX = clang

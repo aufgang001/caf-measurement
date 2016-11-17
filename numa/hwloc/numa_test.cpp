@@ -1,11 +1,13 @@
 #include "numa_test.hpp"
 #include "generic_allocator.hpp"
 #include "hwloc_bitmap_wrapper.hpp"
+#include "hierarchical_scheduler_topo.hpp"
 
 #include <limits>
 #include <iostream>
 #include <iomanip>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -119,8 +121,7 @@ void numa_test::bind_current_thread() const{
 
   hwloc_bitmap_wrapper new_nodeset;
   hwloc_cpuset_to_nodeset (topology_, new_cpuset.get(), new_nodeset.get());
-  cout << "### test node_set: " << new_nodeset << endl;
-  cout << "bind memory allocation to numa node:" << new_cpuset << endl;
+  cout << "bind memory allocation to numa node:" << new_nodeset << endl;
   if (hwloc_set_membind_nodeset(topology_, new_nodeset.get(),
                                 HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD)
       != 0) {
@@ -128,27 +129,67 @@ void numa_test::bind_current_thread() const{
   }
 }
 
+void numa_test::test_distance(){
+  cout << "##-- test_distance --##" << endl;
+  const hwloc_distances_s* dm = hwloc_get_whole_distance_matrix_by_type(topology_, HWLOC_OBJ_PU);
+  if (!dm || !dm->latency) {
+    cout << "hwloc_get_whole_distance_matrix_by_type failed" << endl;
+    return;
+  }
+  cout << "  relative_depth: " << dm->relative_depth << endl;
+  cout << "  nbobjs: " << dm->nbobjs << endl;
+  cout << "  latency_max: " << dm->nbobjs << endl;
+  cout << "  latency_base: " << dm->nbobjs << endl;
+  cout << "  latencies: " << endl;
+  for (unsigned int i = 0; i < dm->nbobjs; ++i) {
+    cout << "    idx: " << i << " = " << dm->latency[i] << endl;
+  }
+}
+
 void numa_test::test_pin_thread() {
   cout << "##-- get current cpu bind --##" << endl;
   cout << "current cpu binding: " << get_current_cpu_bind() << endl;
   cout << "last cpu location: " << get_last_cpu_location() << endl;
-  auto mem_bind = get_mem_bind();
+  //auto mem_bind = get_mem_bind();
+  //cout << "mem_bind: " << get<0>(mem_bind) << " with policy:" << membind_policy_to_string(get<1>(mem_bind)) << endl;
   auto mem_bind_nodeset = get_mem_bind_nodeset();
-  cout << "mem_bind: " << get<0>(mem_bind) << " with policy:" << membind_policy_to_string(get<1>(mem_bind)) << endl;
   cout << "mem_bind_nodeset: " << get<0>(mem_bind_nodeset) << " with policy:" << membind_policy_to_string(get<1>(mem_bind_nodeset)) << endl;
   bind_current_thread();
   cout << "current cpu binding: " << get_current_cpu_bind() << endl;
   cout << "last cpu location: " << get_last_cpu_location() << endl;
-  mem_bind = get_mem_bind();
+  //mem_bind = get_mem_bind();
+  //cout << "mem_bind: " << get<0>(mem_bind) << " with policy:" << membind_policy_to_string(get<1>(mem_bind)) << endl;
   mem_bind_nodeset = get_mem_bind_nodeset();
-  cout << "mem_bind: " << get<0>(mem_bind) << " with policy:" << membind_policy_to_string(get<1>(mem_bind)) << endl;
   cout << "mem_bind_nodeset: " << get<0>(mem_bind_nodeset) << " with policy:" << membind_policy_to_string(get<1>(mem_bind_nodeset)) << endl;
 }
 
 void numa_test::test_allocate_memory() {
+  cout << "##-- test_allocate_memory --##" << endl;
+//void * 	hwloc_alloc_membind_nodeset (hwloc_topology_t topology, size_t len, hwloc_const_nodeset_t nodeset, hwloc_membind_policy_t policy, int flags)
+  hwloc_bitmap_wrapper new_cpuset;
+  hwloc_bitmap_wrapper new_nodeset;
+  new_cpuset.set(1);
+  hwloc_cpuset_to_nodeset (topology_, new_cpuset.get(), new_nodeset.get());
+  cout << "alloc node_set: " << new_nodeset << endl;
+  auto alloc = generic_allocator<int>(
+    [&](size_t n) -> void* {
+      cout << "alloc: " << n << endl;
+      return hwloc_alloc_membind_nodeset(topology_, n, new_nodeset.get(), HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD);
+    },
+    [&](void* ptr, size_t n) {
+      cout << "free: " << n << endl;
+      hwloc_free(topology_, ptr, n);
+    });
+  vector<int, generic_allocator<int>> v(alloc);
+
+  for (int i = 0; i < 10000; ++i) {
+    v.push_back(i);
+  }
 }
 
 void numa_test::test_create_scheduling_hierarchy() {
+   
+  
 }
 
 void numa_test::run_test() {
@@ -160,6 +201,7 @@ void numa_test::run_test() {
 
   test_pin_thread();
   test_allocate_memory();
+  test_distance();
   test_create_scheduling_hierarchy();
 }
 

@@ -27,10 +27,11 @@ public:
   std::tuple<hwloc_bitmap_wrapper,hwloc_membind_policy_t> get_mem_bind() const;
   std::tuple<hwloc_bitmap_wrapper,hwloc_membind_policy_t> get_mem_bind_nodeset() const;
 
-  void bind_current_thread() const;
+  void bind_current_thread() const; //task and memory
 
   void test_pin_thread();
   void test_allocate_memory();
+  void test_distance();
   void test_create_scheduling_hierarchy();
 
   void run_test();
