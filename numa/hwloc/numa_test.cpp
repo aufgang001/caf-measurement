@@ -1,6 +1,5 @@
 #include "numa_test.hpp"
 #include "generic_allocator.hpp"
-#include "hwloc_bitmap_wrapper.hpp"
 #include "hierarchical_scheduler_topo.hpp"
 
 #include <limits>
@@ -83,65 +82,7 @@ void numa_test::print_topo_tree() const {
   print_children(hwloc_get_root_obj(topology_));
 }
 
-hwloc_bitmap_wrapper numa_test::get_current_cpu_bind() const {
-  hwloc_bitmap_wrapper current_cpuset;
-  hwloc_get_cpubind(topology_, current_cpuset.get(),
-                        HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
-  return current_cpuset;
-}
-
-hwloc_bitmap_wrapper numa_test::get_last_cpu_location() const {
-  hwloc_bitmap_wrapper current_cpuset;
-  hwloc_get_last_cpu_location(topology_, current_cpuset.cget(), HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
-  return current_cpuset;
-}
-
-tuple<hwloc_bitmap_wrapper,hwloc_membind_policy_t> numa_test::get_mem_bind() const {
-  hwloc_bitmap_wrapper current_cpuset;
-  hwloc_membind_policy_t mem_policy;
-  hwloc_get_membind(topology_, current_cpuset.get(), &mem_policy, HWLOC_MEMBIND_THREAD);
-  return make_tuple(current_cpuset, mem_policy);
-}
-
-std::tuple<hwloc_bitmap_wrapper,hwloc_membind_policy_t> numa_test::get_mem_bind_nodeset() const {
-  hwloc_bitmap_wrapper current_cpuset;
-  hwloc_membind_policy_t mem_policy;
-  hwloc_get_membind_nodeset(topology_, current_cpuset.get(), &mem_policy, HWLOC_MEMBIND_THREAD);
-  return make_tuple(std::move(current_cpuset), mem_policy);
-}
-
-void numa_test::bind_current_thread() const{
-  hwloc_bitmap_wrapper new_cpuset;
-  new_cpuset.set(1);
-  cout << "bind thread to cpu:" << new_cpuset << endl;
-  if (hwloc_set_cpubind(topology_, new_cpuset.cget(),
-                        HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND) != 0) {
-    cerr <<  "hwloc_set_cpubind failed" << endl;
-  }
-
-  hwloc_bitmap_wrapper new_nodeset;
-  hwloc_cpuset_to_nodeset (topology_, new_cpuset.get(), new_nodeset.get());
-  cout << "bind memory allocation to numa node:" << new_nodeset << endl;
-  if (hwloc_set_membind_nodeset(topology_, new_nodeset.get(),
-                                HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD)
-      != 0) {
-    cerr <<  "hwloc_set_membind failed" << endl;
-  }
-}
-
-void numa_test::test_distance(){
-  cout << "##-- test_distance --##" << endl;
-  const hwloc_distances_s* dm = hwloc_get_whole_distance_matrix_by_type(topology_, HWLOC_OBJ_NUMANODE);
-  if (!dm || !dm->latency) {
-    cout << "hwloc_get_whole_distance_matrix_by_type failed" << endl;
-    return;
-  }
-  cout << "  relative_depth: " << dm->relative_depth << endl;
-  cout << "  nbobjs: " << dm->nbobjs << endl;
-  cout << "  latency_max: " << dm->nbobjs << endl;
-  cout << "  latency_base: " << dm->nbobjs << endl;
-  cout << "  latencies: " << endl;
- 
+void numa_test::print_distance(const hwloc_distances_s* dm) const {
   cout << "index ";
   for (unsigned int i = 0; i < dm->nbobjs; ++i) {
     cout << setw(5) << i << " ";
@@ -156,35 +97,104 @@ void numa_test::test_distance(){
   }
 }
 
+hwloc_bitmap_wrapper numa_test::get_current_cpu_bind() const {
+  auto current_cpuset = hwloc_bitmap_make_wrapper();
+  hwloc_get_cpubind(topology_, current_cpuset.get(),
+                        HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
+  return current_cpuset;
+}
+
+hwloc_bitmap_wrapper numa_test::get_last_cpu_location() const {
+  auto current_cpuset= hwloc_bitmap_make_wrapper();
+  hwloc_get_last_cpu_location(topology_, current_cpuset.get(),
+                              HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
+  return current_cpuset;
+}
+
+tuple<hwloc_bitmap_wrapper, hwloc_membind_policy_t>
+numa_test::get_mem_bind() const {
+  auto current_cpuset = hwloc_bitmap_make_wrapper();
+  hwloc_membind_policy_t mem_policy;
+  hwloc_get_membind(topology_, current_cpuset.get(), &mem_policy,
+                    HWLOC_MEMBIND_THREAD);
+  return make_tuple(std::move(current_cpuset), mem_policy);
+}
+
+std::tuple<hwloc_bitmap_wrapper, hwloc_membind_policy_t>
+numa_test::get_mem_bind_nodeset() const {
+  auto current_cpuset = hwloc_bitmap_make_wrapper();
+  hwloc_membind_policy_t mem_policy;
+  hwloc_get_membind_nodeset(topology_, current_cpuset.get(), &mem_policy,
+                            HWLOC_MEMBIND_THREAD);
+  return make_tuple(std::move(current_cpuset), mem_policy);
+}
+
+void numa_test::bind_current_thread() const{
+  auto new_cpuset = hwloc_bitmap_make_wrapper();
+  hwloc_bitmap_set(new_cpuset.get(), 1);
+  cout << "bind thread to cpu:" << new_cpuset << endl;
+  if (hwloc_set_cpubind(topology_, new_cpuset.get(),
+                        HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND) != 0) {
+    cerr <<  "hwloc_set_cpubind failed" << endl;
+  }
+
+  auto new_nodeset = hwloc_bitmap_make_wrapper();
+  hwloc_cpuset_to_nodeset (topology_, new_cpuset.get(), new_nodeset.get());
+  cout << "bind memory allocation to numa node:" << new_nodeset << endl;
+  if (hwloc_set_membind_nodeset(topology_, new_nodeset.get(),
+                                HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD)
+      != 0) {
+    cerr <<  "hwloc_set_membind failed" << endl;
+  }
+}
+
+void numa_test::test_distance(){
+  cout << "##-- test_distance --##" << endl;
+  const hwloc_distances_s* dm =
+    hwloc_get_whole_distance_matrix_by_type(topology_, HWLOC_OBJ_NUMANODE);
+  if (!dm || !dm->latency) {
+    cout << "hwloc_get_whole_distance_matrix_by_type failed" << endl;
+    return;
+  }
+  cout << "  relative_depth: " << dm->relative_depth << endl;
+  cout << "  nbobjs: " << dm->nbobjs << endl;
+  cout << "  latency_max: " << dm->nbobjs << endl;
+  cout << "  latency_base: " << dm->nbobjs << endl;
+  cout << "  latencies: " << endl;
+  print_distance(dm);
+
+}
+
 void numa_test::test_pin_thread() {
   cout << "##-- get current cpu bind --##" << endl;
   cout << "current cpu binding: " << get_current_cpu_bind() << endl;
   cout << "last cpu location: " << get_last_cpu_location() << endl;
-  //auto mem_bind = get_mem_bind();
-  //cout << "mem_bind: " << get<0>(mem_bind) << " with policy:" << membind_policy_to_string(get<1>(mem_bind)) << endl;
   auto mem_bind_nodeset = get_mem_bind_nodeset();
-  cout << "mem_bind_nodeset: " << get<0>(mem_bind_nodeset) << " with policy:" << membind_policy_to_string(get<1>(mem_bind_nodeset)) << endl;
+  cout << "mem_bind_nodeset: " << get<0>(mem_bind_nodeset)
+       << " with policy:" << membind_policy_to_string(get<1>(mem_bind_nodeset))
+       << endl;
   bind_current_thread();
   cout << "current cpu binding: " << get_current_cpu_bind() << endl;
   cout << "last cpu location: " << get_last_cpu_location() << endl;
-  //mem_bind = get_mem_bind();
-  //cout << "mem_bind: " << get<0>(mem_bind) << " with policy:" << membind_policy_to_string(get<1>(mem_bind)) << endl;
   mem_bind_nodeset = get_mem_bind_nodeset();
-  cout << "mem_bind_nodeset: " << get<0>(mem_bind_nodeset) << " with policy:" << membind_policy_to_string(get<1>(mem_bind_nodeset)) << endl;
+  cout << "mem_bind_nodeset: " << get<0>(mem_bind_nodeset)
+       << " with policy:" << membind_policy_to_string(get<1>(mem_bind_nodeset))
+       << endl;
 }
 
 void numa_test::test_allocate_memory() {
   cout << "##-- test_allocate_memory --##" << endl;
-//void * 	hwloc_alloc_membind_nodeset (hwloc_topology_t topology, size_t len, hwloc_const_nodeset_t nodeset, hwloc_membind_policy_t policy, int flags)
-  hwloc_bitmap_wrapper new_cpuset;
-  hwloc_bitmap_wrapper new_nodeset;
-  new_cpuset.set(1);
+  auto new_cpuset = hwloc_bitmap_make_wrapper();
+  auto new_nodeset = hwloc_bitmap_make_wrapper();
+  hwloc_bitmap_set(new_cpuset.get(), 1);
   hwloc_cpuset_to_nodeset (topology_, new_cpuset.get(), new_nodeset.get());
   cout << "alloc node_set: " << new_nodeset << endl;
   auto alloc = generic_allocator<int>(
     [&](size_t n) -> void* {
       cout << "alloc: " << n << endl;
-      return hwloc_alloc_membind_nodeset(topology_, n, new_nodeset.get(), HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD);
+      return hwloc_alloc_membind_nodeset(topology_, n, new_nodeset.get(),
+                                         HWLOC_MEMBIND_BIND,
+                                         HWLOC_MEMBIND_THREAD);
     },
     [&](void* ptr, size_t n) {
       cout << "free: " << n << endl;
@@ -198,8 +208,15 @@ void numa_test::test_allocate_memory() {
 }
 
 void numa_test::test_create_scheduling_hierarchy() {
-   
-  
+  cout << "##-- test_create_scheduling_hierarchy --##" << endl;
+  hierarchical_scheduler_topo s(topology_);
+  auto current_pu_id_set = hwloc_bitmap_make_wrapper();
+  hwloc_bitmap_set(current_pu_id_set.get(), 1); 
+  auto pu_matrix = s.get_pu_matrix(current_pu_id_set);
+  cout << "current pu id: " << current_pu_id_set << endl;
+  for(unsigned int i = 0; i < pu_matrix.size(); ++i) {
+    cout << i << ": " << pu_matrix[i] << endl;
+  }
 }
 
 void numa_test::run_test() {

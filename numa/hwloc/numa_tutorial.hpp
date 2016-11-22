@@ -23,7 +23,6 @@ public:
   void test_bind_to_only_on_thread_of_the_last_core_of_the_machine() const;
   void test_allcoate_memory_on_numa_node() const;
 
-
   void run_test();
 private:
   bool initialized; 
