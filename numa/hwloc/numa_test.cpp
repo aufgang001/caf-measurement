@@ -232,7 +232,7 @@ void numa_test::test_create_scheduling_hierarchy(int cpu_id) {
   auto node_set = hwloc_bitmap_make_wrapper();
   hwloc_bitmap_set(current_pu_set.get(), cpu_id); 
   auto pu_matrix = s.get_pu_matrix(current_pu_set);
-  hwloc_cpuset_to_nodeset(topology_, node_set.get(), node_set.get());
+  hwloc_cpuset_to_nodeset(topology_, current_pu_set.get(), node_set.get());
   cout << "current pu id: " << current_pu_set 
        << " nodeset(" << bitmap_to_string(node_set) << ")" 
        << endl;
