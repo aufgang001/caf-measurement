@@ -16,6 +16,7 @@ public:
   std::string attr_to_string(const hwloc_obj_t obj, const char* seperator = " ",
                              int verbose = 0) const;
   std::string membind_policy_to_string(hwloc_membind_policy_t policy) const;
+  std::string bitmap_to_string(const hwloc_bitmap_wrapper& bmap) const;
   void print_children(const hwloc_obj_t obj, unsigned int depth = 0) const;
   void print_distance(const hwloc_distances_s* distance) const;
   void print_levels_and_objects() const;

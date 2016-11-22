@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <map>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -51,6 +52,23 @@ numa_test::membind_policy_to_string(hwloc_membind_policy_t policy) const {
   };
   return policy_map[policy];
 }
+
+
+std::string numa_test::bitmap_to_string(const hwloc_bitmap_wrapper& bmap) const {
+  std::stringstream ss; 
+  unsigned int id;
+  // Check if bitmap has infinit length
+  if (hwloc_bitmap_weight(bmap.get()) != -1) {
+    hwloc_bitmap_foreach_begin(id, bmap.get()) {
+      ss << id << " ";
+    }
+    hwloc_bitmap_foreach_end();
+  } else {
+    ss << "infinite"; 
+  }
+  return ss.str();
+}
+
 
 void numa_test::print_children(const hwloc_obj_t obj, unsigned int depth) const {
   auto str_obj = obj_to_string(obj);
@@ -217,9 +235,13 @@ void numa_test::test_create_scheduling_hierarchy(int cpu_id) {
   cout << "current pu id: " << current_pu_set << endl;
   for(unsigned int i = 0; i < pu_matrix.size(); ++i) {
     hwloc_cpuset_to_nodeset(topology_, pu_matrix[i].get(), node_set.get());
-    cout << i << ": " << pu_matrix[i] << " (numa nodes: " << node_set << ")" << endl;
+    cout << i << ": " << pu_matrix[i] 
+         << " nodeset (" << bitmap_to_string(node_set) << ")" 
+         << endl;
   }
 }
+
+
 
 void numa_test::run_test() {
   if (!init()) {
