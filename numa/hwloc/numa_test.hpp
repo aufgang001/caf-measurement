@@ -33,7 +33,7 @@ public:
   void test_pin_thread();
   void test_allocate_memory();
   void test_distance();
-  void test_create_scheduling_hierarchy();
+  void test_create_scheduling_hierarchy(int cpu_id);
 
   void run_test();
 

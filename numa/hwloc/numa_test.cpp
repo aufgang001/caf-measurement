@@ -1,6 +1,6 @@
 #include "numa_test.hpp"
 #include "generic_allocator.hpp"
-#include "hierarchical_scheduler_topo.hpp"
+#include "numa_topo.hpp"
 
 #include <limits>
 #include <iostream>
@@ -207,15 +207,17 @@ void numa_test::test_allocate_memory() {
   }
 }
 
-void numa_test::test_create_scheduling_hierarchy() {
+void numa_test::test_create_scheduling_hierarchy(int cpu_id) {
   cout << "##-- test_create_scheduling_hierarchy --##" << endl;
-  hierarchical_scheduler_topo s(topology_);
-  auto current_pu_id_set = hwloc_bitmap_make_wrapper();
-  hwloc_bitmap_set(current_pu_id_set.get(), 1); 
-  auto pu_matrix = s.get_pu_matrix(current_pu_id_set);
-  cout << "current pu id: " << current_pu_id_set << endl;
+  numa_topo s(topology_);
+  auto current_pu_set = hwloc_bitmap_make_wrapper();
+  auto node_set = hwloc_bitmap_make_wrapper();
+  hwloc_bitmap_set(current_pu_set.get(), cpu_id); 
+  auto pu_matrix = s.get_pu_matrix(current_pu_set);
+  cout << "current pu id: " << current_pu_set << endl;
   for(unsigned int i = 0; i < pu_matrix.size(); ++i) {
-    cout << i << ": " << pu_matrix[i] << endl;
+  hwloc_cpuset_to_nodeset(topology_, current_pu_set.get(), node_set.get());
+    cout << i << ": " << pu_matrix[i] << " (numa nodes: " << node_set << ")" << endl;
   }
 }
 
@@ -229,7 +231,9 @@ void numa_test::run_test() {
   test_pin_thread();
   test_allocate_memory();
   test_distance();
-  test_create_scheduling_hierarchy();
+  test_create_scheduling_hierarchy(2);
+  test_create_scheduling_hierarchy(12);
+  test_create_scheduling_hierarchy(59);
 }
 
 numa_test::~numa_test() {
