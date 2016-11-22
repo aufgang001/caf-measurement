@@ -216,7 +216,7 @@ void numa_test::test_create_scheduling_hierarchy(int cpu_id) {
   auto pu_matrix = s.get_pu_matrix(current_pu_set);
   cout << "current pu id: " << current_pu_set << endl;
   for(unsigned int i = 0; i < pu_matrix.size(); ++i) {
-  hwloc_cpuset_to_nodeset(topology_, current_pu_set.get(), node_set.get());
+    hwloc_cpuset_to_nodeset(topology_, pu_matrix[i].get(), node_set.get());
     cout << i << ": " << pu_matrix[i] << " (numa nodes: " << node_set << ")" << endl;
   }
 }
