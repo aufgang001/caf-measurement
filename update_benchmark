@@ -26,11 +26,11 @@ fi
 if [ "$1" == "actor-framework" ]; then
   cd actor-framework
   git fetch
-  git checkout -f origin/topic/update_benchmarks
+  git checkout -f origin/topic/worker_pinning
 
   cd benchmarks
   git fetch
-  git checkout -f origin/topic/update_benchmarks
+  git checkout -f origin/topic/mster
 
   cd ..
   ./configure

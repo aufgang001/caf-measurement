@@ -4,53 +4,30 @@ if [[ $(id -u) != 0 ]]; then
   exit 0
 fi
 
-DRY_RUN=true
-
 CAF_HOME="/users/localadmin/woelke/actor-framework"
 BENCH_USER="localadmin"
 OUT_DIR="/users/localadmin/woelke/test_data"
-BIN_PATH="/users/localadmin/woelke/caf-measurement/numa/distance"
+BIN_PATH="/users/localadmin/woelke/actor-framework/build/bin"
+CAF_INI_FILE="caf-application.ini"
 
-cd ${CAF_HOME}/benchmarks/scripts
+todo_array="stealing numa-steal"
 
-X_LABEL="mem_access"
-BENCH="measure_distance"
-B_NODE_A=0
-
-if [ $DRY_RUN = true ]; then
+for todo in $todo_array ; do
   rm -f ${OUT_DIR}/*
-  x_value_array="10"
-  b_rw_rate_array="100"
-  b_node_b_array="0"
-  b_pattern_array="iterate"
-  b_overload_mode_array="10"
-else
-  x_value_array="100000000 500000000 1000000000 2000000000"
-  b_rw_rate_array="0 100"
-  b_node_b_array="0 1 3"
-  b_pattern_array="iterate random"
-  b_overload_mode_array="10 16 22"
-fi
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+EOL
 
-for x_value in $x_value_array ; do
-for b_rw_rate in $b_rw_rate_array ; do
-for b_node_b in $b_node_b_array ; do
-for b_pattern in $b_pattern_array ; do
-for b_overload_mode in $b_overload_mode_array ; do
-  echo "x_value: $x_value"
-  B_NUM_ACCESS=$x_value
-  BENCH_ARGS="--pattern=$b_pattern --node-a=$B_NODE_A --node-b=$b_node_b --num-access=$B_NUM_ACCESS --rw-rate=$b_rw_rate --overload=$b_overload_mode"
-  label="numa${B_NODE_A}to${b_node_b}rw${b_rw_rate}ov${b_overload_mode}p${b_pattern}"
-  ./caf_run_benchmarks custom $BENCH_USER $OUT_DIR $X_LABEL $x_value $label $BIN_PATH $BENCH $BENCH_ARGS
-done
-done
-done
-done
-done
+  cd ${CAF_HOME}/benchmarks/scripts
+  ./caf_run_benchmarks custom $BENCH_USER $OUT_DIR --label=caf --bench=all 
 
-cd $OUT_DIR
-${CAF_HOME}/build/bin/to_csv *
-${CAF_HOME}/benchmarks/scripts/plot performance "measure_distance.csv" --out="performance_plot.pdf" --xlabel="Memory Access [#]"
+  cd $OUT_DIR
+  ${CAF_HOME}/build/bin/to_csv *
+
+  cd ..
+  cp -rf test_data test_data_${todo}
+done
 
 duration=$SECONDS
 echo "duration: $(($duration / 3600))h $(($duration / 60))m $(($duration % 60))s"
