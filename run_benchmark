@@ -26,6 +26,7 @@ EOL
   ${CAF_HOME}/build/bin/to_csv *
 
   cd ..
+  rm -f test_data_${todo}
   cp -rf test_data test_data_${todo}
 done
 
