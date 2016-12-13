@@ -32,4 +32,4 @@ EOL
 done
 
 duration=$SECONDS
-echo "duration: $(($duration / 3600))h $(($duration / 60))m $(($duration % 60))s"
+echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
