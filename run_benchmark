@@ -10,8 +10,7 @@ OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
 CAF_INI_FILE="caf-application.ini"
 
-#todo_array="stealing numa-steal"
-todo_array="numa-steal"
+todo_array="stealing numa-steal"
 
 for todo in $todo_array ; do
   rm -f ${OUT_DIR}/*
@@ -21,7 +20,7 @@ policy='$todo'
 EOL
 
   cd ${CAF_HOME}/benchmarks/scripts
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=all 
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=actor-creation --bench=all 
 
   cd $OUT_DIR
   ${BIN_PATH}/to_csv *
