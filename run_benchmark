@@ -20,7 +20,7 @@ policy='$todo'
 EOL
 
   cd ${CAF_HOME}/benchmarks/scripts
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=actor-creation --bench=all 
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=actor-creation
 
   cd $OUT_DIR
   ${BIN_PATH}/to_csv *
