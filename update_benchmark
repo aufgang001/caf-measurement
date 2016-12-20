@@ -30,7 +30,7 @@ if [ "$1" == "actor-framework" ]; then
 
   cd benchmarks
   git fetch
-  git checkout -f origin/master
+  git checkout -f origin/topic/update
 
   cd ..
   ./configure
