@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'design.ui'
+# Form implementation generated from reading ui file 'view.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -44,6 +44,12 @@ class Ui_MainWindow(object):
         self.edit_xlabel = QtWidgets.QLineEdit(self.centralwidget)
         self.edit_xlabel.setObjectName("edit_xlabel")
         self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.edit_xlabel)
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setObjectName("label_6")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.label_6)
+        self.edit_ydivider = QtWidgets.QLineEdit(self.centralwidget)
+        self.edit_ydivider.setObjectName("edit_ydivider")
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.edit_ydivider)
         self.verticalLayout_details.addLayout(self.formLayout)
         self.table_tlabel = QtWidgets.QTableWidget(self.centralwidget)
         self.table_tlabel.setObjectName("table_tlabel")
@@ -159,6 +165,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Title:"))
         self.label_3.setText(_translate("MainWindow", "Y-label:"))
         self.label_4.setText(_translate("MainWindow", "X-label:"))
+        self.label_6.setText(_translate("MainWindow", "Y-divider"))
         self.bnt_save_plot.setText(_translate("MainWindow", "Save"))
         self.btn_preview_plot.setText(_translate("MainWindow", "Preview"))
         self.label_5.setText(_translate("MainWindow", "Plots:"))

@@ -124,6 +124,8 @@ class model:
             plot.append('--ylabel="' + data["ylabel"] + '"' )
         if not data["title"] == "":
             plot.append('--title="' + data["title"] + '"')
+        if not data["ydivider"] == "":
+            plot.append('--ydivider="' + data["ydivider"] + '"')
         plot.append('--tlabel="' + tlabels + '"')
         print("wait for: " + str(data["out"]))
         p = subprocess.check_call(plot)

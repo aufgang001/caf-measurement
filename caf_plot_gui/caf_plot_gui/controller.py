@@ -36,6 +36,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.btn_delete_plot.clicked.connect(self.btn_delete_clicked)
         self.btn_new_plot.clicked.connect(self.btn_new_clicked)
         self.edit_label_filter.textChanged.connect(self.lst_label_refresh)
+        self.edit_ydivider.setValidator(QtGui.QDoubleValidator(self))
         # set mode performacne or memory and update csv_list
         self.lst_csv_file_refresh()
         self.cbox_plots_refresh(index=0)
@@ -237,16 +238,16 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.table_tlabel.setRangeSelected(range, True)
 
     def add_cvs_folder(self):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder:', '.', QtWidgets.QFileDialog.ShowDirsOnly)
+        folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder', '.', QtWidgets.QFileDialog.ShowDirsOnly)
         self.model.add_csv_folder(folder)
         self.lst_csv_file_refresh()
 
     def set_plot_script(self):
-        plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script:', '.')
+        plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script', '.')
         self.model.plot_script = plot_script[0]
 
     def set_pdf_program(self):
-        pdf_program = QtWidgets.QInputDialog.getText(None, 'Set PDF program:', "PDF Program:")
+        pdf_program = QtWidgets.QInputDialog.getText(None, 'Set PDF program', "PDF Program:")
         self.model.plot_data = pdf_program[0]
 
     def collect_plot_data(self):
@@ -261,6 +262,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             data["title"] = self.edit_title.text()
             data["ylabel"] = self.edit_ylabel.text()
             data["xlabel"] = self.edit_xlabel.text()
+            data["ydivider"] = self.edit_ydivider.text()
             data["filelabel_data"] = copy.deepcopy(self.selected_data)
             return data
         else:
@@ -273,6 +275,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         data["title"] = ""
         data["ylabel"] = self.edit_ylabel.text()
         data["xlabel"] = self.edit_xlabel.text()
+        data["ydivider"] = "1"
         data["filelabel_data"] = dict()
         return data
 
@@ -286,5 +289,6 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             self.edit_title.setText(data["title"])
             self.edit_xlabel.setText(data["xlabel"])
             self.edit_ylabel.setText(data["ylabel"])
+            self.edit_ydivider.setText(data["ydivider"])
             self.selected_data = copy.deepcopy(data["filelabel_data"])
             self.table_tlabel_redraw()
