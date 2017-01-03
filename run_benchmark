@@ -20,7 +20,7 @@ policy='$todo'
 EOL
 
   cd ${CAF_HOME}/benchmarks/scripts
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=matrix-search
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=matrix-search --repetitions=1
 
   cd $OUT_DIR
   ${BIN_PATH}/to_csv *
