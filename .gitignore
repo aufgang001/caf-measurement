@@ -2,3 +2,5 @@ Makefile
 *.swp
 .ycm_extra_conf.pyc
 *.o
+caf_plot_gui/caf_plot_gui.egg-info/
+caf_plot_gui/caf_plot_gui/__pycache__/
