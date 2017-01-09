@@ -26,6 +26,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.table_tlabel.keyPressEvent = self.table_tlabel_keyPressEvent
         self.table_tlabel.itemChanged.connect(self.table_tlabel_cellChanged)
         self.btn_preview_plot.clicked.connect(self.preview_current_plot)
+        self.action_save_and_print_config.triggered.connect(self.save_and_print_config)
         self.action_preview.triggered.connect(self.preview_current_plot)
         self.action_plot_all.triggered.connect(self.plot_all_plots)
         self.action_add_cvs_folder.triggered.connect(self.add_cvs_folder)
@@ -236,11 +237,33 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
     def table_tlabel_select_row(self, index):
         range = QtWidgets.QTableWidgetSelectionRange(index, 0, index, 1) 
         self.table_tlabel.setRangeSelected(range, True)
+    
+    def save_and_print_config(self):
+        self.btn_save_plot_clicked()
+        self.model.save_config_file()
+        self.model.plot_config()
 
     def add_cvs_folder(self):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder', '.', QtWidgets.QFileDialog.ShowDirsOnly)
-        self.model.add_csv_folder(folder)
-        self.lst_csv_file_refresh()
+        # http://stackoverflow.com/questions/38252419/qt-get-qfiledialog-to-select-and-return-multiple-folders
+        file_dialog = QtWidgets.QFileDialog()
+        file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+        file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
+        file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
+        # to make it possible to select multiple directories:
+        if file_view:
+            file_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
+        if f_tree_view:
+            f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        if file_dialog.exec():
+            folders = file_dialog.selectedFiles()
+            for folder in folders:
+                self.model.add_csv_folder(folder)
+            self.lst_csv_file_refresh()
+
+        # folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder', '.', QtWidgets.QFileDialog.ShowDirsOnly)
+        # self.model.add_csv_folder(folder)
+        # self.lst_csv_file_refresh()
 
     def set_plot_script(self):
         plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script', '.')
@@ -273,9 +296,9 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         data["plot_type"] = str(self.mode)
         data["out"] = "new.pdf"
         data["title"] = ""
-        data["ylabel"] = self.edit_ylabel.text()
-        data["xlabel"] = self.edit_xlabel.text()
-        data["ydivider"] = "1"
+        data["ylabel"] = self.edit_ylabel.text() if self.edit_ylabel.text() != "" else "Time [s]"
+        data["xlabel"] = self.edit_xlabel.text() if self.edit_xlabel.text() != "" else "Number of Workers [#]"
+        data["ydivider"] = "1000"
         data["filelabel_data"] = dict()
         return data
 

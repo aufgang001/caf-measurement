@@ -147,8 +147,11 @@ class Ui_MainWindow(object):
         self.action_add_cvs_folder.setObjectName("action_add_cvs_folder")
         self.action_set_pdf_program = QtWidgets.QAction(MainWindow)
         self.action_set_pdf_program.setObjectName("action_set_pdf_program")
+        self.action_save_and_print_config = QtWidgets.QAction(MainWindow)
+        self.action_save_and_print_config.setObjectName("action_save_and_print_config")
         self.menuPlot_all.addAction(self.action_plot_all)
         self.menuPlot_all.addAction(self.action_preview)
+        self.menuConfiguration.addAction(self.action_save_and_print_config)
         self.menuConfiguration.addAction(self.action_set_plot_script)
         self.menuConfiguration.addAction(self.action_add_cvs_folder)
         self.menuConfiguration.addAction(self.action_set_pdf_program)
@@ -181,4 +184,5 @@ class Ui_MainWindow(object):
         self.action_add_cvs_file.setText(_translate("MainWindow", "Add CVS file"))
         self.action_add_cvs_folder.setText(_translate("MainWindow", "Add CVS folder"))
         self.action_set_pdf_program.setText(_translate("MainWindow", "Set pdf program"))
+        self.action_save_and_print_config.setText(_translate("MainWindow", "Save and print config"))
 

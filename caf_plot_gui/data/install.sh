@@ -21,7 +21,7 @@ echo 'export QT_SELECT="qt5"' >> .env
 
 
 # run
-designer
+designer view.ui
 # do stuff
 # save stuff as design.py
 # creaty desing.py

@@ -14,7 +14,7 @@ class model:
         self.csv_folder_set = set()
         self.csv_file_set = set()
         self.csv_header = dict() 
-        self.plot_script = ""
+        self.plot_script = "caf_plot"
         self.csv_blacklist = set()
         self.csv_blacklist.add("tmp_data.csv") 
         self.pdf_program = "gnome-open"
@@ -65,21 +65,24 @@ class model:
         self.csv_file_set= set()
         for x in self.csv_folder_set:
             self.add_csv_folder(x)
+    
+    def config_to_json_str(self):
+        # collect data
+        data = dict()
+        data["abs_path"] = os.path.dirname(os.path.abspath(__file__))
+        data["csv_folder_set"] = list(self.csv_folder_set)
+        data["csv_blacklist"] = list(self.csv_blacklist)
+        data["plot_script"] = self.plot_script
+        data["pdf_program"] = self.pdf_program
+        data["plots"] = self.plots
+        return  json.dumps(data, separators=(',',':'), indent=4, sort_keys=True)
+
+    def plot_config(self):
+        print(self.config_to_json_str())
 
     def save_config_file(self):
         with open(self.config_file, 'w') as f:
-            data = dict()
-            # collect data
-            data["abs_path"] = os.path.dirname(os.path.abspath(__file__))
-            data["csv_folder_set"] = list(self.csv_folder_set)
-            data["csv_blacklist"] = list(self.csv_blacklist)
-            data["plot_script"] = self.plot_script
-            data["pdf_program"] = self.pdf_program
-            data["plots"] = self.plots
-            # save data
-            str = json.dumps(data, separators=(',',':'), indent=4, sort_keys=True)
-            f.write(str)
-
+            f.write(self.config_to_json_str())
 
     def load_config_file(self):
         try:
