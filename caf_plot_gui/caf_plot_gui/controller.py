@@ -38,6 +38,10 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.btn_new_plot.clicked.connect(self.btn_new_clicked)
         self.edit_label_filter.textChanged.connect(self.lst_label_refresh)
         self.edit_ydivider.setValidator(QtGui.QDoubleValidator(self))
+        self.edit_xmin.setValidator(QtGui.QDoubleValidator(self))
+        self.edit_xmax.setValidator(QtGui.QDoubleValidator(self))
+        self.edit_ymin.setValidator(QtGui.QDoubleValidator(self))
+        self.edit_ymax.setValidator(QtGui.QDoubleValidator(self))
         # set mode performacne or memory and update csv_list
         self.lst_csv_file_refresh()
         self.cbox_plots_refresh(index=0)
@@ -286,6 +290,12 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             data["ylabel"] = self.edit_ylabel.text()
             data["xlabel"] = self.edit_xlabel.text()
             data["ydivider"] = self.edit_ydivider.text()
+            data["xlim"] = ["",""]
+            data["ylim"] = ["",""]
+            data["xlim"][0] = self.edit_xmin.text()
+            data["xlim"][1] = self.edit_xmax.text()
+            data["ylim"][0] = self.edit_ymin.text()
+            data["ylim"][1] = self.edit_ymax.text()
             data["filelabel_data"] = copy.deepcopy(self.selected_data)
             return data
         else:
@@ -299,6 +309,8 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         data["ylabel"] = self.edit_ylabel.text() if self.edit_ylabel.text() != "" else "Time [s]"
         data["xlabel"] = self.edit_xlabel.text() if self.edit_xlabel.text() != "" else "Number of Workers [#]"
         data["ydivider"] = "1000"
+        data["xlim"] = ["",""]
+        data["ylim"] = ["",""]
         data["filelabel_data"] = dict()
         return data
 
@@ -313,5 +325,11 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             self.edit_xlabel.setText(data["xlabel"])
             self.edit_ylabel.setText(data["ylabel"])
             self.edit_ydivider.setText(data["ydivider"])
+            if "xlim" in data: #backword compatibitlity
+                self.edit_xmin.setText(data["xlim"][0])
+                self.edit_xmax.setText(data["xlim"][1])
+            if "ylim" in data: #backword compatibitlity
+                self.edit_ymin.setText(data["ylim"][0])
+                self.edit_ymax.setText(data["ylim"][1])
             self.selected_data = copy.deepcopy(data["filelabel_data"])
             self.table_tlabel_redraw()

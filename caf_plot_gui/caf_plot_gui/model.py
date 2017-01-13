@@ -129,6 +129,10 @@ class model:
             plot.append('--title="' + data["title"] + '"')
         if not data["ydivider"] == "":
             plot.append('--ydivider="' + data["ydivider"] + '"')
+        if not data["xlim"][0] == "" or not data["xlim"][1] == "":
+            plot.append('--xlim="' + data["xlim"][0] + "," + data["xlim"][1] + '"')
+        if not data["ylim"][0] == "" or not data["ylim"][1] == "":
+            plot.append('--ylim="' + data["ylim"][0] + "," + data["ylim"][1] + '"')
         plot.append('--tlabel="' + tlabels + '"')
         print("wait for: " + str(data["out"]))
         p = subprocess.check_call(plot)
