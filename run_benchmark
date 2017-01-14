@@ -18,7 +18,7 @@ cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
 [scheduler]
 policy='$todo'
 [numa]
-numa-neighborhood-level=2
+neighborhood-level=2
 EOL
 
   cd ${CAF_HOME}/benchmarks/scripts
