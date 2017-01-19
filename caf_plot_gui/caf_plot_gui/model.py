@@ -11,31 +11,18 @@ class plot_type(Enum):
 class model:
     def __init__(self, config_file):
         self.config_file = config_file
-        self.csv_folder_set = set()
         self.csv_file_set = set()
         self.csv_header = dict() 
         self.plot_script = "caf_plot"
-        self.csv_blacklist = set()
-        self.csv_blacklist.add("tmp_data.csv") 
         self.pdf_program = "gnome-open"
         self.plots = dict()
         self.load_config_file()
 
-    def add_csv_folder(self, folder):
-        """
-        Search recursive in path data_folder for *.csv files
-        """
-        self.csv_folder_set.add(folder)
-        prog = re.compile(".*\.csv$")
-        for root, dirs, files in os.walk(folder):
-            for file in files:
-                # filter blacklist
-                if file not in self.csv_blacklist:
-                    if prog.match(file):
-                        self.csv_file_set.add(root + "/" + file)
+    def add_csv_file(self, file):
+        self.csv_file_set.add(os.path.relpath(file))
 
-    def remove_csv_folder(self, folder):
-        self.csv_file_set.remove(folder)
+    def remove_csv_file(self, file):
+        self.csv_file_set.remove(file)
 
     def get_csv_files(self, plott):
             return [x for x in self.csv_file_set if self.get_file_plot_type(x) == plott]
@@ -55,23 +42,16 @@ class model:
                 return tmp_header_list
 
     def get_file_plot_type(self, file):
-        prog = re.compile(".*/memory_.*")
+        prog = re.compile(".*memory_.*")
         if prog.match(file):
             return plot_type.memory
         else:
             return plot_type.performance
 
-    def refresh_csv_data(self):
-        self.csv_file_set= set()
-        for x in self.csv_folder_set:
-            self.add_csv_folder(x)
-    
     def config_to_json_str(self):
         # collect data
         data = dict()
-        data["abs_path"] = os.path.dirname(os.path.abspath(__file__))
-        data["csv_folder_set"] = list(self.csv_folder_set)
-        data["csv_blacklist"] = list(self.csv_blacklist)
+        data["csv_file_set"] = list(self.csv_file_set)
         data["plot_script"] = self.plot_script
         data["pdf_program"] = self.pdf_program
         data["plots"] = self.plots
@@ -92,9 +72,7 @@ class model:
                     return
                 data = json.loads(tmp_str)
                 # reconstruct data
-                self.csv_folder_set.update(set(data["csv_folder_set"]))
-                self.refresh_csv_data()
-                self.csv_blacklist.update(set(data["csv_blacklist"]))
+                self.csv_file_set = set(data["csv_file_set"])
                 self.plot_script = data["plot_script"]
                 self.pdf_program = data["pdf_program"]
                 if "plots" in data:
@@ -105,7 +83,7 @@ class model:
     def show_plot(self, data):
         subprocess.call([self.pdf_program, data["out"]])
 
-    def plot_data(self, data):
+    def get_plot_command(self, data):
         plot = [self.plot_script]
         if data["plot_type"] ==  str(plot_type.performance):
             plot.append("performance")
@@ -134,6 +112,10 @@ class model:
         if not data["ylim"][0] == "" or not data["ylim"][1] == "":
             plot.append('--ylim="' + data["ylim"][0] + "," + data["ylim"][1] + '"')
         plot.append('--tlabel="' + tlabels + '"')
+        return plot
+    
+    def plot_data(self, data):
+        plot = self.get_plot_command(data)
         print("wait for: " + str(data["out"]))
         p = subprocess.check_call(plot)
         print("finished")

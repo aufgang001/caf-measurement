@@ -29,9 +29,10 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.action_save_and_print_config.triggered.connect(self.save_and_print_config)
         self.action_preview.triggered.connect(self.preview_current_plot)
         self.action_plot_all.triggered.connect(self.plot_all_plots)
-        self.action_add_cvs_folder.triggered.connect(self.add_cvs_folder)
+        self.action_add_csv_file.triggered.connect(self.add_csv_file)
         self.action_set_plot_script.triggered.connect(self.set_plot_script)
         self.action_set_pdf_program.triggered.connect(self.set_pdf_program)
+        self.action_create_plot_script.triggered.connect(self.create_plot_script)
         self.bnt_save_plot.clicked.connect(self.btn_save_plot_clicked)
         self.cbox_plots.currentIndexChanged.connect(self.cbox_plots_current_index_changed)
         self.btn_delete_plot.clicked.connect(self.btn_delete_clicked)
@@ -119,7 +120,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         if event.matches(QtGui.QKeySequence.Delete):
             items = self.lst_csv.selectedItems()
             if len(items) > 0:
-                self.model.remove_csv_folder(items[0].text())
+                self.model.remove_csv_file(items[0].text())
                 self.lst_csv_file_refresh()
 
     def get_selected_csv_file(self):
@@ -152,6 +153,9 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.table_tlabel_add_label(csv_file, label)
 
         index = self.table_tlabel_get_row_index(csv_file, label)
+        print("clicked: " + csv_file)
+        print("clicked: " + label)
+        print("clicked: " + str(index))
         self.table_tlabel_select_row(index)
 
     def table_tlabel_cellChanged(self, witem):
@@ -181,12 +185,14 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
     def table_tlabel_get_row_index(self, csv_file, label):
         y = 0
         for csv_file_it in self.selected_data.keys():
+            print("row_index: " + csv_file_it)
             y += 1
-            if csv_file == csv_file_it:
-                for label_it in self.selected_data[csv_file].keys():
+            for label_it in self.selected_data[csv_file].keys():
+                print("row_index: " + label_it)
+                if csv_file == csv_file_it:
                     if label == label_it:
                         return y
-                    y += 1
+                y += 1
 
     def table_tlabel_get_row_data(self, index):
         y = 0
@@ -247,35 +253,36 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.model.save_config_file()
         self.model.plot_config()
 
-    def add_cvs_folder(self):
-        # http://stackoverflow.com/questions/38252419/qt-get-qfiledialog-to-select-and-return-multiple-folders
-        file_dialog = QtWidgets.QFileDialog()
-        file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
-        file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
-        file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
-        # to make it possible to select multiple directories:
-        if file_view:
-            file_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-        f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
-        if f_tree_view:
-            f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-        if file_dialog.exec():
-            folders = file_dialog.selectedFiles()
-            for folder in folders:
-                self.model.add_csv_folder(folder)
-            self.lst_csv_file_refresh()
-
-        # folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder', '.', QtWidgets.QFileDialog.ShowDirsOnly)
-        # self.model.add_csv_folder(folder)
-        # self.lst_csv_file_refresh()
+    def add_csv_file(self):
+        files = QtWidgets.QFileDialog.getOpenFileNames(None, 'Select csv files', '.', "CSV files (*.csv)")[0]
+        for file in files:
+            self.model.add_csv_file(file)
+        self.lst_csv_file_refresh()
 
     def set_plot_script(self):
-        plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script', '.')
-        self.model.plot_script = plot_script[0]
+        plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script', '.')[0]
+        self.model.plot_script = plot_script
 
     def set_pdf_program(self):
         pdf_program = QtWidgets.QInputDialog.getText(None, 'Set PDF program', "PDF Program:")
         self.model.plot_data = pdf_program[0]
+    
+    def create_plot_script(self):
+        path = "plot_all.sh"
+        with open(path, "w") as f:
+            f.write("#!/bin/bash\n\n")
+            for data in self.model.plots.values():
+                cmd_list = self.model.get_plot_command(data)
+                cmd = ""
+                for x in cmd_list:
+                    cmd += str(x) + " "
+                f.write("# " + data["out"] + "\n")
+                f.write(cmd + "\n\n");
+                print(cmd)
+        mode = os.stat(path).st_mode
+        mode |= (mode & 0o444) >> 2    # copy R bits to X
+        os.chmod(path, mode)
+
 
     def collect_plot_data(self):
         if not self.edit_filename.text() == "":
@@ -325,11 +332,9 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             self.edit_xlabel.setText(data["xlabel"])
             self.edit_ylabel.setText(data["ylabel"])
             self.edit_ydivider.setText(data["ydivider"])
-            if "xlim" in data: #backword compatibitlity
-                self.edit_xmin.setText(data["xlim"][0])
-                self.edit_xmax.setText(data["xlim"][1])
-            if "ylim" in data: #backword compatibitlity
-                self.edit_ymin.setText(data["ylim"][0])
-                self.edit_ymax.setText(data["ylim"][1])
+            self.edit_xmin.setText(data["xlim"][0])
+            self.edit_xmax.setText(data["xlim"][1])
+            self.edit_ymin.setText(data["ylim"][0])
+            self.edit_ymax.setText(data["ylim"][1])
             self.selected_data = copy.deepcopy(data["filelabel_data"])
             self.table_tlabel_redraw()

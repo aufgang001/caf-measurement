@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'view.ui'
+# Form implementation generated from reading ui file 'data/view.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
@@ -181,19 +181,20 @@ class Ui_MainWindow(object):
         self.action_preview.setObjectName("action_preview")
         self.action_set_plot_script = QtWidgets.QAction(MainWindow)
         self.action_set_plot_script.setObjectName("action_set_plot_script")
-        self.action_add_cvs_file = QtWidgets.QAction(MainWindow)
-        self.action_add_cvs_file.setObjectName("action_add_cvs_file")
-        self.action_add_cvs_folder = QtWidgets.QAction(MainWindow)
-        self.action_add_cvs_folder.setObjectName("action_add_cvs_folder")
+        self.action_add_csv_file = QtWidgets.QAction(MainWindow)
+        self.action_add_csv_file.setObjectName("action_add_csv_file")
         self.action_set_pdf_program = QtWidgets.QAction(MainWindow)
         self.action_set_pdf_program.setObjectName("action_set_pdf_program")
         self.action_save_and_print_config = QtWidgets.QAction(MainWindow)
         self.action_save_and_print_config.setObjectName("action_save_and_print_config")
+        self.action_create_plot_script = QtWidgets.QAction(MainWindow)
+        self.action_create_plot_script.setObjectName("action_create_plot_script")
         self.menuPlot_all.addAction(self.action_plot_all)
         self.menuPlot_all.addAction(self.action_preview)
+        self.menuPlot_all.addAction(self.action_create_plot_script)
         self.menuConfiguration.addAction(self.action_save_and_print_config)
         self.menuConfiguration.addAction(self.action_set_plot_script)
-        self.menuConfiguration.addAction(self.action_add_cvs_folder)
+        self.menuConfiguration.addAction(self.action_add_csv_file)
         self.menuConfiguration.addAction(self.action_set_pdf_program)
         self.menubar.addAction(self.menuPlot_all.menuAction())
         self.menubar.addAction(self.menuConfiguration.menuAction())
@@ -227,8 +228,8 @@ class Ui_MainWindow(object):
         self.action_plot_all.setText(_translate("MainWindow", "Plot all"))
         self.action_preview.setText(_translate("MainWindow", "Preview"))
         self.action_set_plot_script.setText(_translate("MainWindow", "Set plot-script"))
-        self.action_add_cvs_file.setText(_translate("MainWindow", "Add CVS file"))
-        self.action_add_cvs_folder.setText(_translate("MainWindow", "Add CVS folder"))
+        self.action_add_csv_file.setText(_translate("MainWindow", "Add CSV file"))
         self.action_set_pdf_program.setText(_translate("MainWindow", "Set pdf program"))
         self.action_save_and_print_config.setText(_translate("MainWindow", "Save and print config"))
+        self.action_create_plot_script.setText(_translate("MainWindow", "Create plot script"))
 

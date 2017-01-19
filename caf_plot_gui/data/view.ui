@@ -283,6 +283,7 @@
     </property>
     <addaction name="action_plot_all"/>
     <addaction name="action_preview"/>
+    <addaction name="action_create_plot_script"/>
    </widget>
    <widget class="QMenu" name="menuConfiguration">
     <property name="title">
@@ -290,7 +291,7 @@
     </property>
     <addaction name="action_save_and_print_config"/>
     <addaction name="action_set_plot_script"/>
-    <addaction name="action_add_cvs_folder"/>
+    <addaction name="action_add_csv_file"/>
     <addaction name="action_set_pdf_program"/>
    </widget>
    <addaction name="menuPlot_all"/>
@@ -311,14 +312,9 @@
     <string>Set plot-script</string>
    </property>
   </action>
-  <action name="action_add_cvs_file">
+  <action name="action_add_csv_file">
    <property name="text">
-    <string>Add CVS file</string>
-   </property>
-  </action>
-  <action name="action_add_cvs_folder">
-   <property name="text">
-    <string>Add CVS folder</string>
+    <string>Add CSV file</string>
    </property>
   </action>
   <action name="action_set_pdf_program">
@@ -329,6 +325,11 @@
   <action name="action_save_and_print_config">
    <property name="text">
     <string>Save and print config</string>
+   </property>
+  </action>
+  <action name="action_create_plot_script">
+   <property name="text">
+    <string>Create plot script</string>
    </property>
   </action>
  </widget>
