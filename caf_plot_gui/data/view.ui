@@ -291,8 +291,9 @@
     </property>
     <addaction name="action_save_and_print_config"/>
     <addaction name="action_set_plot_script"/>
-    <addaction name="action_add_csv_file"/>
     <addaction name="action_set_pdf_program"/>
+    <addaction name="action_add_csv_file"/>
+    <addaction name="action_add_csv_folder"/>
    </widget>
    <addaction name="menuPlot_all"/>
    <addaction name="menuConfiguration"/>
@@ -330,6 +331,11 @@
   <action name="action_create_plot_script">
    <property name="text">
     <string>Create plot script</string>
+   </property>
+  </action>
+  <action name="action_add_csv_folder">
+   <property name="text">
+    <string>Add CSV folder</string>
    </property>
   </action>
  </widget>

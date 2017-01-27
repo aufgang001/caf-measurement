@@ -189,13 +189,16 @@ class Ui_MainWindow(object):
         self.action_save_and_print_config.setObjectName("action_save_and_print_config")
         self.action_create_plot_script = QtWidgets.QAction(MainWindow)
         self.action_create_plot_script.setObjectName("action_create_plot_script")
+        self.action_add_csv_folder = QtWidgets.QAction(MainWindow)
+        self.action_add_csv_folder.setObjectName("action_add_csv_folder")
         self.menuPlot_all.addAction(self.action_plot_all)
         self.menuPlot_all.addAction(self.action_preview)
         self.menuPlot_all.addAction(self.action_create_plot_script)
         self.menuConfiguration.addAction(self.action_save_and_print_config)
         self.menuConfiguration.addAction(self.action_set_plot_script)
-        self.menuConfiguration.addAction(self.action_add_csv_file)
         self.menuConfiguration.addAction(self.action_set_pdf_program)
+        self.menuConfiguration.addAction(self.action_add_csv_file)
+        self.menuConfiguration.addAction(self.action_add_csv_folder)
         self.menubar.addAction(self.menuPlot_all.menuAction())
         self.menubar.addAction(self.menuConfiguration.menuAction())
 
@@ -232,4 +235,5 @@ class Ui_MainWindow(object):
         self.action_set_pdf_program.setText(_translate("MainWindow", "Set pdf program"))
         self.action_save_and_print_config.setText(_translate("MainWindow", "Save and print config"))
         self.action_create_plot_script.setText(_translate("MainWindow", "Create plot script"))
+        self.action_add_csv_folder.setText(_translate("MainWindow", "Add CSV folder"))
 

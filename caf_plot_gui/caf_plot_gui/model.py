@@ -18,6 +18,16 @@ class model:
         self.plots = dict()
         self.load_config_file()
 
+    def add_csv_folder(self, folder):
+        """
+        Search recursive in path data_folder for *.csv files
+        """
+        prog = re.compile(".*\.csv$")
+        for root, dirs, files in os.walk(folder):
+            for file in files:
+                if prog.match(file):
+                    self.add_csv_file(root + "/" + file)
+
     def add_csv_file(self, file):
         self.csv_file_set.add(os.path.relpath(file))
 

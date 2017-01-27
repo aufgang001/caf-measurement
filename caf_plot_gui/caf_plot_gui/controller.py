@@ -30,6 +30,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.action_preview.triggered.connect(self.preview_current_plot)
         self.action_plot_all.triggered.connect(self.plot_all_plots)
         self.action_add_csv_file.triggered.connect(self.add_csv_file)
+        self.action_add_csv_folder.triggered.connect(self.add_csv_folder)
         self.action_set_plot_script.triggered.connect(self.set_plot_script)
         self.action_set_pdf_program.triggered.connect(self.set_pdf_program)
         self.action_create_plot_script.triggered.connect(self.create_plot_script)
@@ -258,6 +259,24 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         for file in files:
             self.model.add_csv_file(file)
         self.lst_csv_file_refresh()
+    
+    def add_csv_folder(self):
+        # http://stackoverflow.com/questions/38252419/qt-get-qfiledialog-to-select-and-return-multiple-folders
+        file_dialog = QtWidgets.QFileDialog()
+        file_dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+        file_dialog.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, True)
+        file_view = file_dialog.findChild(QtWidgets.QListView, 'listView')
+        # to make it possible to select multiple directories:
+        if file_view:
+            file_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        f_tree_view = file_dialog.findChild(QtWidgets.QTreeView)
+        if f_tree_view:
+            f_tree_view.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        if file_dialog.exec():
+            folders = file_dialog.selectedFiles()
+            for folder in folders:
+                self.model.add_csv_folder(folder)
+            self.lst_csv_file_refresh()
 
     def set_plot_script(self):
         plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script', '.')[0]

@@ -1,0 +1,36 @@
+#!/bin/bash
+if [[ $(id -u) != 0 ]]; then
+  echo "you need to be root"
+  exit 0
+fi
+
+CAF_HOME="/users/localadmin/woelke/actor-framework"
+BENCH_USER="localadmin"
+OUT_DIR="/users/localadmin/woelke/test_data"
+BIN_PATH="${CAF_HOME}/build/bin"
+CAF_INI_FILE="caf-application.ini"
+
+todo_array="stealing numa-steal"
+
+for todo in $todo_array ; do
+  rm -f ${OUT_DIR}/*
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+[numa]
+neighborhood-level=2
+EOL
+
+  cd ${CAF_HOME}/benchmarks/scripts
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=matrix-search --repetitions=10
+
+  cd $OUT_DIR
+  ${BIN_PATH}/to_csv *
+
+  cd ..
+  rm -rf test_data_${todo}
+  cp -rf test_data test_data_${todo}
+done
+
+duration=$SECONDS
+echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
