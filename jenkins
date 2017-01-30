@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1" == "stop" ]; then
+  sudo systemctl stop docker-riotci-jenkins
+  $0 status
+elif [ "$1" == "start" ]; then
+  sudo systemctl start docker-riotci-jenkins
+  $0 status
+elif [ "$1" == "status" ]; then
+  sudo systemctl status docker-riotci-jenkins | grep "Active:" | awk '{print $2}'
+else
+  echo "jenkins <start|stop|status>"
+fi
