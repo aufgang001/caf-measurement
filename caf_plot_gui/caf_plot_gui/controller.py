@@ -154,9 +154,6 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.table_tlabel_add_label(csv_file, label)
 
         index = self.table_tlabel_get_row_index(csv_file, label)
-        print("clicked: " + csv_file)
-        print("clicked: " + label)
-        print("clicked: " + str(index))
         self.table_tlabel_select_row(index)
 
     def table_tlabel_cellChanged(self, witem):
@@ -186,10 +183,8 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
     def table_tlabel_get_row_index(self, csv_file, label):
         y = 0
         for csv_file_it in self.selected_data.keys():
-            print("row_index: " + csv_file_it)
             y += 1
             for label_it in self.selected_data[csv_file].keys():
-                print("row_index: " + label_it)
                 if csv_file == csv_file_it:
                     if label == label_it:
                         return y
