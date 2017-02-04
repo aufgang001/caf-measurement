@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [ "$1" == "stop" ]; then
-  sudo systemctl stop docker-riotci-jenkins
+  #sudo systemctl stop docker-riotci-jenkins
+  sudo systemctl stop docker.service
   $0 status
 elif [ "$1" == "start" ]; then
   sudo systemctl start docker-riotci-jenkins
