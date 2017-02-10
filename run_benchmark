@@ -16,7 +16,7 @@ todo_array="stealing numa-steal"
 declare -A bench_array
 #bench_array["bencherl_01_bang"]="intermediate 50"
 #bench_array["bencherl_02_big"]="intermediate 100"
-bench_array["bencherl_03_ehb"]="intermediate 150"
+bench_array["bencherl_03_ehb"]="intermediate 100"
 
 # Preperation
 rm -f ${OUT_DIR}/*
