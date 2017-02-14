@@ -19,7 +19,7 @@ declare -A bench_array
 #bench_array["bencherl_03_ehb"]="intermediate 100"
 #bench_array["bencherl_05_genstress"]="intermediate 100"
 #bench_array["bencherl_06_mbrot"]="intermediate 100"
-bench_array["bencherl_08_parallel"]="intermediate 150"
+bench_array["bencherl_08_parallel"]="intermediate 100"
 
 # Preperation
 rm -f ${OUT_DIR}/*
