@@ -20,7 +20,8 @@ declare -A bench_array
 #bench_array["bencherl_05_genstress"]="intermediate 100"
 #bench_array["bencherl_06_mbrot"]="intermediate 100"
 #bench_array["bencherl_08_parallel"]="intermediate 100"
-bench_array["bencherl_10_ran"]="intermediate 400"
+#bench_array["bencherl_10_ran"]="intermediate 400"
+bench_array["bencherl_11_serialmsg"]="intermediate 100" #attantion!! very memory consuming, 20GB+ required
 
 # Preperation
 rm -f ${OUT_DIR}/*
