@@ -22,20 +22,18 @@ declare -A bench_array
 #bench_array["bencherl_08_parallel"]="intermediate 100"
 #bench_array["bencherl_10_ran"]="intermediate 400"
 #bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
-bench_array["bencherl_12_timer_wheel"]="intermediate 50 no_wheel;no_wheel" #behavior with timeout
-bench_array["bencherl_12_timer_wheel"]="intermediate 50 wheel;wheel" #behavior without timeout
+bench_array["bencherl_12_timer_wheel;no_wheel"]="intermediate 50 no_wheel" #behavior with timeout
+bench_array["bencherl_12_timer_wheel;wheel"]="intermediate 50 wheel" #behavior without timeout
 
-set_args_and_suffix() {
-  IFS=';' read -ra ARGS_SUFFIX <<< "${bench_array[$1]}"
-  args=${ARGS_SUFFIX[0]}
+set_bench_and_suffix() {
+  IFS=';' read -ra ARGS_SUFFIX <<< "$1"
+  bench=${ARGS_SUFFIX[0]}
   suffix=${ARGS_SUFFIX[1]}
   todo=$2
   if [ "$suffix" == "" ]; then
     suffix=${todo}
   else
-    if [ "$todo" == "" ]; then
-      suffix=${suffix}
-    else
+    if [ "$todo" != "" ]; then
       suffix=${todo}-${suffix}
     fi
   fi
@@ -46,7 +44,7 @@ rm -f ${OUT_DIR}/*
 cd ${CAF_HOME}/benchmarks/scripts
 
 # Run benchmark suite
-for bench in ${!bench_array[@]} ; do
+for bench_suffix in ${!bench_array[@]} ; do
 for todo in $todo_array ; do
 cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
 [scheduler]
@@ -54,17 +52,17 @@ policy='$todo'
 [numa]
 neighborhood-level=2
 EOL
-  set_args_and_suffix $bench $todo
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${args}" --label-suffix=${suffix}
+  set_bench_and_suffix $bench_suffix $todo
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench]}" --label-suffix=${suffix}
 done
 done
 
-for bench in ${!bench_array[@]} ; do
-  set_args_and_suffix $bench
+for bench_suffix in ${!bench_array[@]} ; do
+  set_bench_and_suffix $bench_suffix
   if [ "$suffix" == "" ]; then
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${args}"
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench]}"
   else
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${args}" --label-suffix=${suffix}
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench]}" --label-suffix=${suffix}
   fi
 done
 
