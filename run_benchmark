@@ -21,7 +21,25 @@ declare -A bench_array
 #bench_array["bencherl_06_mbrot"]="intermediate 100"
 #bench_array["bencherl_08_parallel"]="intermediate 100"
 #bench_array["bencherl_10_ran"]="intermediate 400"
-bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
+#bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
+bench_array["bencherl_12_timer_wheel"]="intermediate 50 no_wheel;no_wheel" #behavior with timeout
+bench_array["bencherl_12_timer_wheel"]="intermediate 50 wheel;wheel" #behavior without timeout
+
+set_args_and_suffix() {
+  IFS=';' read -ra ARGS_SUFFIX <<< "${bench_array[$1]}"
+  args=${ARGS_SUFFIX[0]}
+  suffix=${ARGS_SUFFIX[1]}
+  todo=$2
+  if [ "$suffix" == "" ]; then
+    suffix=${todo}
+  else
+    if [ "$todo" == ""]; then
+      suffix=${suffix}
+    else
+      suffix=${suffix}-${todo}
+    fi
+  fi
+}
 
 # Preperation
 rm -f ${OUT_DIR}/*
@@ -36,12 +54,18 @@ policy='$todo'
 [numa]
 neighborhood-level=2
 EOL
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[${bench}]}" --label-suffix=${todo}
+  set_args_and_suffix $bench $todo
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${args}" --label-suffix=${suffix}
 done
 done
 
 for bench in ${!bench_array[@]} ; do
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=erlang --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[${bench}]}"
+  set_args_and_suffix $bench
+  if [ "$suffix" == "" ]; then
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${args}"
+  else
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${args}" --label-suffix=${suffix}
+  fi
 done
 
 # Create csv files
