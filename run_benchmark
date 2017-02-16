@@ -14,14 +14,14 @@ REPITITIONS=1
 # Define benchmarks to run
 todo_array="stealing numa-steal"
 declare -A bench_array
-#bench_array["bencherl_01_bang"]="intermediate 50"
-#bench_array["bencherl_02_big"]="intermediate 100"
-#bench_array["bencherl_03_ehb"]="intermediate 100"
-#bench_array["bencherl_05_genstress"]="intermediate 100"
-#bench_array["bencherl_06_mbrot"]="intermediate 100"
-#bench_array["bencherl_08_parallel"]="intermediate 100"
-#bench_array["bencherl_10_ran"]="intermediate 400"
-#bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
+bench_array["bencherl_01_bang"]="intermediate 50"
+bench_array["bencherl_02_big"]="intermediate 100"
+bench_array["bencherl_03_ehb"]="intermediate 100"
+bench_array["bencherl_05_genstress"]="intermediate 100"
+bench_array["bencherl_06_mbrot"]="intermediate 100"
+bench_array["bencherl_08_parallel"]="intermediate 100"
+bench_array["bencherl_10_ran"]="intermediate 400"
+bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
 bench_array["bencherl_12_timer_wheel;no-wheel"]="intermediate 50 no_wheel" #behavior with timeout
 bench_array["bencherl_12_timer_wheel;wheel"]="intermediate 50 wheel" #behavior without timeout
 
