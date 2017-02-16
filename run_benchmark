@@ -22,7 +22,7 @@ declare -A bench_array
 #bench_array["bencherl_08_parallel"]="intermediate 100"
 #bench_array["bencherl_10_ran"]="intermediate 400"
 #bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
-bench_array["bencherl_12_timer_wheel;no_wheel"]="intermediate 50 no_wheel" #behavior with timeout
+bench_array["bencherl_12_timer_wheel;no-wheel"]="intermediate 50 no_wheel" #behavior with timeout
 bench_array["bencherl_12_timer_wheel;wheel"]="intermediate 50 wheel" #behavior without timeout
 
 set_bench_and_suffix() {
