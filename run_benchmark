@@ -53,16 +53,16 @@ policy='$todo'
 neighborhood-level=2
 EOL
   set_bench_and_suffix $bench_suffix $todo
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench]}" --label-suffix=${suffix}
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench_suffix]}" --label-suffix=${suffix}
 done
 done
 
 for bench_suffix in ${!bench_array[@]} ; do
   set_bench_and_suffix $bench_suffix
   if [ "$suffix" == "" ]; then
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench]}"
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=erlang --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench_suffix]}"
   else
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench]}" --label-suffix=${suffix}
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=erlang --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_array[$bench_suffix]}" --label-suffix=${suffix}
   fi
 done
 
