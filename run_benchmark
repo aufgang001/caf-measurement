@@ -33,10 +33,10 @@ set_args_and_suffix() {
   if [ "$suffix" == "" ]; then
     suffix=${todo}
   else
-    if [ "$todo" == ""]; then
+    if [ "$todo" == "" ]; then
       suffix=${suffix}
     else
-      suffix=${suffix}-${todo}
+      suffix=${todo}-${suffix}
     fi
   fi
 }
