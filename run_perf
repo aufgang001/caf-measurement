@@ -10,13 +10,18 @@ FLAME_GRAPH_PATH="/users/localadmin/woelke/FlameGraph"
 BIN_PATH="${CAF_HOME}/build/bin"
 OUT_DIR="/users/localadmin/woelke/test_data"
 
+PERF_FILE="${OUT_DIR}/perf.data"
+STACK_FILE="${OUT_DIR}/stack.data"
+SVG_FILE="${OUT_DIR}/flamegraph.svg"
+
 sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict" 
 
 cd $BIN_PATH
-sudo perf record --all-cpus -g $@
+sudo perf record --all-cpus -g --output=$PERF_FILE $@
 
 cd $FLAME_GRAPH_PATH
-sudo perf script --input="${BIN_PATH}/perf.data" | ./stackcollapse-perf.pl | ./flamegraph.pl > ${OUT_DIR}/flamegraph.svg
+sudo perf script --input=$PERF_FILE | ./stackcollapse-perf.pl > $STACK_FILE
+./flamegraph.pl > $SVG_FILE
 
 sudo sh -c "echo 1 > /proc/sys/kernel/kptr_restrict" 
 
