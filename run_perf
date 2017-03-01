@@ -14,15 +14,20 @@ PERF_FILE="${OUT_DIR}/perf.data"
 STACK_FILE="${OUT_DIR}/stack.data"
 SVG_FILE="${OUT_DIR}/flamegraph.svg"
 
+# Preperation
 sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict" 
+rm -f ${OUT_DIR}/*
 
+# record perf data
 cd $BIN_PATH
 sudo perf record --all-cpus -g --output=$PERF_FILE $@
 
+# Convert perf data to svg
 cd $FLAME_GRAPH_PATH
 sudo perf script --input=$PERF_FILE | ./stackcollapse-perf.pl > $STACK_FILE
 ./flamegraph.pl > $SVG_FILE
 
+# clean up
 sudo sh -c "echo 1 > /proc/sys/kernel/kptr_restrict" 
 
 duration=$SECONDS
