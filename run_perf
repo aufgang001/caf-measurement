@@ -15,6 +15,7 @@ CAF_INI_FILE="caf-application.ini"
 
 
 # Preperation
+echo "Info: CAF should be compiled in debug mode"
 sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict" 
 rm -f ${OUT_DIR}/*
 
