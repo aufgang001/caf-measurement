@@ -66,7 +66,7 @@ EOL
   # Convert perf data to svg
   cd $FLAME_GRAPH_PATH
   sudo perf script --input=$PERF_FILE | ./stackcollapse-perf.pl > $STACK_FILE
-  ./flamegraph.pl > $SVG_FILE
+  ./flamegraph.pl $STACK_FILE > $SVG_FILE
 done
 done
 
