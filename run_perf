@@ -4,28 +4,70 @@
 #FLAME_GRAPH_PATH="/home/woelke/spideroak/working_dir/caf/profiling/FlameGraph"
 #BIN_PATH="${CAF_HOME}/build/bin"
 #OUT_DIR="/home/woelke/spideroak/working_dir/caf/profiling"
+#CAF_INI_FILE="caf-application.ini"
 
 CAF_HOME="/users/localadmin/woelke/actor-framework"
 FLAME_GRAPH_PATH="/users/localadmin/woelke/FlameGraph"
 BIN_PATH="${CAF_HOME}/build/bin"
 OUT_DIR="/users/localadmin/woelke/test_data"
+CAF_INI_FILE="caf-application.ini"
 
-PERF_FILE="${OUT_DIR}/perf.data"
-STACK_FILE="${OUT_DIR}/stack.data"
-SVG_FILE="${OUT_DIR}/flamegraph.svg"
 
 # Preperation
 sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict" 
 rm -f ${OUT_DIR}/*
 
-# record perf data
-cd $BIN_PATH
-sudo perf record --all-cpus -g --output=$PERF_FILE $@
+# Define records to do
+todo_array="stealing numa-steal"
+declare -A bench_array
+#bench_array["bencherl_01_bang"]="intermediate 50"
+#bench_array["bencherl_02_big"]="intermediate 100"
+#bench_array["bencherl_03_ehb"]="intermediate 100"
+#bench_array["bencherl_05_genstress"]="intermediate 100"
+#bench_array["bencherl_06_mbrot"]="intermediate 100"
+#bench_array["bencherl_08_parallel"]="intermediate 100"
+#bench_array["bencherl_10_ran"]="intermediate 400"
+#bench_array["bencherl_11_serialmsg"]="intermediate 50" #attantion!! very memory consuming, 20GB+ required
+#bench_array["bencherl_12_timer_wheel;no-wheel"]="intermediate 50 no_wheel" #behavior with timeout
+bench_array["bencherl_12_timer_wheel;wheel"]="intermediate 50 wheel" #behavior without timeout
 
-# Convert perf data to svg
-cd $FLAME_GRAPH_PATH
-sudo perf script --input=$PERF_FILE | ./stackcollapse-perf.pl > $STACK_FILE
-./flamegraph.pl > $SVG_FILE
+set_bench_and_suffix() {
+  IFS=';' read -ra ARGS_SUFFIX <<< "$1"
+  bench=${ARGS_SUFFIX[0]}
+  suffix=${ARGS_SUFFIX[1]}
+  todo=$2
+  if [ "$suffix" == "" ]; then
+    suffix=${todo}
+  else
+    if [ "$todo" != "" ]; then
+      suffix=${todo}-${suffix}
+    fi
+  fi
+}
+
+for bench_suffix in ${!bench_array[@]} ; do
+for todo in $todo_array ; do
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+[numa]
+neighborhood-level=2
+EOL
+  set_bench_and_suffix $bench_suffix $todo
+  PERF_FILE="${OUT_DIR}/${bench}-${suffix}-perf.data"
+  STACK_FILE="${OUT_DIR}/${bench}-${suffix}-stack.data"
+  SVG_FILE="${OUT_DIR}/${bench}-${suffix}-flamegraph.svg"
+
+  # record perf data
+  cd $BIN_PATH
+  sudo perf record --all-cpus -g --output=$PERF_FILE -- $bench ${bench_array[$bench_suffix]}
+
+  # Convert perf data to svg
+  cd $FLAME_GRAPH_PATH
+  sudo perf script --input=$PERF_FILE | ./stackcollapse-perf.pl > $STACK_FILE
+  ./flamegraph.pl > $SVG_FILE
+done
+done
 
 # clean up
 sudo sh -c "echo 1 > /proc/sys/kernel/kptr_restrict" 
