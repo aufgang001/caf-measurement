@@ -18,7 +18,8 @@ sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict"
 rm -f ${OUT_DIR}/*
 
 # Define records to do
-todo_array="stealing numa-steal"
+#todo_array="stealing numa-steal"
+todo_array="stealing"
 declare -A bench_array
 #bench_array["bencherl_01_bang"]="intermediate 50"
 #bench_array["bencherl_02_big"]="intermediate 100"
@@ -60,7 +61,7 @@ EOL
 
   # record perf data
   cd $BIN_PATH
-  sudo perf record --all-cpus -g --output=$PERF_FILE -- $bench ${bench_array[$bench_suffix]}
+  sudo perf record --all-cpus -g --output=$PERF_FILE -- ./${bench} ${bench_array[$bench_suffix]}
 
   # Convert perf data to svg
   cd $FLAME_GRAPH_PATH
