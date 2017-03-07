@@ -10,14 +10,6 @@ if [ "$1" == "caf-measurement" ]; then
   git fetch
   git checkout -f origin/master
 
-  cd numa/distance
-  qmake
-  make
-
-  cd ../libnuma
-  qmake
-  make
-
   cd ../hwloc
   qmake
   make
