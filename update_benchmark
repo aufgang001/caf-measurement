@@ -25,6 +25,7 @@ if [ "$1" == "caf-measurement" ]; then
   cd ../savina
   git fetch
   git checkout -f origin/master
+  mvn compile 
   mvn package
 fi
 
