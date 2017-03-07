@@ -21,6 +21,9 @@ if [ "$1" == "caf-measurement" ]; then
   cd ../hwloc
   qmake
   make
+
+  cd ../savina
+  mvn package
 fi
 
 if [ "$1" == "actor-framework" ]; then

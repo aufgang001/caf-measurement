@@ -1,0 +1,147 @@
+#!/bin/bash
+if [[ $(id -u) != 0 ]]; then
+  echo "you need to be root"
+  exit 0
+fi
+
+CAF_HOME="/users/localadmin/woelke/actor-framework"
+BENCH_USER="localadmin"
+OUT_DIR="/users/localadmin/woelke/test_data"
+BIN_PATH="${CAF_HOME}/build/bin"
+JAR_PATH="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+CAF_INI_FILE="caf-application.ini"
+REPITITIONS=10
+
+# Define benchmarks to run
+todo_array="stealing numa-steal"
+declare -A bench_names
+###ERROR
+###ERROR
+###ERROR
+#bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPonActor PingPonzActor"
+#bench_names["savina_02_count"]="CountingAkkaActor CountingFuncJavaActor CountingGparsActor CountingHabaneroActor CountingHabaneroSelector CountingJetlangActor CountingJumiActor CountingLiftActor CountinActor CountinzActor"
+#bench_names["savina_03_fjthrput"]="ThroughputAkkaActor ThroughputFuncJavaActor ThroughputGparsActor ThroughputHabaneroActor ThroughputHabaneroSelector ThroughputJetlangActor ThroughputJumiActor ThroughputLiftActor ThroughpuActor ThroughpuzActor"
+#bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinFuncJavaActor ForkJoinGparsActor ForkJoinHabaneroActor ForkJoinHabaneroSelector ForkJoinJetlangActor ForkJoinJumiActor ForkJoinLiftActor ForkJoiActor ForkJoizActor"
+#bench_names["savina_05_threadring"]="ThreadRingAkkaActor ThreadRingFuncJavaActor ThreadRingGparsActor ThreadRingHabaneroActor ThreadRingHabaneroSelector ThreadRingJetlangActor ThreadRingJumiActor ThreadRingLiftActor ThreadRinActor ThreadRinzActor"
+#bench_names["savina_06_chameneos"]="ChameneosAkkaActor ChameneosFuncJavaActor ChameneosGparsActor ChameneosHabaneroActor ChameneosHabaneroSelector ChameneosJetlangActor ChameneosJumiActor ChameneosLiftActor ChameneoActor ChameneozActor"
+#bench_names["savina_07_big"]="BigAkkaActor BigFuncJavaActor BigGparsActor BigHabaneroActor BigHabaneroSelector BigJetlangActor BigJumiActor BigLiftActor BiActor BizActor"
+#bench_names["savina_08_concdict"]="DictionaryAkkaActor DictionaryFuncJavaActor DictionaryGparsActor DictionaryHabaneroActor DictionaryHabaneroRWAbstract DictionaryHabaneroRWArrivalOrder DictionaryHabaneroRWReaderFirst DictionaryHabaneroRWWriterFirst DictionaryHabaneroSelector DictionaryJetlangActor DictionaryJumiActor DictionaryLiftActor DictionarActor DictionarzActor"
+#bench_names["savina_09_concsll"]="SortedListAkkaActor SortedListFuncJavaActor SortedListGparsActor SortedListHabaneroActor SortedListHabaneroRWAbstract SortedListHabaneroRWArrivalOrder SortedListHabaneroRWReaderFirst SortedListHabaneroRWWriterFirst SortedListHabaneroSelector SortedListJetlangActor SortedListJumiActor SortedListLiftActor SortedLisActor SortedLiszActor"
+#bench_names["savina_10_bndbuffer"]="ProdConsAkkaActor ProdConsFuncJavaActor ProdConsGparsActor ProdConsHabaneroActor ProdConsHabaneroDeclSelector ProdConsHabaneroSelector ProdConsJetlangActor ProdConsJumiActor ProdConsLiftActor ProdConActor ProdConzActor"
+#bench_names["savina_11_philosopher"]="PhilosopherAkkaActor PhilosopherFuncJavaActor PhilosopherGparsActor PhilosopherHabaneroAsyncActor PhilosopherHabaneroAsyncSelector PhilosopherHabaneroSeqActor PhilosopherHabaneroSeqSelector PhilosopherJetlangActor PhilosopherJumiActor PhilosopherLiftActor PhilosopheActor PhilosophezActor"
+#bench_names["savina_12_barber"]="SleepingBarberAkkaActor SleepingBarberFuncJavaActor SleepingBarberGparsActor SleepingBarberHabaneroActor SleepingBarberHabaneroSelector SleepingBarberJetlangActor SleepingBarberJumiActor SleepingBarberLiftActor SleepingBarbeActor SleepingBarbezActor"
+#bench_names["savina_13_cigsmok"]="CigaretteSmokerAkkaActor CigaretteSmokerFuncJavaActor CigaretteSmokerGparsActor CigaretteSmokerHabaneroActor CigaretteSmokerHabaneroSelector CigaretteSmokerJetlangActor CigaretteSmokerJumiActor CigaretteSmokerLiftActor CigaretteSmokeActor CigaretteSmokezActor"
+#bench_names["savina_14_logmap"]="LogisticMapAkkaAwaitActor LogisticMapAkkaBecomeActor LogisticMapAkkaBecomeExtActor LogisticMapAkkaManualStashActor LogisticMapFuncJavaActor LogisticMapFuncJavaManualStashActor LogisticMapGparsManualStashActor LogisticMapHabaneroManualStashActor LogisticMapHabaneroManualStashSelector LogisticMapHabaneroPauseResumeActor LogisticMapHabaneroPauseResumeSelector LogisticMapHabaneroSelector LogisticMapJetlangActor LogisticMapJetlangManualStashActor LogisticMapJumiManualStashActor LogisticMapLiftManualStashActor LogisticMaActor LogisticMaManualStashActor LogisticMazActor LogisticMazManualStashActor"
+#bench_names["savina_15_banking"]="BankingAkkaAwaitActor BankingAkkaBecomeActor BankingAkkaBecomeExtActor BankingAkkaManualStashActor BankingFuncJavaActor BankingFuncJavaManualStashActor BankingGparsManualStashActor BankingHabaneroManualStashActor BankingHabaneroManualStashSelector BankingHabaneroPauseResumeActor BankingHabaneroPauseResumeSelector BankingHabaneroSelector BankingJetlangActor BankingJetlangManualStashActor BankingJumiManualStashActor BankingLiftManualStashActor BankinActor BankinManualStashActor BankinzActor BankinzManualStashActor"
+#bench_names["savina_16_radixsort"]="BankingAkkaAwaitActor BankingAkkaBecomeActor BankingAkkaBecomeExtActor BankingAkkaManualStashActor BankingFuncJavaActor BankingFuncJavaManualStashActor BankingGparsManualStashActor BankingHabaneroManualStashActor BankingHabaneroManualStashSelector BankingHabaneroPauseResumeActor BankingHabaneroPauseResumeSelector BankingHabaneroSelector BankingJetlangActor BankingJetlangManualStashActor BankingJumiManualStashActor BankingLiftManualStashActor BankinActor BankinManualStashActor BankinzActor BankinzManualStashActor"
+#bench_names["savina_17_filterbank"]="FilterBankAkkaActor FilterBankFuncJavaActor FilterBankGparsActor FilterBankHabaneroActor FilterBankHabaneroOrderedSelector FilterBankHabaneroUnorderedSelector FilterBankJetlangActor FilterBankJumiActor FilterBankLiftActor FilterBanActor FilterBanzActor"
+#bench_names["savina_18_sieve"]="SieveAkkaActor SieveFuncJavaActor SieveGparsActor SieveHabaneroActor SieveHabaneroSelector SieveJetlangActor SieveJumiActor SieveLiftActor SievActor SievzActor"
+#bench_names["savina_19_uct"]="UctAkkaActor UctFuncJavaActor UctGparsActor UctHabaneroActor UctHabaneroSelector UctJetlangActor UctJumiActor UctLiftActor UcActor UczActor"
+#bench_names["savina_20_facloc"]="FacilityLocationAkkaActor FacilityLocationFuncJavaActor FacilityLocationGparsActor FacilityLocationHabaneroActor FacilityLocationHabaneroSelector FacilityLocationJetlangActor FacilityLocationJumiActor FacilityLocationLiftActor FacilityLocatioActor FacilityLocatiozActor"
+#bench_names["savina_21_trapezoid"]="TrapezoidalAkkaActor TrapezoidalFuncJavaActor TrapezoidalGparsActor TrapezoidalHabaneroActor TrapezoidalHabaneroSelector TrapezoidalJetlangActor TrapezoidalJumiActor TrapezoidalLiftActor TrapezoidaActor TrapezoidazActor"
+#bench_names["savina_22_piprecision"]="PiPrecisionAkkaActor PiPrecisionFuncJavaActor PiPrecisionGparsActor PiPrecisionHabaneroActor PiPrecisionHabaneroSelector PiPrecisionJetlangActor PiPrecisionJumiActor PiPrecisionLiftActor PiPrecisioActor PiPrecisiozActor"
+#bench_names["savina_23_recmatmul"]="MatMulAkkaActor MatMulFuncJavaActor MatMulGparsActor MatMulHabaneroActor MatMulHabaneroSelector MatMulJetlangActor MatMulJumiActor MatMulLiftActor MatMulScalaActor MatMulScalazActor"
+#bench_names["savina_24_quicksort"]="QuickSortAkkaActor QuickSortFuncJavaActor QuickSortGparsActor QuickSortHabaneroActor QuickSortHabaneroSelector QuickSortJetlangActor QuickSortJumiActor QuickSortLiftActor QuickSorActor QuickSorzActor"
+#bench_names["savina_25_apsp"]="ApspAkkaActor ApspFuncJavaActor ApspGparsActor ApspHabaneroActor ApspHabaneroSelector ApspJetlangActor ApspJumiActor ApspLiftActor ApsActor ApszActor ApspUtils"
+#bench_names["savina_26_sor"]="SucOverRelaxAkkaActor SucOverRelaxFuncJavaActor SucOverRelaxGparsActor SucOverRelaxHabaneroActor SucOverRelaxHabaneroSelector SucOverRelaxJetlangActor SucOverRelaxJumiActor SucOverRelaxLiftActor SucOverRelaActor SucOverRelazActor"
+#bench_names["savina_27_astar"]="GuidedSearchAkkaActor GuidedSearchAkkaPriorityActor GuidedSearchFuncJavaActor GuidedSearchGparsActor GuidedSearchHabaneroActor GuidedSearchHabaneroSelector GuidedSearchJetlangActor GuidedSearchJumiActor GuidedSearchLiftActor GuidedSearcActor GuidedSearczActor"
+#bench_names["savina_28_nqueenk"]="NQueensAkkaActor NQueensAkkaPriorityActor NQueensFuncJavaActor NQueensGparsActor NQueensHabaneroActor NQueensHabaneroSelector NQueensJetlangActor NQueensJumiActor NQueensLiftActor NQueenActor NQueenzActor"
+#bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciFuncJavaActor FibonacciGparsActor FibonacciHabaneroActor FibonacciHabaneroSelector FibonacciJetlangActor FibonacciJumiActor FibonacciLiftActor FibonaccActor FibonacczActor"
+#bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortFuncJavaActor BitonicSortGparsActor BitonicSortHabaneroActor BitonicSortHabaneroSelector BitonicSortJetlangActor BitonicSortJumiActor BitonicSortLiftActor BitonicSorActor BitonicSorzActor"
+###ERROR
+
+bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongScalaActor"
+
+declare -A bench_args
+bench_args["savina_01_pingpong"]=""
+#bench_args["savina_02_count"]=""
+#bench_args["savina_03_fjthrput"]=""
+#bench_args["savina_04_fjcreate"]=""
+#bench_args["savina_05_threadring"]=""
+#bench_args["savina_06_chameneos"]=""
+#bench_args["savina_07_big"]=""
+#bench_args["savina_08_concdict"]=""
+#bench_args["savina_09_concsll"]=""
+#bench_args["savina_10_bndbuffer"]=""
+#bench_args["savina_11_philosopher"]=""
+#bench_args["savina_12_barber"]=""
+#bench_args["savina_13_cigsmok"]=""
+#bench_args["savina_14_logmap"]=""
+#bench_args["savina_15_banking"]=""
+#bench_args["savina_16_radixsort"]=""
+#bench_args["savina_17_filterbank"]=""
+#bench_args["savina_18_sieve"]=""
+#bench_args["savina_19_uct"]=""
+#bench_args["savina_20_facloc"]=""
+#bench_args["savina_21_trapezoid"]=""
+#bench_args["savina_22_piprecision"]=""
+#bench_args["savina_23_recmatmul"]=""
+#bench_args["savina_24_quicksort"]=""
+#bench_args["savina_25_apsp"]=""
+#bench_args["savina_26_sor"]=""
+#bench_args["savina_27_astar"]=""
+#bench_args["savina_28_nqueenk"]=""
+#bench_args["savina_29_fib"]=""
+#bench_args["savina_30_bitonicsort"]=""
+
+#java -cp savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar edu/rice/habanero/benchmarks/pingpong/PingPongAkkaActorBenchmark
+set_bench_path() {
+  local path_="edu/rice/habanero/benchmarks"
+  IFS='_' read -ra bench_name__ <<< "$1"
+  local bench_name_=${bench_name__[2]}
+  local bench_file_=${2}Benchmark
+  bench_path=${path_}/${bench_name_}/${bench_file}
+}
+
+set_bench_and_suffix() {
+  IFS=';' read -ra ARGS_SUFFIX <<< "$1"
+  bench=${ARGS_SUFFIX[0]}
+  suffix=${ARGS_SUFFIX[1]}
+  todo=$2
+  if [ "$suffix" == "" ]; then
+    suffix=${todo}
+  else
+    if [ "$todo" != "" ]; then
+      suffix=${todo}-${suffix}
+    fi
+  fi
+}
+
+# Preperation
+rm -f ${OUT_DIR}/*
+cd ${CAF_HOME}/benchmarks/scripts
+
+# Run CAF benchmark suite
+for bench_n_suffix in ${!bench_args[@]} ; do
+for todo in $todo_array ; do
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+[numa]
+neighborhood-level=2
+EOL
+  set_bench_and_suffix $bench_n_suffix $todo
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+done
+done
+
+#for bench_n_suffix in ${!bench_args[@]} ; do
+#for bench_name in ${bench_names[$bench_n_suffix]} ; do
+  #set_bench_and_suffix $bench_n_suffix
+  #set_bench_path $bench $bench_name
+  #bench_exe="-cp ${JAR_PATH} ${bench_path} ${bench_args[$bench_n_suffix]}"
+  
+  #if [ "$suffix" == "" ]; then
+    #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path="." --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args=${bench_exe} --label-suffix=${bench_name}
+  #else
+    #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path="." --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args=${bench_exe} --label-suffix=${bench_name}-${suffix}
+  #fi
+#done
+#done
+
+# Create csv files
+cd $OUT_DIR
+${BIN_PATH}/to_csv *
+
+duration=$SECONDS
+echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
