@@ -8,7 +8,8 @@ CAF_HOME="/users/localadmin/woelke/actor-framework"
 BENCH_USER="localadmin"
 OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
-JAR_PATH="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
 #REPITITIONS=10
 REPITITIONS=1
@@ -89,9 +90,9 @@ bench_args["savina_01_pingpong"]=""
 set_bench_path() {
   local path_="edu/rice/habanero/benchmarks"
   IFS='_' read -ra bench_name__ <<< "$1"
-  local bench_name_=${bench_name__[2]}
-  local bench_file_=${2}Benchmark
-  bench_path=${path_}/${bench_name_}/${bench_file}
+  local bench_name_="${bench_name__[2]}"
+  local bench_file_="${2}Benchmark"
+  bench_path=${path_}/${bench_name_}/${bench_file_}
 }
 
 set_bench_and_suffix() {
@@ -130,12 +131,12 @@ for bench_n_suffix in ${!bench_args[@]} ; do
 for bench_name in ${bench_names[$bench_n_suffix]} ; do
   set_bench_and_suffix $bench_n_suffix
   set_bench_path $bench $bench_name
-  bench_exe="-cp ${JAR_PATH} ${bench_path} ${bench_args[$bench_n_suffix]}"
+  bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
   
   if [ "$suffix" == "" ]; then
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path="." --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args=${bench_exe} --label-suffix=${bench_name}
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
   else
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path="." --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args=${bench_exe} --label-suffix=${bench_name}-${suffix}
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
   fi
 done
 done
