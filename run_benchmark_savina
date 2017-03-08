@@ -12,7 +12,7 @@ JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-
 JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
 #REPITITIONS=10
-REPITITIONS=1
+REPITITIONS=10
 
 # Define benchmarks to run
 todo_array="stealing numa-steal"
@@ -55,7 +55,7 @@ declare -A bench_names
 bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongScalaActor"
 
 declare -A bench_args
-bench_args["savina_01_pingpong"]=""
+bench_args["savina_01_pingpong"]="-n 40000"
 #bench_args["savina_02_count"]=""
 #bench_args["savina_03_fjthrput"]=""
 #bench_args["savina_04_fjcreate"]=""
@@ -114,18 +114,18 @@ rm -f ${OUT_DIR}/*
 cd ${CAF_HOME}/benchmarks/scripts
 
 # Run CAF benchmark suite
-#for bench_n_suffix in ${!bench_args[@]} ; do
-#for todo in $todo_array ; do
-#cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
-#[scheduler]
-#policy='$todo'
-#[numa]
-#neighborhood-level=2
-#EOL
-  #set_bench_and_suffix $bench_n_suffix $todo
-  #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
-#done
-#done
+for bench_n_suffix in ${!bench_args[@]} ; do
+for todo in $todo_array ; do
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+[numa]
+neighborhood-level=2
+EOL
+  set_bench_and_suffix $bench_n_suffix $todo
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+done
+done
 
 for bench_n_suffix in ${!bench_args[@]} ; do
 for bench_name in ${bench_names[$bench_n_suffix]} ; do
