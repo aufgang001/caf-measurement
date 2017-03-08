@@ -10,15 +10,15 @@ if [ "$1" == "caf-measurement" ]; then
   git fetch
   git checkout -f origin/master
 
-  cd ../hwloc
-  qmake
-  make
+  #cd ../hwloc
+  #qmake
+  #make
 
-  cd ../savina
-  git fetch
-  git checkout -f origin/master
-  mvn compile 
-  mvn package
+  #cd ../savina
+  #git fetch
+  #git checkout -f origin/master
+  #mvn compile 
+  #mvn package
 fi
 
 if [ "$1" == "actor-framework" ]; then
