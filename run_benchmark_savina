@@ -49,7 +49,10 @@ declare -A bench_names
 #bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciFuncJavaActor FibonacciGparsActor FibonacciHabaneroActor FibonacciHabaneroSelector FibonacciJetlangActor FibonacciJumiActor FibonacciLiftActor FibonacciScalaActor FibonacciScalazActor"
 #bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortFuncJavaActor BitonicSortGparsActor BitonicSortHabaneroActor BitonicSortHabaneroSelector BitonicSortJetlangActor BitonicSortJumiActor BitonicSortLiftActor BitonicSortScalaActor BitonicSortScalazActor"
 
-bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
+#not working: LiftActor
+bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongScalaActor PingPongScalazActor"
+
+
 
 declare -A bench_args
 bench_args["savina_01_pingpong"]="-n 400000"
