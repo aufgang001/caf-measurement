@@ -123,7 +123,7 @@ policy='$todo'
 neighborhood-level=2
 EOL
   set_bench_and_suffix $bench_n_suffix $todo
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix} --min-cores=8
 done
 done
 
