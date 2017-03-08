@@ -134,9 +134,9 @@ for bench_name in ${bench_names[$bench_n_suffix]} ; do
   bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
   
   if [ "$suffix" == "" ]; then
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name} --min-cores=8
   else
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix} --min-cores=8
   fi
 done
 done
