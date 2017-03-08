@@ -13,6 +13,7 @@ JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
 #REPITITIONS=10
 REPITITIONS=1
+MIN_CORES=4
 
 # Define benchmarks to run
 todo_array="stealing numa-steal"
@@ -123,7 +124,7 @@ policy='$todo'
 neighborhood-level=2
 EOL
   set_bench_and_suffix $bench_n_suffix $todo
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix} --min-cores=8
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
 done
 done
 
@@ -134,9 +135,9 @@ for bench_name in ${bench_names[$bench_n_suffix]} ; do
   bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
   
   if [ "$suffix" == "" ]; then
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name} --min-cores=8
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
   else
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix} --min-cores=8
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
   fi
 done
 done
