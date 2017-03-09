@@ -51,13 +51,13 @@ declare -A bench_names
 #bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortFuncJavaActor BitonicSortGparsActor BitonicSortHabaneroActor BitonicSortHabaneroSelector BitonicSortJetlangActor BitonicSortJumiActor BitonicSortLiftActor BitonicSortScalaActor BitonicSortScalazActor"
 
 #not working: LiftActor
-bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongHabaneroActor PingPongJetlangActor PingPongScalaActor"
-
+#bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongHabaneroActor PingPongJetlangActor PingPongScalaActor"
+bench_names["savina_02_count"]="CountingAkkaActor CountingHabaneroActor CountingJetlangActor CountingScalaActor"
 
 
 declare -A bench_args
-bench_args["savina_01_pingpong"]="-n 400000"
-#bench_args["savina_02_count"]=""
+#bench_args["savina_01_pingpong"]="-n 400000"
+bench_args["savina_02_count"]="-n 10000000"
 #bench_args["savina_03_fjthrput"]=""
 #bench_args["savina_04_fjcreate"]=""
 #bench_args["savina_05_threadring"]=""
