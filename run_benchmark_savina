@@ -54,13 +54,15 @@ declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongHabaneroActor PingPongJetlangActor PingPongScalaActor"
 #bench_names["savina_02_count"]="CountingAkkaActor CountingHabaneroActor CountingJetlangActor CountingScalaActor"
 #bench_names["savina_03_fjthrput"]="ThroughputAkkaActor ThroughputHabaneroActor ThroughputJetlangActor ThroughputScalaActor"
-bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinHabaneroActor ForkJoinJetlangActor ForkJoinScalaActor"
+#bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinHabaneroActor ForkJoinJetlangActor ForkJoinScalaActor"
+bench_names["savina_05_threadring"]="ThreadRingAkkaActor ThreadRingHabaneroActor ThreadRingJetlangActor ThreadRingScalaActor ThreadRingScalazActor"
+
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
 #bench_args["savina_02_count"]="-n 10000000"
 #bench_args["savina_03_fjthrput"]="-n 60000 -a 360"
-bench_args["savina_04_fjcreate"]="-n 4000000"
-#bench_args["savina_05_threadring"]=""
+#bench_args["savina_04_fjcreate"]="-n 4000000"
+bench_args["savina_05_threadring"]="-n 400 -r 400000"
 #bench_args["savina_06_chameneos"]=""
 #bench_args["savina_07_big"]=""
 #bench_args["savina_08_concdict"]=""
