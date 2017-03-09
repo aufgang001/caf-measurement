@@ -54,7 +54,7 @@ declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongHabaneroActor PingPongJetlangActor PingPongScalaActor"
 #bench_names["savina_02_count"]="CountingAkkaActor CountingHabaneroActor CountingJetlangActor CountingScalaActor"
 #bench_names["savina_03_fjthrput"]="ThroughputAkkaActor ThroughputHabaneroActor ThroughputJetlangActor ThroughputScalaActor"
-bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinHabaneroActor ForkJoinJetlangActor ForkJoinLiftActor ForkJoinScalaActor"
+bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinHabaneroActor ForkJoinJetlangActor ForkJoinScalaActor"
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
 #bench_args["savina_02_count"]="-n 10000000"
