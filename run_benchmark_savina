@@ -18,10 +18,14 @@ MIN_CORES=4
 # Define benchmarks to run
 todo_array="stealing numa-steal"
 declare -A bench_names
+
+
+
+
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
 #bench_names["savina_02_count"]="CountingAkkaActor CountingFuncJavaActor CountingGparsActor CountingHabaneroActor CountingHabaneroSelector CountingJetlangActor CountingJumiActor CountingLiftActor CountingScalaActor CountingScalazActor"
-#bench_names["savina_03_fjthrput"]=""
-#bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinFuncJavaActor ForkJoinGparsActor ForkJoinHabaneroActor ForkJoinHabaneroSelector ForkJoinJetlangActor ForkJoinJumiActor ForkJoinLiftActor ForkJoinScalaActor ForkJoinScalazActor fjthrput/ ThroughputAkkaActor ThroughputFuncJavaActor ThroughputGparsActor ThroughputHabaneroActor ThroughputHabaneroSelector ThroughputJetlangActor ThroughputJumiActor ThroughputLiftActor ThroughputScalaActor ThroughputScalazActor"
+#bench_names["savina_03_fjthrput"]="ThroughputAkkaActor ThroughputFuncJavaActor ThroughputGparsActor ThroughputHabaneroActor ThroughputHabaneroSelector ThroughputJetlangActor ThroughputJumiActor ThroughputLiftActor ThroughputScalaActor ThroughputScalazActor"
+#bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinFuncJavaActor ForkJoinGparsActor ForkJoinHabaneroActor ForkJoinHabaneroSelector ForkJoinJetlangActor ForkJoinJumiActor ForkJoinLiftActor ForkJoinScalaActor ForkJoinScalazActor fjthrput"
 #bench_names["savina_05_threadring"]="ThreadRingAkkaActor ThreadRingFuncJavaActor ThreadRingGparsActor ThreadRingHabaneroActor ThreadRingHabaneroSelector ThreadRingJetlangActor ThreadRingJumiActor ThreadRingLiftActor ThreadRingScalaActor ThreadRingScalazActor"
 #bench_names["savina_06_chameneos"]="ChameneosAkkaActor ChameneosFuncJavaActor ChameneosGparsActor ChameneosHabaneroActor ChameneosHabaneroSelector ChameneosJetlangActor ChameneosJumiActor ChameneosLiftActor ChameneosScalaActor ChameneosScalazActor"
 #bench_names["savina_07_big"]="BigAkkaActor BigFuncJavaActor BigGparsActor BigHabaneroActor BigHabaneroSelector BigJetlangActor BigJumiActor BigLiftActor BigScalaActor BigScalazActor"
@@ -52,13 +56,13 @@ declare -A bench_names
 
 #not working: LiftActor
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongHabaneroActor PingPongJetlangActor PingPongScalaActor"
-bench_names["savina_02_count"]="CountingAkkaActor CountingHabaneroActor CountingJetlangActor CountingScalaActor"
-
+#bench_names["savina_02_count"]="CountingAkkaActor CountingHabaneroActor CountingJetlangActor CountingScalaActor"
+bench_names["savina_03_fjthrput"]="ThroughputAkkaActor ThroughputHabaneroActor ThroughputJetlangActor ThroughputScalaActor"
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
-bench_args["savina_02_count"]="-n 10000000"
-#bench_args["savina_03_fjthrput"]=""
+#bench_args["savina_02_count"]="-n 10000000"
+bench_args["savina_03_fjthrput"]="-n 60000 -a 360"
 #bench_args["savina_04_fjcreate"]=""
 #bench_args["savina_05_threadring"]=""
 #bench_args["savina_06_chameneos"]=""
