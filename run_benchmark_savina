@@ -56,7 +56,7 @@ declare -A bench_names
 #bench_names["savina_03_fjthrput"]="ThroughputAkkaActor ThroughputHabaneroActor ThroughputJetlangActor ThroughputScalaActor"
 #bench_names["savina_04_fjcreate"]="ForkJoinAkkaActor ForkJoinHabaneroActor ForkJoinJetlangActor ForkJoinScalaActor"
 #bench_names["savina_05_threadring"]="ThreadRingAkkaActor ThreadRingHabaneroActor ThreadRingJetlangActor ThreadRingScalaActor"
-bench_names["savina_06_chameneos"]="ChameneosAkkaActor ChameneosHabaneroActor ChameneosJetlangActor ChameneosLiftActor ChameneosScalaActor"
+bench_names["savina_06_chameneos"]="ChameneosAkkaActor ChameneosHabaneroActor ChameneosJetlangActor ChameneosScalaActor"
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
