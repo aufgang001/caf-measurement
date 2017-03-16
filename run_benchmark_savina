@@ -60,6 +60,7 @@ bench_names["savina_06_chameneos"]="ChameneosAkkaActor ChameneosHabaneroActor Ch
 bench_names["savina_07_big"]="BigAkkaActor BigHabaneroActor BigJetlangActor BigScalazActor"
 bench_names["savina_08_concdict"]="DictionaryAkkaActor DictionaryHabaneroActor DictionaryJetlangActor DictionaryScalazActor"
 bench_names["savina_09_concsll"]="SortedListAkkaActor SortedListHabaneroActor SortedListJetlangActor SortedListScalazActor"
+bench_names["savina_10_bndbuffer"]="ProdConsAkkaActor ProdConsHabaneroActor ProdConsJetlangActor ProdConsScalazActor"
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
@@ -70,8 +71,8 @@ declare -A bench_args
 #bench_args["savina_06_chameneos"]="-c 4000 -m 800000"
 #bench_args["savina_07_big"]="-n 60000 -w 360"
 #bench_args["savina_08_concdict"]="-e 100 -m 50000"
-bench_args["savina_09_concsll"]="-e 20 -m 8000"
-#bench_args["savina_10_bndbuffer"]=""
+#bench_args["savina_09_concsll"]=""
+bench_args["savina_10_bndbuffer"]=""
 #bench_args["savina_11_philosopher"]=""
 #bench_args["savina_12_barber"]=""
 #bench_args["savina_13_cigsmok"]=""
