@@ -74,7 +74,7 @@ declare -A bench_args
 #bench_args["savina_08_concdict"]="-e 100 -m 50000"
 #bench_args["savina_09_concsll"]="-e 20 -m 8000"
 #bench_args["savina_10_bndbuffer"]="-b 75 -p 60 -c 60 -i 1500"
-bench_args["savina_11_philosopher"]="-n 80 -m 4000"
+bench_args["savina_11_philosopher"]="-n 80 -m 40000"
 #bench_args["savina_12_barber"]=""
 #bench_args["savina_13_cigsmok"]=""
 #bench_args["savina_14_logmap"]=""
