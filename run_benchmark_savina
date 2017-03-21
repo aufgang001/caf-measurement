@@ -65,10 +65,6 @@ bench_names["savina_11_philosopher"]="PhilosopherAkkaActor PhilosopherHabaneroAs
 bench_names["savina_12_barber"]="SleepingBarberAkkaActor SleepingBarberHabaneroActor SleepingBarberJetlangActor SleepingBarberScalazActor"
 bench_names["savina_13_cigsmok"]="CigaretteSmokerAkkaActor CigaretteSmokerHabaneroActor CigaretteSmokerJetlangActor CigaretteSmokerScalazActor"
 bench_names["savina_14_logmap"]="LogisticMapAkkaAwaitActor LogisticMapAkkaBecomeActor LogisticMapAkkaBecomeExtActor LogisticMapAkkaManualStashActor LogisticMapHabaneroManualStashActor LogisticMapHabaneroManualStashSelector LogisticMapHabaneroPauseResumeActor LogisticMapHabaneroPauseResumeSelector LogisticMapJetlangActor LogisticMapJetlangManualStashActor LogisticMapScalazActor LogisticMapScalazManualStashActor"
-bench_names["savina_14_logmap_become_unbecome_fast"]=""
-bench_names["savina_14_logmap_become_unbecome_slow"]=""
-bench_names["savina_14_logmap_request_await_high_timeout"]=""
-bench_names["savina_14_logmap_request_await_infinite"]=""
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
@@ -84,11 +80,11 @@ declare -A bench_args
 #bench_args["savina_11_philosopher"]="-n 80 -m 40000"
 #bench_args["savina_12_barber"]="-n 15000 -w 3000"
 bench_args["savina_13_cigsmok"]="-r 1000000 -s 200"
-bench_args["savina_14_logmap"]=""
-bench_args["savina_14_logmap_become_unbecome_fast"]=""
-bench_args["savina_14_logmap_become_unbecome_slow"]=""
-bench_args["savina_14_logmap_request_await_high_timeout"]=""
-bench_args["savina_14_logmap_request_await_infinite"]=""
+bench_args["savina_14_logmap;NOCAF"]=""
+bench_args["savina_14_logmap_become_unbecome_fast;NOJAVA"]=""
+bench_args["savina_14_logmap_become_unbecome_slow;NOJAVA"]=""
+bench_args["savina_14_logmap_request_await_high_timeout;NOJAVA"]=""
+bench_args["savina_14_logmap_request_await_infinite;NOJAVA"]=""
 #bench_args["savina_15_banking"]=""
 #bench_args["savina_16_radixsort"]=""
 #bench_args["savina_17_filterbank"]=""
@@ -143,7 +139,9 @@ policy='$todo'
 neighborhood-level=2
 EOL
   set_bench_and_suffix $bench_n_suffix $todo
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+  if [ "$suffix" != "NOCAF" ]; then
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+  fi
 done
 done
 
@@ -153,10 +151,12 @@ for bench_name in ${bench_names[$bench_n_suffix]} ; do
   set_bench_path $bench $bench_name
   bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
   
-  if [ "$suffix" == "" ]; then
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
-  else
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+  if [ "$suffix" != "NOJAVA" ]; then
+    if [ "$suffix" == "" ]; then
+      ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
+    else
+      ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+    fi
   fi
 done
 done
