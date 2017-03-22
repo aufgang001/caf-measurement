@@ -79,12 +79,12 @@ declare -A bench_args
 #bench_args["savina_10_bndbuffer"]="-b 75 -p 60 -c 60 -i 1500"
 #bench_args["savina_11_philosopher"]="-n 80 -m 40000"
 #bench_args["savina_12_barber"]="-n 15000 -w 3000"
-bench_args["savina_13_cigsmok"]="-r 1000000 -s 200"
+#bench_args["savina_13_cigsmok"]="-r 1000000 -s 200"
 bench_args["savina_14_logmap;NOCAF"]=""
-bench_args["savina_14_logmap_become_unbecome_fast;NOJAVA"]=""
-bench_args["savina_14_logmap_become_unbecome_slow;NOJAVA"]=""
-bench_args["savina_14_logmap_request_await_high_timeout;NOJAVA"]=""
-bench_args["savina_14_logmap_request_await_infinite;NOJAVA"]=""
+#bench_args["savina_14_logmap_become_unbecome_fast;NOJAVA"]=""
+#bench_args["savina_14_logmap_become_unbecome_slow;NOJAVA"]=""
+#bench_args["savina_14_logmap_request_await_high_timeout;NOJAVA"]=""
+#bench_args["savina_14_logmap_request_await_infinite;NOJAVA"]=""
 #bench_args["savina_15_banking"]=""
 #bench_args["savina_16_radixsort"]=""
 #bench_args["savina_17_filterbank"]=""
@@ -148,7 +148,7 @@ done
 for bench_n_suffix in ${!bench_args[@]} ; do
   set_bench_and_suffix $bench_n_suffix
   if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
-    for bench_name in ${bench_names[$bench_n_suffix]} ; do
+    for bench_name in ${bench_names[$bench]} ; do
       set_bench_and_suffix $bench_n_suffix
       set_bench_path $bench $bench_name
       bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
