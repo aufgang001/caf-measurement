@@ -279,7 +279,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
 
     def set_pdf_program(self):
         pdf_program = QtWidgets.QInputDialog.getText(None, 'Set PDF program', "PDF Program:")
-        self.model.plot_data = pdf_program[0]
+        self.model.pdf_program = pdf_program[0]
     
     def create_plot_script(self):
         path = "plot_all.sh"
