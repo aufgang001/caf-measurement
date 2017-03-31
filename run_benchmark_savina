@@ -67,6 +67,7 @@ bench_names["savina_13_cigsmok"]="CigaretteSmokerAkkaActor CigaretteSmokerHabane
 bench_names["savina_14_logmap"]="LogisticMapAkkaAwaitActor LogisticMapAkkaBecomeActor LogisticMapAkkaBecomeExtActor LogisticMapAkkaManualStashActor LogisticMapHabaneroManualStashActor LogisticMapHabaneroManualStashSelector LogisticMapHabaneroPauseResumeActor LogisticMapHabaneroPauseResumeSelector LogisticMapJetlangActor LogisticMapJetlangManualStashActor LogisticMapScalazActor LogisticMapScalazManualStashActor"
 bench_names["savina_15_banking"]="BankingAkkaAwaitActor BankingAkkaBecomeActor BankingAkkaBecomeExtActor BankingAkkaManualStashActor BankingHabaneroManualStashActor BankingHabaneroPauseResumeActor BankingJetlangActor BankingJetlangManualStashActor BankingScalazActor BankingScalazManualStashActor"
 bench_names["savina_16_radixsort"]="RadixSortAkkaActor RadixSortHabaneroActor RadixSortJetlangActor RadixSortScalazActor"
+bench_names["savina_17_filterbank"]="FilterBankAkkaActor FilterBankHabaneroActor FilterBankJetlangActor FilterBankScalazActor"
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
@@ -94,8 +95,8 @@ declare -A bench_args
 #bench_args["savina_15_banking_request_await_infinite;NOJAVA"]="-n 800000 -a 16000"
 #bench_args["savina_15_banking_request_then_high_timeout;NOJAVA"]="-n 800000 -a 16000"
 #bench_args["savina_15_banking_request_then_infinite;NOJAVA"]="-n 800000 -a 16000"
-bench_args["savina_16_radixsort"]="-n 400000"
-#bench_args["savina_17_filterbank"]=""
+#bench_args["savina_16_radixsort"]="-n 400000"
+bench_args["savina_17_filterbank"]="-s 40000 -a 24"
 #bench_args["savina_18_sieve"]=""
 #bench_args["savina_19_uct"]=""
 #bench_args["savina_20_facloc"]=""
