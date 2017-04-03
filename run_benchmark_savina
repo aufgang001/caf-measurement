@@ -102,7 +102,7 @@ declare -A bench_args
 #bench_args["savina_18_sieve"]="-n 2000000 -m 10000"
 #bench_args["savina_19_uct"]=""
 #bench_args["savina_20_facloc"]=""
-bench_args["savina_21_trapezoid"]="-w 1000 -n 100000000"
+bench_args["savina_21_trapezoid"]="-w 4000 -n 400000000"
 #bench_args["savina_22_piprecision"]=""
 #bench_args["savina_23_recmatmul"]=""
 #bench_args["savina_24_quicksort"]=""
