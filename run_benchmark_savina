@@ -70,6 +70,7 @@ bench_names["savina_16_radixsort"]="RadixSortAkkaActor RadixSortHabaneroActor Ra
 bench_names["savina_17_filterbank"]="FilterBankAkkaActor FilterBankHabaneroActor FilterBankJetlangActor FilterBankScalazActor"
 bench_names["savina_18_sieve"]="SieveAkkaActor SieveHabaneroActor SieveJetlangActor SieveScalazActor"
 bench_names["savina_21_trapezoid"]="TrapezoidalAkkaActor TrapezoidalHabaneroActor TrapezoidalJetlangActor TrapezoidalScalazActor"
+bench_names["savina_23_recmatmul"]="MatMulAkkaActor MatMulHabaneroActor MatMulJetlangActor MatMulScalazActor"
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
@@ -102,9 +103,9 @@ declare -A bench_args
 #bench_args["savina_18_sieve"]="-n 2000000 -m 10000"
 #bench_args["savina_19_uct"]=""
 #bench_args["savina_20_facloc"]=""
-bench_args["savina_21_trapezoid"]="-w 4000 -n 400000000"
+#bench_args["savina_21_trapezoid"]="-w 4000 -n 400000000"
 #bench_args["savina_22_piprecision"]=""
-#bench_args["savina_23_recmatmul"]=""
+bench_args["savina_23_recmatmul"]="-n 2048 -w 40"
 #bench_args["savina_24_quicksort"]=""
 #bench_args["savina_25_apsp"]=""
 #bench_args["savina_26_sor"]=""
