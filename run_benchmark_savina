@@ -112,7 +112,7 @@ declare -A bench_args
 #bench_args["savina_26_sor"]=""
 #bench_args["savina_27_astar"]=""
 #bench_args["savina_28_nqueenk"]=""
-bench_args["savina_29_fib"]="-n 37"
+bench_args["savina_29_fib"]="-n 35"
 #bench_args["savina_30_bitonicsort"]=""
 
 #java -cp savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar edu/rice/habanero/benchmarks/pingpong/PingPongAkkaActorBenchmark
