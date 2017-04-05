@@ -71,6 +71,7 @@ bench_names["savina_17_filterbank"]="FilterBankAkkaActor FilterBankHabaneroActor
 bench_names["savina_18_sieve"]="SieveAkkaActor SieveHabaneroActor SieveJetlangActor SieveScalazActor"
 bench_names["savina_21_trapezoid"]="TrapezoidalAkkaActor TrapezoidalHabaneroActor TrapezoidalJetlangActor TrapezoidalScalazActor"
 bench_names["savina_23_recmatmul"]="MatMulAkkaActor MatMulHabaneroActor MatMulJetlangActor MatMulScalazActor"
+bench_names["savina_24_quicksort"]="QuickSortAkkaActor QuickSortHabaneroActor QuickSortJetlangActor QuickSortScalazActor"
 bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciHabaneroActor FibonacciJetlangActor FibonacciScalazActor"
 
 declare -A bench_args
