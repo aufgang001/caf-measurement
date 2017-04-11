@@ -4,3 +4,4 @@ Makefile
 *.o
 caf_plot_gui/caf_plot_gui.egg-info/
 caf_plot_gui/caf_plot_gui/__pycache__/
+caf_plot_gui/__pycache__/
