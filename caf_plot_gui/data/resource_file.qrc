@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Images">
+    <file alias="caf-logo">caf-logo.png</file>
+  </qresource>
+</RCC>

@@ -14,8 +14,8 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>caf-logo.png</normaloff>caf-logo.png</iconset>
+   <iconset resource="resource_file.qrc">
+    <normaloff>:/Images/caf-logo</normaloff>:/Images/caf-logo</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -305,7 +305,7 @@
   <action name="action_plot_all">
    <property name="icon">
     <iconset>
-     <normaloff>caf-logo.png</normaloff>caf-logo.png</iconset>
+     <normaloff>:/Images/caf-logo.png</normaloff>:/Images/caf-logo.png</iconset>
    </property>
    <property name="text">
     <string>Plot all</string>
@@ -347,6 +347,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource_file.qrc"/>
+ </resources>
  <connections/>
 </ui>
