@@ -12,6 +12,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1591, 898)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("caf-logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -176,6 +179,7 @@ class Ui_MainWindow(object):
         self.menuConfiguration.setObjectName("menuConfiguration")
         MainWindow.setMenuBar(self.menubar)
         self.action_plot_all = QtWidgets.QAction(MainWindow)
+        self.action_plot_all.setIcon(icon)
         self.action_plot_all.setObjectName("action_plot_all")
         self.action_preview = QtWidgets.QAction(MainWindow)
         self.action_preview.setObjectName("action_preview")

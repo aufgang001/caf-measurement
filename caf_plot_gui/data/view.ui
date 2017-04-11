@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>caf-logo.png</normaloff>caf-logo.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="2">
@@ -299,6 +303,10 @@
    <addaction name="menuConfiguration"/>
   </widget>
   <action name="action_plot_all">
+   <property name="icon">
+    <iconset>
+     <normaloff>caf-logo.png</normaloff>caf-logo.png</iconset>
+   </property>
    <property name="text">
     <string>Plot all</string>
    </property>

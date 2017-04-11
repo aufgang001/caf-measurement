@@ -72,7 +72,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
 
     def cbox_plots_refresh(self, text=None, index=None):
         self.cbox_plots.clear()
-        self.cbox_plots.addItems(self.model.plots.keys())
+        self.cbox_plots.addItems(sorted(self.model.plots.keys()))
         if not index == None:
             self.cbox_plots.setCurrentIndex(index)
         elif not text == None:
@@ -184,11 +184,12 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         y = 0
         for csv_file_it in self.selected_data.keys():
             y += 1
-            for label_it in self.selected_data[csv_file].keys():
+            for label_it in self.selected_data[csv_file_it].keys():
                 if csv_file == csv_file_it:
                     if label == label_it:
                         return y
                 y += 1
+        return -1
 
     def table_tlabel_get_row_data(self, index):
         y = 0
