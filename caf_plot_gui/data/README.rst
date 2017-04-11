@@ -21,4 +21,4 @@ Run designer
 Gernerate py-files
 ------------------
 * pyuic5 data/view.ui -o caf_plot_gui/view.py
-* pyrcc5 data/resource_file.qrc -o caf_plot_gui/resource_file_rc.py
+* pyrcc5 data/resource_file.qrc -o resource_file_rc.py
