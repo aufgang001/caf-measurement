@@ -76,6 +76,7 @@ bench_names["savina_24_quicksort"]="QuickSortAkkaActor QuickSortHabaneroActor Qu
 bench_names["savina_25_apsp"]="ApspAkkaActor ApspHabaneroActor ApspJetlangActor ApspScalazActor"
 bench_names["savina_28_nqueenk"]="NQueensAkkaActor NQueensAkkaPriorityActor NQueensHabaneroActor NQueensJetlangActor NQueensScalazActor"
 bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciHabaneroActor FibonacciJetlangActor FibonacciScalazActor"
+bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortHabaneroActor BitonicSortJetlangActor BitonicSortScalazActor"
 
 declare -A bench_args
 #bench_args["savina_01_pingpong"]="-n 400000"
@@ -107,7 +108,7 @@ declare -A bench_args
 #bench_args["savina_17_filterbank"]="-s 40000 -a 24"
 #bench_args["savina_18_sieve"]="-n 2000000 -m 10000"
 #bench_args["savina_19_uct"]=""
-bench_args["savina_20_facloc"]=" -n 200000 -g 1000"
+#bench_args["savina_20_facloc"]=" -n 200000 -g 1000"
 #bench_args["savina_21_trapezoid"]="-w 4000 -n 400000000"
 #bench_args["savina_22_piprecision"]=""
 #bench_args["savina_23_recmatmul"]="-n 2048 -w 40"
@@ -117,7 +118,7 @@ bench_args["savina_20_facloc"]=" -n 200000 -g 1000"
 #bench_args["savina_27_astar"]=""
 #bench_args["savina_28_nqueenk"]="-n 14 -w 100 -s 1500000"
 #bench_args["savina_29_fib"]="-n 34"
-#bench_args["savina_30_bitonicsort"]=""
+bench_args["savina_30_bitonicsort"]="-n 8192"
 
 #java -cp savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar edu/rice/habanero/benchmarks/pingpong/PingPongAkkaActorBenchmark
 set_bench_path() {
