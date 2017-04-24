@@ -111,7 +111,8 @@ declare -A bench_args
 #bench_args["savina_20_facloc"]=" -n 200000 -g 1000"
 #bench_args["savina_21_trapezoid"]="-w 4000 -n 400000000"
 ###bench_args["savina_22_piprecision"]=""
-bench_args["savina_23_recmatmul"]="-n 2048 -w 40"
+#bench_args["savina_23_recmatmul"]="-n 2048 -w 40"
+bench_args["savina_23_recmatmul"]="-n 1048 -w 20" #debug
 #bench_args["savina_24_quicksort"]="-n 40000000"
 #bench_args["savina_25_apsp"]="-n 900 -b 150 -w 300"
 ###bench_args["savina_26_sor"]=""
