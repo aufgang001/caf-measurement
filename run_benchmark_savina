@@ -111,8 +111,7 @@ declare -A bench_args
 #bench_args["savina_20_facloc"]=" -n 200000 -g 1000"
 #bench_args["savina_21_trapezoid"]="-w 4000 -n 400000000"
 ###bench_args["savina_22_piprecision"]=""
-#bench_args["savina_23_recmatmul"]="-n 2048 -w 40"
-bench_args["savina_23_recmatmul"]="-n 2048 -w 20" #debug
+bench_args["savina_23_recmatmul"]="-n 2048 -w 40"
 #bench_args["savina_24_quicksort"]="-n 40000000"
 #bench_args["savina_25_apsp"]="-n 900 -b 150 -w 300"
 ###bench_args["savina_26_sor"]=""
@@ -164,22 +163,22 @@ EOL
 done
 done
 
-#for bench_n_suffix in ${!bench_args[@]} ; do
-  #set_bench_and_suffix $bench_n_suffix
-  #if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
-    #for bench_name in ${bench_names[$bench]} ; do
-      #set_bench_and_suffix $bench_n_suffix
-      #set_bench_path $bench $bench_name
-      #bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
+for bench_n_suffix in ${!bench_args[@]} ; do
+  set_bench_and_suffix $bench_n_suffix
+  if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
+    for bench_name in ${bench_names[$bench]} ; do
+      set_bench_and_suffix $bench_n_suffix
+      set_bench_path $bench $bench_name
+      bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
       
-      #if [ "$suffix" == "" ]; then
-        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
-      #else
-        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
-      #fi
-    #done
-  #fi
-#done
+      if [ "$suffix" == "" ]; then
+        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
+      else
+        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+      fi
+    done
+  fi
+done
 
 # Create csv files
 cd $OUT_DIR
