@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $(id -u) == 0 ]]; then
+  echo "Do not start this script as root"
+  exit 0
+fi
 
 #CAF_HOME="/home/woelke/spideroak/working_dir/caf/actor-framework"
 #FLAME_GRAPH_PATH="/home/woelke/spideroak/working_dir/caf/profiling/FlameGraph"
