@@ -79,11 +79,12 @@ bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciHabaneroActor Fibonacc
 bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortHabaneroActor BitonicSortJetlangActor BitonicSortScalazActor"
 
 declare -A bench_args
-bench_args["savina_01_pingpong"]="-n 400000"
-bench_args["savina_02_count"]="-n 10000000"
-bench_args["savina_03_fjthrput"]="-n 60000 -a 360"
-bench_args["savina_04_fjcreate"]="-n 4000000"
-bench_args["savina_05_threadring"]="-n 400 -r 400000"
+#bench_args["savina_01_pingpong"]="-n 400000"
+bench_args["savina_01_pingpong"]="-n 2400000"
+#bench_args["savina_02_count"]="-n 10000000"
+#bench_args["savina_03_fjthrput"]="-n 60000 -a 360"
+#bench_args["savina_04_fjcreate"]="-n 4000000"
+#bench_args["savina_05_threadring"]="-n 400 -r 400000"
 #bench_args["savina_06_chameneos"]="-c 4000 -m 800000"
 #bench_args["savina_07_big"]="-n 60000 -w 360"
 #bench_args["savina_08_concdict"]="-e 100 -m 50000"
@@ -163,22 +164,22 @@ EOL
 done
 done
 
-#for bench_n_suffix in ${!bench_args[@]} ; do
-  #set_bench_and_suffix $bench_n_suffix
-  #if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
-    #for bench_name in ${bench_names[$bench]} ; do
-      #set_bench_and_suffix $bench_n_suffix
-      #set_bench_path $bench $bench_name
-      #bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
+for bench_n_suffix in ${!bench_args[@]} ; do
+  set_bench_and_suffix $bench_n_suffix
+  if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
+    for bench_name in ${bench_names[$bench]} ; do
+      set_bench_and_suffix $bench_n_suffix
+      set_bench_path $bench $bench_name
+      bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
       
-      #if [ "$suffix" == "" ]; then
-        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
-      #else
-        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
-      #fi
-    #done
-  #fi
-#done
+      if [ "$suffix" == "" ]; then
+        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
+      else
+        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+      fi
+    done
+  fi
+done
 
 # Create csv files
 cd $OUT_DIR
