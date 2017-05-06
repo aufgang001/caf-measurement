@@ -11,8 +11,8 @@ BIN_PATH="${CAF_HOME}/build/bin"
 JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
-REPITITIONS=10
-#REPITITIONS=1
+#REPITITIONS=10
+REPITITIONS=1
 MIN_CORES=4
 
 # Define benchmarks to run
@@ -79,11 +79,11 @@ bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciHabaneroActor Fibonacc
 bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortHabaneroActor BitonicSortJetlangActor BitonicSortScalazActor"
 
 declare -A bench_args
-#bench_args["savina_01_pingpong"]="-n 400000"
-#bench_args["savina_02_count"]="-n 10000000"
+bench_args["savina_01_pingpong"]="-n 400000"
+bench_args["savina_02_count"]="-n 10000000"
 #bench_args["savina_03_fjthrput"]="-n 60000 -a 360"
 #bench_args["savina_04_fjcreate"]="-n 4000000"
-#bench_args["savina_05_threadring"]="-n 400 -r 400000"
+bench_args["savina_05_threadring"]="-n 400 -r 400000"
 #bench_args["savina_06_chameneos"]="-c 4000 -m 800000"
 #bench_args["savina_07_big"]="-n 60000 -w 360"
 #bench_args["savina_08_concdict"]="-e 100 -m 50000"
@@ -116,9 +116,9 @@ declare -A bench_args
 #bench_args["savina_25_apsp"]="-n 900 -b 150 -w 300"
 ###bench_args["savina_26_sor"]=""
 ###bench_args["savina_27_astar"]=""
-bench_args["savina_28_nqueenk"]="-n 14 -w 100 -s 1500000"
-bench_args["savina_29_fib"]="-n 34"
-bench_args["savina_30_bitonicsort"]="-n 8192"
+#bench_args["savina_28_nqueenk"]="-n 14 -w 100 -s 1500000"
+#bench_args["savina_29_fib"]="-n 34"
+#bench_args["savina_30_bitonicsort"]="-n 8192"
 
 #java -cp savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar edu/rice/habanero/benchmarks/pingpong/PingPongAkkaActorBenchmark
 set_bench_path() {
