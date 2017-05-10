@@ -20,7 +20,7 @@ PERF_FILE="${OUT_DIR}/${bench}-perf.data"
 STACK_FILE="${OUT_DIR}/${bench}-stack.data"
 SVG_FILE="${OUT_DIR}/${bench}-flamegraph.svg"
 
-if [ "$1" != "run" ] || [ "$1" != "flamegraph" ]; then
+if [ "$1" != "run" ] && [ "$1" != "flamegraph" ]; then
   echo "run $0 <run|flamegrpah>"
   echo "program stopped!"
 fi
