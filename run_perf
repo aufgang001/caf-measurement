@@ -59,7 +59,7 @@ EOL
 
   # record perf data
   cd $BIN_PATH
-  sudo perf record --call-graph --output=$PERF_FILE -- ./${bench} ${bench_array[$bench_suffix]}
+  sudo perf record -g --output=$PERF_FILE -- ./${bench} ${bench_array[$bench_suffix]}
   sudo chown localadmin $PERF_FILE
 
   # Convert perf data to svg
