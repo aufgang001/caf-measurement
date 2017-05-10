@@ -24,7 +24,8 @@ fi
 if [ "$1" == "actor-framework" ]; then
   cd actor-framework
   git fetch
-  git checkout -f origin/topic/numa-scheduler-v2
+  #git checkout -f origin/topic/numa-scheduler-v2
+  git checkout -f origin/topic/test-tcmalloc
 
   cd benchmarks
   git fetch

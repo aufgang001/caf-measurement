@@ -27,7 +27,7 @@ rm -f ${OUT_DIR}/*
 todo_array="numa-steal"
 declare -A bench_array
 #bench_array["bencherl_12_timer_wheel;wheel"]="intermediate 50 wheel" #behavior without timeout
-bench_array["savina_01_pingpong"]="-n 2400000"
+bench_array["savina_01_pingpong"]="-n 4800000"
 
 set_bench_and_suffix() {
   IFS=';' read -ra ARGS_SUFFIX <<< "$1"
@@ -52,11 +52,10 @@ policy='$todo'
 neighborhood-level=2
 EOL
   set_bench_and_suffix $bench_suffix $todo
-  export CPUPROFILE=${OUT_DIR}/gperf.out ${BIN_PATH}/${bench}
-    
+
   # record data with gperf
   cd $BIN_PATH
-  sudo -u ${BENCH_USER} ./${bench} ${bench_array[$bench_suffix]}
+  env CPUPROFILE=${OUT_DIR}/out.gperf ./${bench} ${bench_array[$bench_suffix]}
 done
 done
 
