@@ -55,7 +55,12 @@ EOL
 
   # record data with gperf
   cd $BIN_PATH
-  env CPUPROFILE=${OUT_DIR}/out.gperf ./${bench} ${bench_array[$bench_suffix]}
+  output_file=${todo}_${bench}.gperf
+  env CPUPROFILE=${OUT_DIR}/${output_file} ./${bench} ${bench_array[$bench_suffix]}
+
+  # add requried infromation for gprof
+  output_exe=${todo}_${bench}
+  cp ${bench} ${OUT_DIR}/${output_exe}
 done
 done
 
