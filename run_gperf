@@ -1,6 +1,6 @@
 #!/bin/bash
-if [[ $(id -u) == 0 ]]; then
-  echo "Do not start this script as root"
+if [[ $(id -u) != 0 ]]; then
+  echo "you need to be root"
   exit 0
 fi
 
@@ -56,7 +56,7 @@ EOL
     
   # record data with gperf
   cd $BIN_PATH
-  ./${bench} ${bench_array[$bench_suffix]}
+  sudo -u ${BENCH_USER} ./${bench} ${bench_array[$bench_suffix]}
 done
 done
 
