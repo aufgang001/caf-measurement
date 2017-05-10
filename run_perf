@@ -59,7 +59,7 @@ EOL
 
   # record perf data
   cd $BIN_PATH
-  sudo perf record --all-cpus -g --output=$PERF_FILE -- ./${bench} ${bench_array[$bench_suffix]}
+  sudo perf record --call-graph --output=$PERF_FILE -- ./${bench} ${bench_array[$bench_suffix]}
   sudo chown localadmin $PERF_FILE
 
   # Convert perf data to svg
@@ -74,3 +74,7 @@ sudo sh -c "echo 1 > /proc/sys/kernel/kptr_restrict"
 
 duration=$SECONDS
 echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
+
+
+# --notes:
+# perf report --call-graph -G
