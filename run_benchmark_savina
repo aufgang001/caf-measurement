@@ -153,6 +153,14 @@ for todo in $todo_array ; do
 cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
 [scheduler]
 policy='$todo'
+[work-stealing]
+aggressive-poll-attempts=100
+aggressive-steal-interval=10
+moderate-poll-attempts=500
+moderate-steal-interval=5
+moderate-sleep-duration=50
+relaxed-steal-interval=1
+relaxed-sleep-duration=10000
 [numa]
 neighborhood-level=2
 EOL
