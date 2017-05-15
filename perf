@@ -14,14 +14,14 @@ CAF_INI_FILE="caf-application.ini"
 #todo_array="stealing numa-steal"
 todo="stealing"
 bench="savina_05_threadring"
-args="-n 400 -r 400000"
+args="-n 400 -r 100000"
 
 PERF_FILE="${OUT_DIR}/${bench}-perf.data"
 STACK_FILE="${OUT_DIR}/${bench}-stack.data"
 SVG_FILE="${OUT_DIR}/${bench}-flamegraph.svg"
 
 if [ "$1" != "run" ] && [ "$1" != "flamegraph" ]; then
-  echo "run $0 <run|flamegrpah>"
+  echo "run $0 <run|flamegraph>"
   echo "program stopped!"
 fi
 
