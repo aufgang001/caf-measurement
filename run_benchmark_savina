@@ -16,8 +16,8 @@ REPITITIONS=1
 MIN_CORES=4
 
 # Define benchmarks to run
-#todo_array="stealing numa-steal"
-todo_array="stealing"
+todo_array="stealing numa-steal"
+#todo_array="stealing"
 declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
 #bench_names["savina_02_count"]="CountingAkkaActor CountingFuncJavaActor CountingGparsActor CountingHabaneroActor CountingHabaneroSelector CountingJetlangActor CountingJumiActor CountingLiftActor CountingScalaActor CountingScalazActor"
