@@ -13,8 +13,8 @@ CAF_INI_FILE="caf-application.ini"
 
 #todo_array="stealing numa-steal"
 todo="numa-steal"
-bench="savina_01_pingpong"
-args="-n 200000"
+bench="savina_05_threadring"
+args="-n 400 -r 400000"
 
 PERF_FILE="${OUT_DIR}/${bench}-perf.data"
 STACK_FILE="${OUT_DIR}/${bench}-stack.data"
