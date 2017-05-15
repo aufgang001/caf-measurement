@@ -16,8 +16,8 @@ REPITITIONS=1
 MIN_CORES=4
 
 # Define benchmarks to run
-todo_array="stealing numa-steal"
-#todo_array="numa-steal"
+#todo_array="stealing numa-steal"
+todo_array="stealing"
 declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
 #bench_names["savina_02_count"]="CountingAkkaActor CountingFuncJavaActor CountingGparsActor CountingHabaneroActor CountingHabaneroSelector CountingJetlangActor CountingJumiActor CountingLiftActor CountingScalaActor CountingScalazActor"
@@ -80,7 +80,7 @@ bench_names["savina_29_fib"]="FibonacciAkkaActor FibonacciHabaneroActor Fibonacc
 bench_names["savina_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortHabaneroActor BitonicSortJetlangActor BitonicSortScalazActor"
 
 declare -A bench_args
-bench_args["savina_01_pingpong"]="-n 400000"
+#bench_args["savina_01_pingpong"]="-n 400000"
 #bench_args["savina_02_count"]="-n 10000000"
 #bench_args["savina_03_fjthrput"]="-n 60000 -a 360"
 #bench_args["savina_04_fjcreate"]="-n 4000000"
@@ -149,45 +149,45 @@ rm -f ${OUT_DIR}/*
 cd ${CAF_HOME}/benchmarks/scripts
 
 # Run CAF benchmark suite
-#for bench_n_suffix in ${!bench_args[@]} ; do
-#for todo in $todo_array ; do
-#cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
-#[scheduler]
-#policy='$todo'
-#[work-stealing]
-#aggressive-poll-attempts=100
-#aggressive-steal-interval=10
-#moderate-poll-attempts=500
-#moderate-steal-interval=5
-#moderate-sleep-duration=50
-#relaxed-steal-interval=1
-#relaxed-sleep-duration=10000
-#[numa]
-#neighborhood-level=2
-#EOL
-  #set_bench_and_suffix $bench_n_suffix $todo
-  #if ! [[ "$suffix" == *"NOCAF"* ]]; then 
-    #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
-  #fi
-#done
-#done
-
 for bench_n_suffix in ${!bench_args[@]} ; do
-  set_bench_and_suffix $bench_n_suffix
-  if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
-    for bench_name in ${bench_names[$bench]} ; do
-      set_bench_and_suffix $bench_n_suffix
-      set_bench_path $bench $bench_name
-      bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
-      
-      if [ "$suffix" == "" ]; then
-        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
-      else
-        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
-      fi
-    done
+for todo in $todo_array ; do
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+[work-stealing]
+aggressive-poll-attempts=100
+aggressive-steal-interval=10
+moderate-poll-attempts=500
+moderate-steal-interval=5
+moderate-sleep-duration=50
+relaxed-steal-interval=1
+relaxed-sleep-duration=10000
+[numa]
+neighborhood-level=2
+EOL
+  set_bench_and_suffix $bench_n_suffix $todo
+  if ! [[ "$suffix" == *"NOCAF"* ]]; then 
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
   fi
 done
+done
+
+#for bench_n_suffix in ${!bench_args[@]} ; do
+  #set_bench_and_suffix $bench_n_suffix
+  #if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
+    #for bench_name in ${bench_names[$bench]} ; do
+      #set_bench_and_suffix $bench_n_suffix
+      #set_bench_path $bench $bench_name
+      #bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
+      
+      #if [ "$suffix" == "" ]; then
+        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
+      #else
+        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+      #fi
+    #done
+  #fi
+#done
 
 # Create csv files
 cd $OUT_DIR
