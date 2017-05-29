@@ -11,8 +11,8 @@ BIN_PATH="${CAF_HOME}/build/bin"
 JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
-REPITITIONS=10
-#REPITITIONS=1
+#REPITITIONS=10
+REPITITIONS=1
 MIN_CORES=4
 
 # Define benchmarks to run
