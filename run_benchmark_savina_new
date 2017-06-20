@@ -192,7 +192,7 @@ done
 
 # Create csv files
 cd $OUT_DIR
-${BIN_PATH}/to_csv *
+${CAF_HOME}/build/bin/to_csv *
 
 duration=$SECONDS
 echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
