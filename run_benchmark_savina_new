@@ -72,7 +72,8 @@ bench_names["caf_16_radixsort"]="RadixSortAkkaActor RadixSortHabaneroActor Radix
 bench_names["caf_17_filterbank"]="FilterBankAkkaActor FilterBankHabaneroActor FilterBankJetlangActor FilterBankScalazActor"
 bench_names["caf_18_sieve"]="SieveAkkaActor SieveHabaneroActor SieveJetlangActor SieveScalazActor"
 bench_names["caf_20_facloc"]="FacilityLocationAkkaActor FacilityLocationHabaneroActor FacilityLocationJetlangActor FacilityLocationScalazActor"
-bench_names["caf_21_trapezoid"]="TrapezoidalAkkaActor TrapezoidalHabaneroActor TrapezoidalJetlangActor TrapezoidalScalazActor"
+#bench_names["caf_21_trapezoid"]="TrapezoidalAkkaActor TrapezoidalHabaneroActor TrapezoidalJetlangActor TrapezoidalScalazActor"
+bench_names["caf_21_trapezoid"]="TrapezoidalScalazActor"
 bench_names["caf_23_recmatmul"]="MatMulAkkaActor MatMulHabaneroActor MatMulJetlangActor MatMulScalazActor"
 bench_names["caf_24_quicksort"]="QuickSortAkkaActor QuickSortHabaneroActor QuickSortJetlangActor QuickSortScalazActor"
 bench_names["caf_25_apsp"]="ApspAkkaActor ApspHabaneroActor ApspJetlangActor ApspScalazActor"
@@ -81,7 +82,7 @@ bench_names["caf_29_fib"]="FibonacciAkkaActor FibonacciHabaneroActor FibonacciJe
 bench_names["caf_30_bitonicsort"]="BitonicSortAkkaActor BitonicSortHabaneroActor BitonicSortJetlangActor BitonicSortScalazActor"
 
 declare -A bench_args
-bench_args["caf_01_pingpong"]="-n 2000000"
+#bench_args["caf_01_pingpong"]="-n 2000000"
 #bench_args["caf_02_count"]="-n 10000000"
 #bench_args["caf_03_fjthrput"]="-n 60000 -a 360"
 #bench_args["caf_04_fjcreate"]="-n 4000000"
@@ -111,7 +112,7 @@ bench_args["caf_01_pingpong"]="-n 2000000"
 #bench_args["caf_18_sieve"]="-n 2000000 -m 10000"
 ###bench_args["caf_19_uct"]=""
 #bench_args["caf_20_facloc"]=" -n 200000 -g 1000"
-#bench_args["caf_21_trapezoid"]="-w 4000 -n 400000000"
+bench_args["caf_21_trapezoid"]="-w 4000 -n 400000000"
 ###bench_args["caf_22_piprecision"]=""
 #bench_args["caf_23_recmatmul"]="-n 2048 -w 40"
 #bench_args["caf_24_quicksort"]="-n 40000000"
@@ -150,28 +151,28 @@ rm -f ${OUT_DIR}/*
 cd ${CAF_HOME}/benchmarks/scripts
 
 # Run CAF benchmark suite
-for bench_n_suffix in ${!bench_args[@]} ; do
-for todo in $todo_array ; do
-cat > ${PATH_TO_CONFIG_FILE} <<EOL
-[scheduler]
-policy='$todo'
-[work-stealing]
-aggressive-poll-attempts=100
-aggressive-steal-interval=10
-moderate-poll-attempts=500
-moderate-steal-interval=5
-moderate-sleep-duration=50
-relaxed-steal-interval=1
-relaxed-sleep-duration=10000
-[numa]
-neighborhood-level=2
-EOL
-  set_bench_and_suffix $bench_n_suffix $todo
-  if ! [[ "$suffix" == *"NOCAF"* ]]; then 
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${BIN_PATH} --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="--iterations=1 --no_evaluation -- --caf#config-file=${PATH_TO_CONFIG_FILE} ${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
-  fi
-done
-done
+#for bench_n_suffix in ${!bench_args[@]} ; do
+#for todo in $todo_array ; do
+#cat > ${PATH_TO_CONFIG_FILE} <<EOL
+#[scheduler]
+#policy='$todo'
+#[work-stealing]
+#aggressive-poll-attempts=100
+#aggressive-steal-interval=10
+#moderate-poll-attempts=500
+#moderate-steal-interval=5
+#moderate-sleep-duration=50
+#relaxed-steal-interval=1
+#relaxed-sleep-duration=10000
+#[numa]
+#neighborhood-level=2
+#EOL
+  #set_bench_and_suffix $bench_n_suffix $todo
+  #if ! [[ "$suffix" == *"NOCAF"* ]]; then 
+    #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${BIN_PATH} --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="--iterations=1 --no_evaluation -- --caf#config-file=${PATH_TO_CONFIG_FILE} ${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+  #fi
+#done
+#done
 
 for bench_n_suffix in ${!bench_args[@]} ; do
   set_bench_and_suffix $bench_n_suffix
