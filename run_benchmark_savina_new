@@ -11,7 +11,7 @@ OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${SAVINA_HOME}/build/bin"
 JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
-CAF_INI_FILE="caf-application.ini"
+PATH_TO_CONFIG_FILE="${BIN_PATH}/caf-application.ini"
 #REPITITIONS=10
 REPITITIONS=1
 MIN_CORES=4
@@ -152,7 +152,7 @@ cd ${CAF_HOME}/benchmarks/scripts
 # Run CAF benchmark suite
 for bench_n_suffix in ${!bench_args[@]} ; do
 for todo in $todo_array ; do
-cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+cat > ${PATH_TO_CONFIG_FILE} <<EOL
 [scheduler]
 policy='$todo'
 [work-stealing]
@@ -168,7 +168,7 @@ neighborhood-level=2
 EOL
   set_bench_and_suffix $bench_n_suffix $todo
   if ! [[ "$suffix" == *"NOCAF"* ]]; then 
-    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${BIN_PATH} --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="--iterations=1 --no_evaluation -- ${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+    ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${BIN_PATH} --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="--iterations=1 --no_evaluation -- --caf#config-file=${PATH_TO_CONFIG_FILE} ${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
   fi
 done
 done
