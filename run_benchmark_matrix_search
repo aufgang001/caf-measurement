@@ -1,0 +1,46 @@
+#!/bin/bash
+if [[ $(id -u) != 0 ]]; then
+  echo "you need to be root"
+  exit 0
+fi
+
+CAF_HOME="/users/localadmin/woelke/actor-framework"
+BENCH_USER="localadmin"
+OUT_DIR="/users/localadmin/woelke/test_data"
+BIN_PATH="${CAF_HOME}/build/bin"
+CAF_INI_FILE="caf-application.ini"
+REPITITIONS=10
+MIN_CORES=4
+
+todo_array="stealing numa-steal"
+
+# Preperation
+rm -f ${OUT_DIR}/*
+cd ${CAF_HOME}/benchmarks/scripts
+
+# Run CAF benchmark suite
+for todo in $todo_array ; do
+cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
+[scheduler]
+policy='$todo'
+[work-stealing]
+aggressive-poll-attempts=100
+aggressive-steal-interval=10
+moderate-poll-attempts=500
+moderate-steal-interval=5
+moderate-sleep-duration=50
+relaxed-steal-interval=1
+relaxed-sleep-duration=10000
+[numa]
+neighborhood-level=2
+EOL
+
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=matrix-search --repetitions=${REPITITIONS}
+done
+
+# Create csv files
+cd $OUT_DIR
+${BIN_PATH}/to_csv *
+
+duration=$SECONDS
+echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"

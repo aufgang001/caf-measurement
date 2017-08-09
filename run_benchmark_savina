@@ -172,22 +172,22 @@ EOL
 done
 done
 
-#for bench_n_suffix in ${!bench_args[@]} ; do
-  #set_bench_and_suffix $bench_n_suffix
-  #if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
-    #for bench_name in ${bench_names[$bench]} ; do
-      #set_bench_and_suffix $bench_n_suffix
-      #set_bench_path $bench $bench_name
-      #bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
+for bench_n_suffix in ${!bench_args[@]} ; do
+  set_bench_and_suffix $bench_n_suffix
+  if ! [[ "$suffix" == *"NOJAVA"* ]]; then 
+    for bench_name in ${bench_names[$bench]} ; do
+      set_bench_and_suffix $bench_n_suffix
+      set_bench_path $bench $bench_name
+      bench_exe="-cp ${JAR_FILE} ${bench_path} ${bench_args[$bench_n_suffix]}"
       
-      #if [ "$suffix" == "" ]; then
-        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
-      #else
-        #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
-      #fi
-    #done
-  #fi
-#done
+      if [ "$suffix" == "" ]; then
+        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}
+      else
+        ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --bin-path=${JAVA_PATH} --label=savina --bench="java" --repetitions=${REPITITIONS} --custom-args="${bench_exe}" --label-suffix=${bench_name}-${suffix}
+      fi
+    done
+  fi
+done
 
 # Create csv files
 cd $OUT_DIR
