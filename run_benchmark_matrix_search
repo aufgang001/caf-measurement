@@ -9,7 +9,7 @@ BENCH_USER="localadmin"
 OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
 CAF_INI_FILE="caf-application.ini"
-REPITITIONS=1
+REPITITIONS=10
 MIN_CORES=4
 
 todo_array="stealing numa-steal"
