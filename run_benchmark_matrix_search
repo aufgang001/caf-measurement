@@ -12,7 +12,8 @@ CAF_INI_FILE="caf-application.ini"
 REPITITIONS=10
 MIN_CORES=4
 
-todo_array="stealing numa-steal"
+#todo_array="stealing numa-steal"
+todo_array="numa-steal"
 
 # Preperation
 rm -f ${OUT_DIR}/*
