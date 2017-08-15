@@ -44,6 +44,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.edit_xmax.setValidator(QtGui.QDoubleValidator(self))
         self.edit_ymin.setValidator(QtGui.QDoubleValidator(self))
         self.edit_ymax.setValidator(QtGui.QDoubleValidator(self))
+        self.btn_r_script_browse.clicked.connect(self.btn_r_script_browse_clicked)
         # set mode performacne or memory and update csv_list
         self.lst_csv_file_refresh()
         self.cbox_plots_refresh(index=0)
@@ -64,6 +65,10 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         if not data == None:
             self.model.plots[data["out"]] = data
             self.cbox_plots_refresh(text=data["out"])
+
+    def btn_r_script_browse_clicked(self):
+        file = QtWidgets.QFileDialog.getOpenFileName(None, 'Select R-Script', '.', "R-files (*.R)")[0]
+        self.edit_r_script_file.setText(file)
 
     def cbox_plots_current_index_changed(self):
         plot_name = self.cbox_plots.currentText()
@@ -318,6 +323,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             data["xlim"][1] = self.edit_xmax.text()
             data["ylim"][0] = self.edit_ymin.text()
             data["ylim"][1] = self.edit_ymax.text()
+            data["rscript"] = self.edit_r_script_file.text()
             data["filelabel_data"] = copy.deepcopy(self.selected_data)
             return data
         else:
@@ -351,5 +357,6 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             self.edit_xmax.setText(data["xlim"][1])
             self.edit_ymin.setText(data["ylim"][0])
             self.edit_ymax.setText(data["ylim"][1])
+            self.edit_r_script_file.setText(data["rscript"])
             self.selected_data = copy.deepcopy(data["filelabel_data"])
             self.table_tlabel_redraw()

@@ -17,6 +17,7 @@ class model:
         self.pdf_program = "gnome-open"
         self.plots = dict()
         self.load_config_file()
+        self.check_backward_compatible()
 
     def add_csv_folder(self, folder):
         """
@@ -90,6 +91,12 @@ class model:
         except FileNotFoundError:
             pass
 
+    def check_backward_compatible(self):
+        for data in self.plots.values():
+            # change: 15.08.17, added rscript
+            if not "rscript" in data: 
+                data["rscript"]=""
+
     def show_plot(self, data):
         subprocess.call([self.pdf_program, data["out"]])
 
@@ -121,6 +128,8 @@ class model:
             plot.append('--xlim="' + data["xlim"][0] + "," + data["xlim"][1] + '"')
         if not data["ylim"][0] == "" or not data["ylim"][1] == "":
             plot.append('--ylim="' + data["ylim"][0] + "," + data["ylim"][1] + '"')
+        if not data["rscript"] == "":
+            plot.append('--rscript="' + data["rscript"] + '"' )
         plot.append('--tlabel="' + tlabels + '"')
         return plot
     
