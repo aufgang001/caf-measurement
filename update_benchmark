@@ -1,5 +1,3 @@
-#!/bin/bash
-
 if [ $# == 0 ]; then
   $0 "caf-measurement"
   $0 "actor-framework"
@@ -24,8 +22,8 @@ fi
 if [ "$1" == "actor-framework" ]; then
   cd actor-framework
   git fetch
-  git checkout -f origin/topic/numa_scheduler
-  #git checkout -f origin/topic/numa_scheduling_1
+  #git checkout -f origin/topic/numa_scheduler
+  git checkout -f origin/topic/numa_scheduling_1
 
   cd benchmarks
   git fetch
