@@ -17,8 +17,8 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.selected_data= dict()
         self.modifing_on_tabel_tlabel = False
         # set all handler
-        self.radiobtn_performance.clicked.connect(self.lst_csv_file_refresh)
-        self.radiobtn_memory.clicked.connect(self.lst_csv_file_refresh)
+        self.radiobtn_performance.clicked.connect(self.lst_csv_refresh)
+        self.radiobtn_memory.clicked.connect(self.lst_csv_refresh)
         self.closeEvent = self.main_window_close_event
         self.lst_csv.keyPressEvent = self.lst_csv_keyPressEvent
         self.lst_csv.clicked.connect(self.lst_csv_clicked)
@@ -39,6 +39,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.btn_delete_plot.clicked.connect(self.btn_delete_clicked)
         self.btn_new_plot.clicked.connect(self.btn_new_clicked)
         self.edit_label_filter.textChanged.connect(self.lst_label_refresh)
+        self.edit_csv_filter.textChanged.connect(self.lst_csv_refresh)
         self.edit_ydivider.setValidator(QtGui.QDoubleValidator(self))
         self.edit_xmin.setValidator(QtGui.QDoubleValidator(self))
         self.edit_xmax.setValidator(QtGui.QDoubleValidator(self))
@@ -46,7 +47,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.edit_ymax.setValidator(QtGui.QDoubleValidator(self))
         self.btn_r_script_browse.clicked.connect(self.btn_r_script_browse_clicked)
         # set mode performacne or memory and update csv_list
-        self.lst_csv_file_refresh()
+        self.lst_csv_refresh()
         self.cbox_plots_refresh(index=0)
 
     def btn_delete_clicked(self):
@@ -93,28 +94,32 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             self.btn_save_plot_clicked()
             self.model.save_config_file()
             
-    def lst_csv_file_refresh(self):
+    def check_filters(str, filters):
+        for filter in filters: 
+            if not filter in str:
+                return False 
+        return True
+
+    def lst_csv_refresh(self):
         if self.radiobtn_memory.isChecked():
             self.mode = model.plot_type.memory
         else:
             self.mode = model.plot_type.performance
+        filters = self.edit_csv_filter.text().split()
+        csv_files = self.model.get_csv_files(self.mode)
+        csv_files = [csv_file for csv_file in csv_files if controller.check_filters(csv_file, filters)]
         self.lst_csv.clear()
-        self.lst_csv.addItems(self.model.get_csv_files(self.mode))
+        self.lst_csv.addItems(csv_files)
         self.lst_csv.sortItems()
         #all other fileds
         self.lst_label.clear()
 
     def lst_label_refresh(self):
-        def label_filter(str, filters):
-            for filter in filters: 
-                if not filter in str:
-                    return False 
-            return True
         csv_file = self.get_selected_csv_file()
         if csv_file:
             filters = self.edit_label_filter.text().split()
             labels = self.model.get_csv_file_header(csv_file)
-            labels = [label for label in labels if label_filter(label, filters)]
+            labels = [label for label in labels if controller.check_filters(label, filters)]
             self.lst_label.clear()
             self.lst_label.addItems(labels)
             self.lst_label.sortItems()
@@ -127,7 +132,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             items = self.lst_csv.selectedItems()
             if len(items) > 0:
                 self.model.remove_csv_file(items[0].text())
-                self.lst_csv_file_refresh()
+                self.lst_csv_refresh()
 
     def get_selected_csv_file(self):
         items = self.lst_csv.selectedItems()
@@ -259,7 +264,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         files = QtWidgets.QFileDialog.getOpenFileNames(None, 'Select csv files', '.', "CSV files (*.csv)")[0]
         for file in files:
             self.model.add_csv_file(file)
-        self.lst_csv_file_refresh()
+        self.lst_csv_refresh()
     
     def add_csv_folder(self):
         # http://stackoverflow.com/questions/38252419/qt-get-qfiledialog-to-select-and-return-multiple-folders
@@ -277,7 +282,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             folders = file_dialog.selectedFiles()
             for folder in folders:
                 self.model.add_csv_folder(folder)
-            self.lst_csv_file_refresh()
+            self.lst_csv_refresh()
 
     def set_plot_script(self):
         plot_script = QtWidgets.QFileDialog.getOpenFileName(None, 'Select plot script', '.')[0]

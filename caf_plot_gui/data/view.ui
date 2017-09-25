@@ -22,7 +22,11 @@
     <item row="2" column="2">
      <layout class="QVBoxLayout" name="verticalLayout_label">
       <item>
-       <widget class="QLineEdit" name="edit_label_filter"/>
+       <widget class="QLineEdit" name="edit_label_filter">
+        <property name="placeholderText">
+         <string>Label Filter</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QListWidget" name="lst_label"/>
@@ -86,6 +90,13 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edit_csv_filter">
+        <property name="placeholderText">
+         <string>CSV Filter</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QListWidget" name="lst_csv">

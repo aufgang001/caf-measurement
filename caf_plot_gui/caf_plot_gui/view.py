@@ -59,6 +59,9 @@ class Ui_MainWindow(object):
         self.radiobtn_performance.setObjectName("radiobtn_performance")
         self.horizontalLayout.addWidget(self.radiobtn_performance)
         self.verticalLayout_csv.addLayout(self.horizontalLayout)
+        self.edit_csv_filter = QtWidgets.QLineEdit(self.centralwidget)
+        self.edit_csv_filter.setObjectName("edit_csv_filter")
+        self.verticalLayout_csv.addWidget(self.edit_csv_filter)
         self.lst_csv = QtWidgets.QListWidget(self.centralwidget)
         self.lst_csv.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.lst_csv.setObjectName("lst_csv")
@@ -227,11 +230,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.edit_label_filter.setPlaceholderText(_translate("MainWindow", "Label Filter"))
         self.label_5.setText(_translate("MainWindow", "Plots:"))
         self.btn_new_plot.setText(_translate("MainWindow", "New"))
         self.btn_delete_plot.setText(_translate("MainWindow", "Delete"))
         self.radiobtn_memory.setText(_translate("MainWindow", "Memory"))
         self.radiobtn_performance.setText(_translate("MainWindow", "Performance"))
+        self.edit_csv_filter.setPlaceholderText(_translate("MainWindow", "CSV Filter"))
         self.label.setText(_translate("MainWindow", "File name:"))
         self.label_2.setText(_translate("MainWindow", "Title:"))
         self.label_3.setText(_translate("MainWindow", "Y-label:"))
