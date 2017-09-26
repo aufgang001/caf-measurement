@@ -9,10 +9,11 @@ BENCH_USER="localadmin"
 OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
 CAF_INI_FILE="caf-application.ini"
-REPITITIONS=1
+REPITITIONS=10
 MIN_CORES=4
 
 todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
+bench_args="--worker=225 --controllers=1"
 
 # Preperation
 rm -f ${OUT_DIR}/*
@@ -45,7 +46,7 @@ actor-pinning-entity='$pinning_entity'
 w-stealing-entity='$stealing_entity'
 EOL
 
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=numa_matrix_search_continues --repetitions=${REPITITIONS} --label-suffix=${name}
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=numa_matrix_search_continues --repetitions=${REPITITIONS} --custom-args="${bench_args}" --label-suffix=${name}
 done
 
 # Create csv files
