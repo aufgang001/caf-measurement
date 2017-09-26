@@ -42,7 +42,7 @@ EOL
   file="${bench}_${name}.txt"
   echo "sched_events, steal_attemps, success_steals" > $file
   for i in $(seq 0 $REPITITIONS); do
-    ${BIN_PATH}/${bench} ${bench_args} $2>> $file
+    ${BIN_PATH}/${bench} ${bench_args} > $file 2>&1
   done
 done
 
