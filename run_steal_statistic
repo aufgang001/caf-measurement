@@ -48,7 +48,7 @@ relaxed-sleep-duration=10000
 actor-pinning-entity='$pinning_entity'
 w-stealing-entity='$stealing_entitiy'
 EOL
-  file="${bench}-${name}.txt"
+  file="${bench}-${name}.csv"
   echo "sched_events, steal_attempts, success_steals" > ${OUT_DIR}/$file
   echo "$file"
   for i in $(seq 1 $REPITITIONS); do

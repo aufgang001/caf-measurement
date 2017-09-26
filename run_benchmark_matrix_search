@@ -14,16 +14,27 @@ MIN_CORES=4
 
 #todo_array="stealing w-stealing"
 todo_array="w-stealing"
+#todo_array="LGS;w-stealing;node;node; CLS_thread_pinning;stealing;system;system"
+todo_array="CLS_original;w-stealing;node;node; CLS_thread_pinning;stealing;system;system"
 
 # Preperation
 rm -f ${OUT_DIR}/*
 cd ${CAF_HOME}/benchmarks/scripts
 
+unpack_props() {
+  IFS=';' read -ra PROPS <<< "$1"
+  name=${PROPS[0]}
+  policy=${PROPS[1]}
+  pinning_entity=${PROPS[2]}
+  stealing_entity=${PROPS[3]}
+}
+
 # Run CAF benchmark suite
-for todo in $todo_array ; do
+for todo_props in $todo_array ; do
+  unpack_props $todo_props
 cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
 [scheduler]
-policy='$todo'
+policy='$policy'
 [work-stealing]
 aggressive-poll-attempts=100
 aggressive-steal-interval=10
@@ -33,8 +44,8 @@ moderate-sleep-duration=50
 relaxed-steal-interval=1
 relaxed-sleep-duration=10000
 [lgs]
-actor-pinning-entity='node'
-w-stealing-entity='node'
+actor-pinning-entity='$pinning_entity'
+w-stealing-entity='$stealing_entitiy'
 EOL
 
   ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=numa_matrix_search_continues --repetitions=${REPITITIONS} --label-suffix=${todo}
