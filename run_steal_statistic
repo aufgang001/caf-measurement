@@ -42,7 +42,7 @@ EOL
   file="${bench}_${name}.txt"
   echo "sched_events, steal_attemps, success_steals" > $file
   echo "write to $file"
-  for i in $(seq 0 $REPITITIONS); do
+  for i in $(seq 1 $REPITITIONS); do
     printf "$i "
     ${BIN_PATH}/${bench} ${bench_args} > ${OUT_DIR}/$file 2>&1
   done
