@@ -19,7 +19,7 @@ else
   echo "NOOPPP"
 fi
 
-if [ $single_execution ]; then
+if [ "$single_execution" = true ]; then
   # Preperation
   echo "FUUUUUU"
   rm -f ${OUT_DIR}/*
@@ -62,7 +62,7 @@ EOL
   printf "\033[2K\r" 
 done
 
-if [ $single_execution ]; then
+if [ "$single_execution" = true ]; then
   duration=$SECONDS
   echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
 fi
