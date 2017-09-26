@@ -40,7 +40,7 @@ actor-pinning-entity='$pinning_entity'
 w-stealing-entity='$stealing_entitiy'
 EOL
   file="${bench}_${name}.txt"
-  echo "sched_events, steal_attemps, success_steals" > $file
+  echo "sched_events, steal_attemps, success_steals" > ${OUT_DIR}/$file
   echo "write to $file"
   for i in $(seq 1 $REPITITIONS); do
     printf "$i "
