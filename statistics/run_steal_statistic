@@ -5,7 +5,7 @@ OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
 CAF_INI_FILE="caf-application.ini"
 REPITITIONS=20
-todo_array="CLS_original;stealing;system;system CLS_thread_pinning;w-stealing;system;system LGS;w-stealing;node;node LGS_cache_optimized;w-stealing;node;cache"
+todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
 
 if [[ $# -ge 1 ]]; then
   bench="$1"; shift
@@ -46,7 +46,7 @@ relaxed-steal-interval=1
 relaxed-sleep-duration=10000
 [lgs]
 actor-pinning-entity='$pinning_entity'
-w-stealing-entity='$stealing_entitiy'
+w-stealing-entity='$stealing_entity'
 EOL
   file="${bench}-${name}.txt"
   echo "sched_events, steal_attempts, success_steals" > ${OUT_DIR}/$file

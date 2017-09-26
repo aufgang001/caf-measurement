@@ -12,7 +12,7 @@ CAF_INI_FILE="caf-application.ini"
 REPITITIONS=1
 MIN_CORES=4
 
-todo_array="CLS_original;stealing;system;system CLS_thread_pinning;w-stealing;system;system LGS;w-stealing;node;node LGS_cache_optimized;w-stealing;node;cache"
+todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
 
 # Preperation
 rm -f ${OUT_DIR}/*
@@ -42,7 +42,7 @@ relaxed-steal-interval=1
 relaxed-sleep-duration=10000
 [lgs]
 actor-pinning-entity='$pinning_entity'
-w-stealing-entity='$stealing_entitiy'
+w-stealing-entity='$stealing_entity'
 EOL
 
   ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=numa_matrix_search_continues --repetitions=${REPITITIONS} --label-suffix=${name}
