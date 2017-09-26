@@ -41,9 +41,13 @@ w-stealing-entity='$stealing_entitiy'
 EOL
   file="${bench}_${name}.txt"
   echo "sched_events, steal_attemps, success_steals" > $file
+  echo "write to $file"
   for i in $(seq 0 $REPITITIONS); do
-    ${BIN_PATH}/${bench} ${bench_args} > $file 2>&1
+    printf "$i "
+    ${BIN_PATH}/${bench} ${bench_args} > ${OUT_DIR}/$file 2>&1
   done
+  #delete current line and move cursor to the beginning
+  printf "\033[2K\r" 
 done
 
 
