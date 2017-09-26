@@ -7,22 +7,20 @@ CAF_INI_FILE="caf-application.ini"
 REPITITIONS=10
 todo_array="LGS;w-stealing;node;node; CLS-thread-pinning;stealing;system;system"
 
-# Preperation
-rm -f ${OUT_DIR}/*
-
-
-if [[ $# -gt 1 ]]; then
+if [[ $# -ge 1 ]]; then
   bench="$1"; shift
   bench_args="$@"
-  output=false
+  single_execution=false
 else
   bench="numa_matrix_search_continues"
   bench_args=""
-  output=true
+  single_execution=true
 fi
 
-echo $bench
-echo $bench_args
+if [ $single_execution ]; then
+  # Preperation
+  rm -f ${OUT_DIR}/*
+fi
 
 unpack_props() {
   IFS=';' read -ra PROPS <<< "$1"
@@ -61,7 +59,7 @@ EOL
   printf "\033[2K\r" 
 done
 
-if [ $output ]; then
+if [ $single_execution ]; then
   duration=$SECONDS
   echo "duration: $(($duration / 3600))h $((($duration / 60) % 60))m $(($duration % 60))s"
 fi
