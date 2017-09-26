@@ -44,7 +44,7 @@ EOL
   echo "write to $file"
   for i in $(seq 1 $REPITITIONS); do
     printf "$i "
-    ${BIN_PATH}/${bench} ${bench_args} > ${OUT_DIR}/$file 2>&1
+    ${BIN_PATH}/${bench} ${bench_args} 2>> ${OUT_DIR}/$file
   done
   #delete current line and move cursor to the beginning
   printf "\033[2K\r" 
