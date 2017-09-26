@@ -4,7 +4,7 @@ CAF_HOME="/users/localadmin/woelke/actor-framework"
 OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
 CAF_INI_FILE="caf-application.ini"
-REPITITIONS=10
+REPITITIONS=1
 todo_array="LGS;w-stealing;node;node; CLS_thread_pinning;stealing;system;system"
 
 if [[ $# -ge 1 ]]; then
@@ -21,6 +21,7 @@ fi
 
 if [ $single_execution ]; then
   # Preperation
+  echo "FUUUUUU"
   rm -f ${OUT_DIR}/*
 fi
 
@@ -52,7 +53,7 @@ w-stealing-entity='$stealing_entitiy'
 EOL
   file="${bench}-${name}.txt"
   echo "sched_events, steal_attempts, success_steals" > ${OUT_DIR}/$file
-  echo "write to $file"
+  echo "$file"
   for i in $(seq 1 $REPITITIONS); do
     printf "$i "
     ${BIN_PATH}/${bench} ${bench_args} 2>> ${OUT_DIR}/$file
