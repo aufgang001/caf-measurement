@@ -13,7 +13,8 @@ REPITITIONS=10
 MIN_CORES=4
 
 todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
-bench_args="--worker=225 --controllers=1"
+#bench_args="--worker=225 --controllers=1"
+bench_args=""
 
 # Preperation
 rm -f ${OUT_DIR}/*
