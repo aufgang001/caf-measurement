@@ -51,12 +51,13 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.cbox_plots_refresh(index=0)
 
     def btn_delete_clicked(self):
-        plot_name = self.cbox_plots.currentText()
-        quit_msg = "Delete " + plot_name + "?"
-        reply = QtWidgets.QMessageBox.question(self, 'Message', quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
-        if reply == QtWidgets.QMessageBox.Yes:
-            del self.model.plots[plot_name]
-            self.cbox_plots_refresh(index=0)
+        if self.cbox_plots.count() > 0:
+            plot_name = self.cbox_plots.currentText()
+            quit_msg = "Delete " + plot_name + "?"
+            reply = QtWidgets.QMessageBox.question(self, 'Message', quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+            if reply == QtWidgets.QMessageBox.Yes:
+                del self.model.plots[plot_name]
+                self.cbox_plots_refresh(index=0)
 
     def btn_new_clicked(self):
         self.load_plot_data(self.get_new_data())
@@ -344,6 +345,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         data["ydivider"] = "1000"
         data["xlim"] = ["",""]
         data["ylim"] = ["",""]
+        data["rscript"] = ""
         data["filelabel_data"] = dict()
         return data
 
