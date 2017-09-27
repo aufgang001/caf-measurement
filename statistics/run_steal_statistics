@@ -1,4 +1,5 @@
 #!/bin/bash
+OUT_DIR="/users/localadmin/woelke/test_data"
 
 # Preperation
 rm -f ${OUT_DIR}/*
