@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Preperation
+rm -f ${OUT_DIR}/*
+
 set_bench_and_suffix() {
   IFS=';' read -ra ARGS_SUFFIX <<< "$1"
   bench=${ARGS_SUFFIX[0]}
