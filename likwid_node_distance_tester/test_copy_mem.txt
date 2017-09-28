@@ -1,0 +1,99 @@
+Warning: Sanitizing vector length to a multiple of the loop stride 4 and thread count 64 from 62500000 elements (1000000000 byt
+es) to 62499840 elements (999997440 bytes)
+Allocate: Process running on core 8 (Domain M1) - Vector length 62499840/499998720 Offset 0 Alignment 512
+Allocate: Process running on core 8 (Domain M1) - Vector length 62499840/499998720 Offset 0 Alignment 512
+--------------------------------------------------------------------------------
+LIKWID MICRO BENCHMARK
+Test: copy_mem
+--------------------------------------------------------------------------------
+Using 1 work groups
+Using 64 threads
+--------------------------------------------------------------------------------
+Group: 0 Thread 7 Global Thread 7 running on core 7 - Vector length 976560 Offset 6835920
+Group: 0 Thread 6 Global Thread 6 running on core 6 - Vector length 976560 Offset 5859360
+Group: 0 Thread 8 Global Thread 8 running on core 0 - Vector length 976560 Offset 7812480
+Group: 0 Thread 9 Global Thread 9 running on core 1 - Vector length 976560 Offset 8789040
+Group: 0 Thread 10 Global Thread 10 running on core 2 - Vector length 976560 Offset 9765600
+Group: 0 Thread 11 Global Thread 11 running on core 3 - Vector length 976560 Offset 10742160
+Group: 0 Thread 12 Global Thread 12 running on core 4 - Vector length 976560 Offset 11718720
+Group: 0 Thread 13 Global Thread 13 running on core 5 - Vector length 976560 Offset 12695280
+Group: 0 Thread 16 Global Thread 16 running on core 0 - Vector length 976560 Offset 15624960
+Group: 0 Thread 14 Global Thread 14 running on core 6 - Vector length 976560 Offset 13671840
+Group: 0 Thread 24 Global Thread 24 running on core 0 - Vector length 976560 Offset 23437440
+Group: 0 Thread 20 Global Thread 20 running on core 4 - Vector length 976560 Offset 19531200
+Group: 0 Thread 15 Global Thread 15 running on core 7 - Vector length 976560 Offset 14648400
+Group: 0 Thread 27 Global Thread 27 running on core 3 - Vector length 976560 Offset 26367120
+Group: 0 Thread 29 Global Thread 29 running on core 5 - Vector length 976560 Offset 28320240
+Group: 0 Thread 28 Global Thread 28 running on core 4 - Vector length 976560 Offset 27343680
+Group: 0 Thread 19 Global Thread 19 running on core 3 - Vector length 976560 Offset 18554640
+Group: 0 Thread 53 Global Thread 53 running on core 5 - Vector length 976560 Offset 51757680
+Group: 0 Thread 33 Global Thread 33 running on core 1 - Vector length 976560 Offset 32226480
+Group: 0 Thread 52 Global Thread 52 running on core 4 - Vector length 976560 Offset 50781120
+Group: 0 Thread 50 Global Thread 50 running on core 2 - Vector length 976560 Offset 48828000
+Group: 0 Thread 4 Global Thread 4 running on core 4 - Vector length 976560 Offset 3906240
+Group: 0 Thread 17 Global Thread 17 running on core 1 - Vector length 976560 Offset 16601520
+Group: 0 Thread 59 Global Thread 59 running on core 3 - Vector length 976560 Offset 57617040
+Group: 0 Thread 18 Global Thread 18 running on core 2 - Vector length 976560 Offset 17578080
+Group: 0 Thread 25 Global Thread 25 running on core 1 - Vector length 976560 Offset 24414000
+Group: 0 Thread 40 Global Thread 40 running on core 0 - Vector length 976560 Offset 39062400
+Group: 0 Thread 26 Global Thread 26 running on core 2 - Vector length 976560 Offset 25390560
+Group: 0 Thread 42 Global Thread 42 running on core 2 - Vector length 976560 Offset 41015520
+Group: 0 Thread 41 Global Thread 41 running on core 1 - Vector length 976560 Offset 40038960
+Group: 0 Thread 56 Global Thread 56 running on core 0 - Vector length 976560 Offset 54687360
+Group: 0 Thread 22 Global Thread 22 running on core 6 - Vector length 976560 Offset 21484320
+Group: 0 Thread 30 Global Thread 30 running on core 6 - Vector length 976560 Offset 29296800
+Group: 0 Thread 38 Global Thread 38 running on core 6 - Vector length 976560 Offset 37109280
+Group: 0 Thread 46 Global Thread 46 running on core 6 - Vector length 976560 Offset 44921760
+Group: 0 Thread 54 Global Thread 54 running on core 6 - Vector length 976560 Offset 52734240
+Group: 0 Thread 62 Global Thread 62 running on core 6 - Vector length 976560 Offset 60546720
+Group: 0 Thread 23 Global Thread 23 running on core 7 - Vector length 976560 Offset 22460880
+Group: 0 Thread 39 Global Thread 39 running on core 7 - Vector length 976560 Offset 38085840
+Group: 0 Thread 1 Global Thread 1 running on core 1 - Vector length 976560 Offset 976560
+Group: 0 Thread 47 Global Thread 47 running on core 7 - Vector length 976560 Offset 45898320
+Group: 0 Thread 55 Global Thread 55 running on core 7 - Vector length 976560 Offset 53710800
+Group: 0 Thread 63 Global Thread 63 running on core 7 - Vector length 976560 Offset 61523280
+Group: 0 Thread 31 Global Thread 31 running on core 7 - Vector length 976560 Offset 30273360
+Group: 0 Thread 0 Global Thread 0 running on core 0 - Vector length 976560 Offset 0
+Group: 0 Thread 21 Global Thread 21 running on core 5 - Vector length 976560 Offset 20507760
+Group: 0 Thread 5 Global Thread 5 running on core 5 - Vector length 976560 Offset 4882800
+Group: 0 Thread 37 Global Thread 37 running on core 5 - Vector length 976560 Offset 36132720
+Group: 0 Thread 45 Global Thread 45 running on core 5 - Vector length 976560 Offset 43945200
+Group: 0 Thread 32 Global Thread 32 running on core 0 - Vector length 976560 Offset 31249920
+Group: 0 Thread 61 Global Thread 61 running on core 5 - Vector length 976560 Offset 59570160
+Group: 0 Thread 60 Global Thread 60 running on core 4 - Vector length 976560 Offset 58593600
+Group: 0 Thread 44 Global Thread 44 running on core 4 - Vector length 976560 Offset 42968640
+Group: 0 Thread 35 Global Thread 35 running on core 3 - Vector length 976560 Offset 34179600
+Group: 0 Thread 43 Global Thread 43 running on core 3 - Vector length 976560 Offset 41992080
+Group: 0 Thread 51 Global Thread 51 running on core 3 - Vector length 976560 Offset 49804560
+Group: 0 Thread 34 Global Thread 34 running on core 2 - Vector length 976560 Offset 33203040
+Group: 0 Thread 58 Global Thread 58 running on core 2 - Vector length 976560 Offset 56640480
+Group: 0 Thread 2 Global Thread 2 running on core 2 - Vector length 976560 Offset 1953120
+Group: 0 Thread 3 Global Thread 3 running on core 3 - Vector length 976560 Offset 2929680
+Group: 0 Thread 48 Global Thread 48 running on core 0 - Vector length 976560 Offset 46874880
+Group: 0 Thread 49 Global Thread 49 running on core 1 - Vector length 976560 Offset 47851440
+Group: 0 Thread 57 Global Thread 57 running on core 1 - Vector length 976560 Offset 55663920
+Group: 0 Thread 36 Global Thread 36 running on core 4 - Vector length 976560 Offset 35156160
+--------------------------------------------------------------------------------
+Cycles:                 84202354645
+CPU Clock:              2300045224
+Cycle Clock:            2300045224
+Time:                   3.660900e+01 sec
+Iterations:             32768
+Iterations per thread:  512
+Inner loop executions:  244140
+Size (Byte):            999997440
+Size per thread:        15624960
+Number of Flops:        0
+MFlops/s:               0.00
+Data volume (Byte):     511998689280
+MByte/s:                13985.60
+Cycles per update:      2.631330
+Cycles per cacheline:   21.050643
+Loads per update:       1
+Stores per update:      1
+Load bytes per element: 8
+Store bytes per elem.:  8
+Load/store ratio:       1.00
+Instructions:           87999774736
+UOPs:                   111999713280
+--------------------------------------------------------------------------------
