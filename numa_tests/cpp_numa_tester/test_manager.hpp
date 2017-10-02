@@ -55,37 +55,71 @@ public:
     }
   }
 private:
-  template<class U, class Enable = void>
-  U get_config_value(const std::string& /*test_mode*/, const std::string& /*key*/) {
-    return U(); 
-  }
+  //template<class U, class Enable = void>
+  //U get_config_value(const std::string& [>test_mode*/, const std::string& /*key<]) {
+    //return U(); 
+  //}
 
-  template <class U, 
-            typename std::enable_if<std::is_integral<U>::value>::type>
-  U get_config_value(const std::string& test_mode, const std::string& key) {
-    return static_cast<U>(stoll(configuration_.get(test_mode, key)));
-  }
+  //template <class U, 
+            //typename std::enable_if<std::is_integral<U>::value>::type>
+  //U get_config_value(const std::string& test_mode, const std::string& key) {
+    //return static_cast<U>(stoll(configuration_.get(test_mode, key)));
+  //}
 
-  template <class U,
-            typename std::enable_if<std::is_same<U, std::string>::value>::type>
-  std::string get_config_value(const std::string& test_mode,
-                               const std::string& key) {
-    return configuration_.get(test_mode, key);
+  //template <class U,
+            //typename std::enable_if<std::is_same<U, std::string>::value>::type>
+  //std::string get_config_value(const std::string& test_mode,
+                               //const std::string& key) {
+    //return configuration_.get(test_mode, key);
   
-  }
+  //}
+
+  template<class U, class Enable = void>
+  struct get_config_value { };
+
+  template <class U>
+  struct get_config_value<U, typename std::
+                               enable_if<std::is_integral<U>::value>::type> {
+    get_config_value(const config_map& c) : configuration_(c) {
+    }
+    U operator()(const std::string& test_mode, const std::string& key) {
+      auto res = configuration_.get(test_mode, key);
+      if (res.empty()) {
+        std::cerr << "ERROR! configuration: (" << test_mode << ", " << key
+                  << ") not available" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      return static_cast<U>(stoll(res));
+    }
+    const config_map& configuration_;
+  };
+
+  template <class U>
+  struct get_config_value<U,
+                          typename std::enable_if<std::is_same<U, std::string>::
+                                                    value>::type> {
+    get_config_value(const config_map& c) : configuration_(c) {
+    }
+    U operator()(const std::string& test_mode, const std::string& key) {
+      auto res = configuration_.get(test_mode, key);
+      if (res.empty()) {
+        std::cerr << "ERROR! configuration: (" << test_mode << ", " << key
+                  << ") not available" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      return res;
+    }
+    const config_map& configuration_;
+  };
 
   void run_test_single(const std::string& test_mode) {
-    auto local_node_id = get_config_value<int>(test_mode, "local_node_id");
-    auto remote_node_id = get_config_value<int>(test_mode, "remote_ndoe_id");
-    auto num_of_threads = get_config_value<int>(test_mode, "num_of_threads");
-    auto test_duration = get_config_value<int>(test_mode, "duration");
+    auto& c = configuration_;
+    auto local_node_id = get_config_value<int>(c)(test_mode, "local_node_id");
+    auto remote_node_id = get_config_value<int>(c)(test_mode, "remote_node_id");
+    auto num_of_threads = get_config_value<int>(c)(test_mode, "num_of_threads");
+    auto test_duration = get_config_value<int>(c)(test_mode, "duration");
     size_t memory_size =
-      one_gb * get_config_value<size_t>(test_mode, "memory_size");
-    std::cout << "local_node_id: " << local_node_id << std::endl;
-    std::cout << "remote_node_id: " << remote_node_id << std::endl;
-    std::cout << "num_of_threads: " << num_of_threads << std::endl;
-    std::cout << "test_duration: " << test_duration << std::endl;
-    std::cout << "memory_size: " << memory_size << std::endl;
+      one_gb * get_config_value<size_t>(c)(test_mode, "memory_size");
     auto topo = hwloc_make_topology_wrapper();
     auto local_node_set = hwloc_bitmap_make_wrapper();
     auto remote_node_set = hwloc_bitmap_make_wrapper();
