@@ -7,10 +7,13 @@
 TARGET = numa_tester
 
 SOURCES += main.cpp \
-           hwloc_cpp_helper.cpp
+           hwloc_cpp_helper.cpp \
+           config_map.cpp
 
 HEADERS += tester.hpp  \
-           hwloc_cpp_helper.hpp
+           test_manager.hpp \
+           hwloc_cpp_helper.hpp \
+           config_map.hpp
 
 #QMAKE_CXX = clang
 
