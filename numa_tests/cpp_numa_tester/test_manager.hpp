@@ -80,7 +80,12 @@ private:
     auto num_of_threads = get_config_value<int>(test_mode, "num_of_threads");
     auto test_duration = get_config_value<int>(test_mode, "duration");
     size_t memory_size =
-      one_gb * get_config_value<int>(test_mode, "memory_size");
+      one_gb * get_config_value<size_t>(test_mode, "memory_size");
+    std::cout << "local_node_id: " << local_node_id << std::endl;
+    std::cout << "remote_node_id: " << remote_node_id << std::endl;
+    std::cout << "num_of_threads: " << num_of_threads << std::endl;
+    std::cout << "test_duration: " << test_duration << std::endl;
+    std::cout << "memory_size: " << memory_size << std::endl;
     auto topo = hwloc_make_topology_wrapper();
     auto local_node_set = hwloc_bitmap_make_wrapper();
     auto remote_node_set = hwloc_bitmap_make_wrapper();
