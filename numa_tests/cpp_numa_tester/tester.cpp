@@ -11,7 +11,8 @@ tester::tester(hwloc_topology_t topo, bitmap_wrapper_t local_node_set,
       memory_size_(memory_size),
       local_data_(nullptr, hwloc_mem_deposer(topo, 0)),
       remote_data_(nullptr, hwloc_mem_deposer(topo, 0)),
-      running_(true),
+      running_(new std::atomic<bool>(true)),
+      measuring_(new std::atomic<bool>(false)),
       data_rate_(0) {
   init();
 }
@@ -43,34 +44,42 @@ void tester::run_measurement() {
     std::cerr << "hwloc_set_cpubind() failed" << std::endl;
     exit(EXIT_SUCCESS);
   }
-  auto start = std::chrono::high_resolution_clock::now();
-  size_t iterations = 0;
-  while(running_.load()) {
-    memcpy(local_data_.get(), remote_data_.get(), memory_size_);
-    ++iterations;
+  while (running_->load() && !measuring_->load()) {
   }
-  auto end = high_resolution_clock::now();
-  duration<double> diff = end-start;
-  std::cout << "iterations: " << iterations << std::endl;
-  std::cout << "diff.count(): " << diff.count() << std::endl;
-  data_rate_ = (memory_size_ * iterations) / diff.count();
+  if (measuring_->load()) {
+    auto start = std::chrono::high_resolution_clock::now();
+    size_t iterations = 0;
+    while (running_->load()) {
+      memcpy(local_data_.get(), remote_data_.get(), memory_size_);
+      ++iterations;
+    }
+    auto end = high_resolution_clock::now();
+    duration<double> diff = end - start;
+    std::cout << "iterations: " << iterations << std::endl;
+    std::cout << "diff.count(): " << diff.count() << std::endl;
+    data_rate_ = (memory_size_ * iterations) / diff.count();
+  }
 }
 
 void tester::start_tester() {
+  // ATTENTION!! after executing this function, tester cannot be coppied anymore
   thread_ = std::thread(&tester::run_measurement, this);
 }
 
 void tester::stop_tester() {
-  running_.store(false); 
-  thread_.join();
+  if (thread_.joinable()) {
+    thread_.join();
+  }
 }
 
 void tester::start_measurement() {
+  measuring_->store(true); 
 
 }
 
 void tester::stop_measurement() {
-
+  measuring_->store(false); 
+  running_->store(false); 
 }
 
 // in bytes per seconds
