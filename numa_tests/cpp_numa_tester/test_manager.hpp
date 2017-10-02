@@ -96,7 +96,9 @@ private:
   void run_test_single(const std::string& test_mode) {
     auto& c = configuration_;
     auto local_node_id = get_config_value<int>(c)(test_mode, "local_node_id");
+    std::cout << "local_node_id: " << local_node_id << std::endl;
     auto remote_node_id = get_config_value<int>(c)(test_mode, "remote_node_id");
+    std::cout << "remote_node_id: " << remote_node_id << std::endl;
     auto num_of_threads = get_config_value<int>(c)(test_mode, "num_of_threads");
     auto test_duration = get_config_value<int>(c)(test_mode, "duration");
     size_t memory_size =

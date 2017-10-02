@@ -67,6 +67,7 @@ private:
     remote_data_.reset(
       hwloc_alloc_membind_policy(topo_, memory_size_, remote_node_set_.get(),
                                  HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD));
+    std::cout << "DEBUG:init remote_node_set: " << remote_node_set_ << std::endl;
     if (remote_data_.get() == nullptr) {
       std::cerr << "hwloc_alloc_membind_policy() for remote memory failed"
                 << std::endl;
@@ -75,6 +76,7 @@ private:
     local_data_.reset(
       hwloc_alloc_membind_policy(topo_, memory_size_, local_node_set_.get(),
                                  HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD));
+    std::cout << "DEBUG:init local_node_set: " << local_node_set_ << std::endl;
     if (local_data_.get() == nullptr) {
       std::cerr << "hwloc_alloc_membind_policy() for local memory failed"
                 << std::endl;
@@ -89,6 +91,7 @@ private:
     auto err =
       hwloc_set_cpubind(topo_, bind_cpu_set.get(),
                         HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
+    std::cout << "DEBUG:run_measurement bind_cpu_set: " << bind_cpu_set << std::endl;
     if (err == -1) {
       std::cerr << "hwloc_set_cpubind() failed" << std::endl;
       exit(EXIT_SUCCESS);
