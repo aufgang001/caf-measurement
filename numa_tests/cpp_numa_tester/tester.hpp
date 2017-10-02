@@ -25,7 +25,7 @@ public:
         remote_data_(nullptr, hwloc_mem_deposer(topo, 0)),
         running_(new std::atomic<bool>(true)),
         measuring_(new std::atomic<bool>(false)),
-        data_rate_(0) {
+        copy_rate_(0) {
     init();
   }
 
@@ -57,8 +57,8 @@ public:
   }
 
   // in bytes per seconds
-  size_t get_data_rate() {
-    return data_rate_;
+  size_t get_copy_rate() {
+    return copy_rate_;
   }
 
   meta_data_t meta_data;
@@ -104,7 +104,7 @@ private:
       }
       auto end = high_resolution_clock::now();
       duration<double> diff = end - start;
-      data_rate_ = (memory_size_ * iterations) / diff.count();
+      copy_rate_ = (memory_size_ * iterations) / diff.count();
     }
   }
 
@@ -117,7 +117,7 @@ private:
   std::unique_ptr<std::atomic<bool>> running_;
   std::unique_ptr<std::atomic<bool>> measuring_;
   std::thread thread_;
-  size_t data_rate_; //bytes per seconds
+  size_t copy_rate_; //bytes per seconds
 };
 
 

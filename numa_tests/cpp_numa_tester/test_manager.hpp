@@ -55,25 +55,6 @@ public:
     }
   }
 private:
-  //template<class U, class Enable = void>
-  //U get_config_value(const std::string& [>test_mode*/, const std::string& /*key<]) {
-    //return U(); 
-  //}
-
-  //template <class U, 
-            //typename std::enable_if<std::is_integral<U>::value>::type>
-  //U get_config_value(const std::string& test_mode, const std::string& key) {
-    //return static_cast<U>(stoll(configuration_.get(test_mode, key)));
-  //}
-
-  //template <class U,
-            //typename std::enable_if<std::is_same<U, std::string>::value>::type>
-  //std::string get_config_value(const std::string& test_mode,
-                               //const std::string& key) {
-    //return configuration_.get(test_mode, key);
-  
-  //}
-
   template<class U, class Enable = void>
   struct get_config_value { };
 
@@ -165,12 +146,11 @@ private:
   }
 
   void sum_tester_results(testers_t& ts) {
-    size_t data_rate_sum = 0;
+    size_t copy_rate_sum = 0;
     for (auto& t : ts) {
-      data_rate_sum += t.get_data_rate();
-      std::cout << "data rate: " << t.get_data_rate() << std::endl;
+      copy_rate_sum += t.get_copy_rate();
     }
-    std::cout << "sum data rate: " << data_rate_to_string(data_rate_sum) << std::endl;
+    std::cout << "sum data rate: " << data_rate_to_string(copy_rate_sum) << std::endl;
   }
 
   config_map configuration_;
