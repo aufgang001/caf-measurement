@@ -34,6 +34,7 @@ private:
   std::unique_ptr<void, hwloc_mem_deposer> remote_data_;
   std::atomic<bool> running_;
   std::thread thread_;
+  size_t data_rate_; //bytes per seconds
 };
 
 
