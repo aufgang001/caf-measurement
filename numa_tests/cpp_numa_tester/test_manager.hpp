@@ -150,7 +150,7 @@ private:
     for (auto& t : ts) {
       copy_rate_sum += t.get_copy_rate();
     }
-    std::cout << "sum data rate: " << data_rate_to_string(copy_rate_sum) << std::endl;
+    std::cout << "sum copy rate: " << data_rate_to_string(copy_rate_sum) << std::endl;
   }
 
   config_map configuration_;
