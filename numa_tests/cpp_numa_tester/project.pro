@@ -7,7 +7,6 @@
 TARGET = numa_tester
 
 SOURCES += main.cpp \
-           tester.cpp \
            hwloc_cpp_helper.cpp
 
 HEADERS += tester.hpp  \

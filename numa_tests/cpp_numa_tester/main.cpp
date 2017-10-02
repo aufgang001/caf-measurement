@@ -15,11 +15,12 @@ string data_rate_to_string(size_t rate_bytes_per_sec) {
   return result;
 }
 
-vector<tester> prepare_testers(hwloc_topology_t topo, int num_threads,
+template<class T>
+vector<tester<T>> prepare_testers(hwloc_topology_t topo, int num_threads,
                                size_t memory_size,
                                hwloc_const_bitmap_t node_set_a,
                                hwloc_const_bitmap_t node_set_b) {
-  vector<tester> ts;
+  vector<tester<T>> ts;
   for (auto i = 0; i < num_threads; ++i) {
     auto tmp_node_set_a = hwloc_bitmap_make_wrapper();
     auto tmp_node_set_b = hwloc_bitmap_make_wrapper();
@@ -31,7 +32,8 @@ vector<tester> prepare_testers(hwloc_topology_t topo, int num_threads,
   return ts;
 }
 
-void run_testers(vector<tester>& ts, seconds test_duration) {
+template<class T>
+void run_testers(vector<tester<T>>& ts, seconds test_duration) {
   for (auto& t: ts) {
     t.start_tester(); 
   }
@@ -45,6 +47,10 @@ void run_testers(vector<tester>& ts, seconds test_duration) {
   for (auto& t: ts) {
     t.stop_tester(); 
   }
+}
+
+template<class T>
+void sum_tester_results(vector<tester<T>>& ts) {
   size_t data_rate_sum = 0;
   for (auto& t: ts) {
     data_rate_sum += t.get_data_rate();
@@ -53,11 +59,11 @@ void run_testers(vector<tester>& ts, seconds test_duration) {
   cout << "sum data rate: " << data_rate_to_string(data_rate_sum) << endl;
 }
 
-
 int main(int /*argc*/, char** /*argv[]*/) {
   auto topo = hwloc_make_topology_wrapper();
   auto node_set = hwloc_bitmap_make_wrapper();
   hwloc_bitmap_set(node_set.get(), 1);
-  auto testers = prepare_testers(topo.get(), 4, one_gb, node_set.get(), node_set.get());
+  auto testers = prepare_testers<void*>(topo.get(), 4, one_gb, node_set.get(), node_set.get());
   run_testers(testers, seconds(10));
+  sum_tester_results(testers);
 }
