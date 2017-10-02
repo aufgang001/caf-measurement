@@ -51,6 +51,7 @@ void tester::run_measurement() {
   }
   auto end = high_resolution_clock::now();
   duration<double> diff = end-start;
+  std::cout << "iterations: " << iterations << std::endl;
   std::cout << "diff.count(): " << diff.count() << std::endl;
   data_rate_ = (memory_size_ * iterations) / diff.count();
 }
