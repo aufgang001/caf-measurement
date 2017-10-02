@@ -58,6 +58,6 @@ int main(int /*argc*/, char** /*argv[]*/) {
   auto topo = hwloc_make_topology_wrapper();
   auto node_set = hwloc_bitmap_make_wrapper();
   hwloc_bitmap_set(node_set.get(), 1);
-  auto testers = prepare_testers(topo.get(), 8, one_gb, node_set.get(), node_set.get());
+  auto testers = prepare_testers(topo.get(), 4, one_gb, node_set.get(), node_set.get());
   run_testers(testers, seconds(10));
 }
