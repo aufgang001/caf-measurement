@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-TARGET = project
+TARGET = numa_tester
 
 SOURCES += main.cpp \
            tester.cpp \
