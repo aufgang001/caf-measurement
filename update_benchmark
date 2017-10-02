@@ -13,7 +13,7 @@ if [ "$1" == "caf-measurement" ]; then
   #cd ../hwloc
   #qmake
   #make
-
+ 
   #cd ../savina
   #git fetch
   #git checkout -f origin/master
