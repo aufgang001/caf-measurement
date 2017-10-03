@@ -109,7 +109,7 @@ private:
     hwloc_bitmap_set(mem_node_set_b.get(), mem_node_id_b);
     auto testers =
       prepare_testers(topo.get(), num_of_threads, thread_node_set.get(), mem_node_set_a.get(),
-                      mem_node_set_a.get(), memory_size);
+                      mem_node_set_b.get(), memory_size);
     run_testers(testers, seconds(test_duration));
     sum_tester_results(testers);
   } 

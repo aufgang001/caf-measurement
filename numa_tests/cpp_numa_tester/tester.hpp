@@ -90,12 +90,8 @@ private:
   }
 
   void init() {
-    std::cout << "mem a: " << mem_node_set_a_ << std::endl;
-    std::cout << "mem b: " << mem_node_set_b_ << std::endl;
     allocate_node_specific_mem(data_a_, mem_node_set_a_);
     allocate_node_specific_mem(data_b_, mem_node_set_b_);
-    std::cout << "mem a: " << mem_node_set_a_ << std::endl;
-    std::cout << "mem b: " << mem_node_set_b_ << std::endl;
   }
 
   void run_measurement() {
