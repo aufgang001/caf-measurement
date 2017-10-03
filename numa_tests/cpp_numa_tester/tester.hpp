@@ -97,7 +97,6 @@ private:
   void run_measurement() {
     using namespace std::chrono;
     pin_this_thread(thread_node_set_);
-    std::cout << "pin thread: " << thread_node_set_ << std::endl;
     while (running_->load() && !measuring_->load()) {
     }
     if (measuring_->load()) {
