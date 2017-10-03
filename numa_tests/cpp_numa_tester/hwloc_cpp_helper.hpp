@@ -37,8 +37,7 @@ struct hwloc_mem_disposer {
   }
 
   void operator()(void * p) {
-    //hwloc_free(topo, p, size);
-    free(p);
+    hwloc_free(topo, p, size);
   }
 
   hwloc_topology_t topo;
