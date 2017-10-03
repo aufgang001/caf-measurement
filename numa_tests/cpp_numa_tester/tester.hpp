@@ -92,14 +92,11 @@ private:
   void init() {
     allocate_node_specific_mem(dst_data_, dst_mem_node_set_);
     allocate_node_specific_mem(src_data_, src_mem_node_set_);
-    std::cout << "mem a: " << dst_mem_node_set_ << std::endl;
-    std::cout << "mem b: " << src_mem_node_set_ << std::endl;
   }
 
   void run_measurement() {
     using namespace std::chrono;
     pin_this_thread(thread_node_set_);
-    std::cout << "pin thread: " << thread_node_set_ << std::endl;
     while (running_->load() && !measuring_->load()) {
     }
     if (measuring_->load()) {
