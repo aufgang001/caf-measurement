@@ -91,13 +91,13 @@ private:
     auto err =
       hwloc_set_cpubind(topo_, bind_cpu_set.get(),
                         HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
-    local_data_.reset(alloc(memory_size_));
+    local_data_.reset(malloc(memory_size_));
     if (local_data_.get() == nullptr) {
       std::cerr << "hwloc_alloc_membind_policy() for local memory failed"
                 << std::endl;
       exit(EXIT_FAILURE);
     }
-    remote_data_.reset(alloc(memory_size_));
+    remote_data_.reset(malloc(memory_size_));
     if (remote_data_.get() == nullptr) {
       std::cerr << "hwloc_alloc_membind_policy() for remote memory failed"
                 << std::endl;
