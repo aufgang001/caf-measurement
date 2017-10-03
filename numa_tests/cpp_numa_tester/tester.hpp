@@ -64,28 +64,35 @@ public:
   meta_data_t meta_data;
 private:
   void init() {
-    remote_data_.reset(hwloc_alloc_membind_nodeset(
-      topo_, memory_size_, remote_node_set_.get(), HWLOC_MEMBIND_BIND,
-      HWLOC_MEMBIND_THREAD | HWLOC_MEMBIND_STRICT));
-    if (remote_data_.get() == nullptr) {
-      std::cerr << "hwloc_alloc_membind_nodeset() for remote memory failed"
-                << std::endl;
-      exit(EXIT_FAILURE);
-    }
-    local_data_.reset(hwloc_alloc_membind_nodeset(
-      topo_, memory_size_, local_node_set_.get(), HWLOC_MEMBIND_BIND,
-      HWLOC_MEMBIND_THREAD | HWLOC_MEMBIND_STRICT));
-    if (local_data_.get() == nullptr) {
-      std::cerr << "hwloc_alloc_membind_nodeset() for local memory failed"
-                << std::endl;
-      exit(EXIT_FAILURE);
-    }
+    auto current_cpu_binding = hwloc_bitmap_make_wrapper();
+    hwloc_get_cpubind (topo_, current_cpu_binding.get(), 0),
+    pin_this_thread(local_node_set_);
+    local_data_.reset(malloc(memory_size_));
+    pin_this_thread(remote_node_set_);
+    remote_data_.reset(malloc(memory_size_));
+    pin_this_thread(current_cpu_binding);
+
+    //remote_data_.reset(hwloc_alloc_membind_nodeset(
+      //topo_, memory_size_, remote_node_set_.get(), HWLOC_MEMBIND_BIND,
+      //HWLOC_MEMBIND_THREAD | HWLOC_MEMBIND_STRICT));
+    //if (remote_data_.get() == nullptr) {
+      //std::cerr << "hwloc_alloc_membind_nodeset() for remote memory failed"
+                //<< std::endl;
+      //exit(EXIT_FAILURE);
+    //}
+    //local_data_.reset(hwloc_alloc_membind_nodeset(
+      //topo_, memory_size_, local_node_set_.get(), HWLOC_MEMBIND_BIND,
+      //HWLOC_MEMBIND_THREAD | HWLOC_MEMBIND_STRICT));
+    //if (local_data_.get() == nullptr) {
+      //std::cerr << "hwloc_alloc_membind_nodeset() for local memory failed"
+                //<< std::endl;
+      //exit(EXIT_FAILURE);
+    //}
   }
 
-  void run_measurement() {
-    using namespace std::chrono;
+  void pin_this_thread(bitmap_wrapper_t& to) {
     auto bind_cpu_set = hwloc_bitmap_make_wrapper();
-    hwloc_cpuset_from_nodeset(topo_, bind_cpu_set.get(), local_node_set_.get());
+    hwloc_cpuset_from_nodeset(topo_, bind_cpu_set.get(), to.get());
     auto err =
       hwloc_set_cpubind(topo_, bind_cpu_set.get(),
                         HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
@@ -93,6 +100,11 @@ private:
       std::cerr << "hwloc_set_cpubind() failed" << std::endl;
       exit(EXIT_FAILURE);
     }
+  }
+
+  void run_measurement() {
+    using namespace std::chrono;
+    pin_this_thread(local_node_set_);
     while (running_->load() && !measuring_->load()) {
     }
     if (measuring_->load()) {
