@@ -16,15 +16,15 @@ public:
   using meta_data_t = T;
 
   tester(hwloc_topology_t topo, bitmap_wrapper_t thread_node_set,
-         bitmap_wrapper_t mem_node_set_a, bitmap_wrapper_t mem_node_set_b,
+         bitmap_wrapper_t dst_mem_node_set, bitmap_wrapper_t src_mem_node_set,
          size_t memory_size)
       : topo_(topo),
         thread_node_set_(move(thread_node_set)),
-        mem_node_set_a_(move(mem_node_set_a)),
-        mem_node_set_b_(move(mem_node_set_b)),
+        dst_mem_node_set_(move(dst_mem_node_set)),
+        src_mem_node_set_(move(src_mem_node_set)),
         memory_size_(memory_size),
-        data_a_(nullptr, hwloc_mem_disposer(topo, memory_size)),
-        data_b_(nullptr, hwloc_mem_disposer(topo, memory_size)),
+        dst_data_(nullptr, hwloc_mem_disposer(topo, memory_size)),
+        src_data_(nullptr, hwloc_mem_disposer(topo, memory_size)),
         running_(new std::atomic<bool>(true)),
         measuring_(new std::atomic<bool>(false)),
         copy_rate_(0) {
@@ -90,10 +90,10 @@ private:
   }
 
   void init() {
-    allocate_node_specific_mem(data_a_, mem_node_set_a_);
-    allocate_node_specific_mem(data_b_, mem_node_set_b_);
-    std::cout << "mem a: " << mem_node_set_a_ << std::endl;
-    std::cout << "mem b: " << mem_node_set_b_ << std::endl;
+    allocate_node_specific_mem(dst_data_, dst_mem_node_set_);
+    allocate_node_specific_mem(src_data_, src_mem_node_set_);
+    std::cout << "mem a: " << dst_mem_node_set_ << std::endl;
+    std::cout << "mem b: " << src_mem_node_set_ << std::endl;
   }
 
   void run_measurement() {
@@ -106,7 +106,7 @@ private:
       auto start = std::chrono::high_resolution_clock::now();
       size_t iterations = 0;
       while (running_->load()) {
-        memcpy(data_a_.get(), data_b_.get(), memory_size_);
+        memcpy(dst_data_.get(), src_data_.get(), memory_size_);
         ++iterations;
       }
       auto end = high_resolution_clock::now();
@@ -117,11 +117,11 @@ private:
 
   hwloc_topology_t topo_;
   bitmap_wrapper_t thread_node_set_;
-  bitmap_wrapper_t mem_node_set_a_;
-  bitmap_wrapper_t mem_node_set_b_;
+  bitmap_wrapper_t dst_mem_node_set_;
+  bitmap_wrapper_t src_mem_node_set_;
   size_t memory_size_; // in bytes
-  mem_t data_a_;
-  mem_t data_b_;
+  mem_t dst_data_;
+  mem_t src_data_;
   std::unique_ptr<std::atomic<bool>> running_;
   std::unique_ptr<std::atomic<bool>> measuring_;
   std::thread thread_;

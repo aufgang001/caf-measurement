@@ -94,40 +94,41 @@ private:
   void run_test_single(const std::string& test_mode) {
     auto& c = configuration_;
     auto thread_node_id = get_config_value<int>(c)(test_mode, "thread_node_id");
-    auto mem_node_id_a = get_config_value<int>(c)(test_mode, "mem_node_id_a");
-    auto mem_node_id_b = get_config_value<int>(c)(test_mode, "mem_node_id_b");
+    auto dst_mem_node_id = get_config_value<int>(c)(test_mode, "dst_mem_node_id");
+    auto src_mem_node_id = get_config_value<int>(c)(test_mode, "src_mem_node_id");
     auto num_of_threads = get_config_value<int>(c)(test_mode, "num_of_threads");
     auto test_duration = get_config_value<int>(c)(test_mode, "duration");
     size_t memory_size =
       one_gb * get_config_value<size_t>(c)(test_mode, "memory_size");
     auto topo = hwloc_make_topology_wrapper();
     auto thread_node_set = hwloc_bitmap_make_wrapper();
-    auto mem_node_set_a = hwloc_bitmap_make_wrapper();
-    auto mem_node_set_b = hwloc_bitmap_make_wrapper();
+    auto dst_mem_node_set = hwloc_bitmap_make_wrapper();
+    auto src_mem_node_set = hwloc_bitmap_make_wrapper();
     hwloc_bitmap_set(thread_node_set.get(), thread_node_id);
-    hwloc_bitmap_set(mem_node_set_a.get(), mem_node_id_a);
-    hwloc_bitmap_set(mem_node_set_b.get(), mem_node_id_b);
+    hwloc_bitmap_set(dst_mem_node_set.get(), dst_mem_node_id);
+    hwloc_bitmap_set(src_mem_node_set.get(), src_mem_node_id);
     auto testers =
-      prepare_testers(topo.get(), num_of_threads, thread_node_set.get(), mem_node_set_a.get(),
-                      mem_node_set_b.get(), memory_size);
+      prepare_testers(topo.get(), num_of_threads, thread_node_set.get(), dst_mem_node_set.get(),
+                      src_mem_node_set.get(), memory_size);
     run_testers(testers, seconds(test_duration));
     sum_tester_results(testers);
   } 
 
   testers_t prepare_testers(hwloc_topology_t topo, int num_threads,
                                          hwloc_const_bitmap_t thread_node_set,
-                                         hwloc_const_bitmap_t mem_node_set_a,
-                                         hwloc_const_bitmap_t mem_node_set_b,
+                                         hwloc_const_bitmap_t dst_mem_node_set,
+                                         hwloc_const_bitmap_t src_mem_node_set,
                                          size_t memory_size) {
     testers_t ts;
     for (auto i = 0; i < num_threads; ++i) {
       auto tmp_thread_node_set = hwloc_bitmap_make_wrapper();
-      auto tmp_mem_node_set_a = hwloc_bitmap_make_wrapper();
-      auto tmp_mem_node_set_b = hwloc_bitmap_make_wrapper();
+      auto tmp_dst_mem_node_set = hwloc_bitmap_make_wrapper();
+      auto tmp_src_mem_node_set = hwloc_bitmap_make_wrapper();
       hwloc_bitmap_copy(tmp_thread_node_set.get(), thread_node_set);
-      hwloc_bitmap_copy(tmp_mem_node_set_a.get(), mem_node_set_a);
-      hwloc_bitmap_copy(tmp_mem_node_set_b.get(), mem_node_set_b);
-      ts.emplace_back(topo, move(tmp_thread_node_set), move(tmp_mem_node_set_a), move(tmp_mem_node_set_b),
+      hwloc_bitmap_copy(tmp_dst_mem_node_set.get(), dst_mem_node_set);
+      hwloc_bitmap_copy(tmp_src_mem_node_set.get(), src_mem_node_set);
+      ts.emplace_back(topo, move(tmp_thread_node_set),
+                      move(tmp_dst_mem_node_set), move(tmp_src_mem_node_set),
                       memory_size);
     }
     return ts;
