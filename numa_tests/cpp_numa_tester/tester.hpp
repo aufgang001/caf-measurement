@@ -21,8 +21,8 @@ public:
         local_node_set_(move(local_node_set)),
         remote_node_set_(move(remote_node_set)),
         memory_size_(memory_size),
-        local_data_(nullptr, hwloc_mem_deposer(topo, 0)),
-        remote_data_(nullptr, hwloc_mem_deposer(topo, 0)),
+        local_data_(nullptr, hwloc_mem_disposer(topo, memory_size)),
+        remote_data_(nullptr, hwloc_mem_disposer(topo, memory_size)),
         running_(new std::atomic<bool>(true)),
         measuring_(new std::atomic<bool>(false)),
         copy_rate_(0) {
@@ -64,24 +64,24 @@ public:
   meta_data_t meta_data;
 private:
   void init() {
-    remote_data_.reset(
-      hwloc_alloc_membind_policy(topo_, memory_size_, remote_node_set_.get(),
-                                 HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD));
-    std::cout << "DEBUG:init remote_node_set: " << remote_node_set_ << std::endl;
-    if (remote_data_.get() == nullptr) {
-      std::cerr << "hwloc_alloc_membind_policy() for remote memory failed"
-                << std::endl;
-      exit(EXIT_SUCCESS);
-    }
-    local_data_.reset(
-      hwloc_alloc_membind_policy(topo_, memory_size_, local_node_set_.get(),
-                                 HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD));
-    std::cout << "DEBUG:init local_node_set: " << local_node_set_ << std::endl;
-    if (local_data_.get() == nullptr) {
-      std::cerr << "hwloc_alloc_membind_policy() for local memory failed"
-                << std::endl;
-      exit(EXIT_SUCCESS);
-    }
+    //remote_data_.reset(
+      //hwloc_alloc_membind_policy(topo_, memory_size_, remote_node_set_.get(),
+                                 //HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD));
+    //std::cout << "DEBUG:init remote_node_set: " << remote_node_set_ << std::endl;
+    //if (remote_data_.get() == nullptr) {
+      //std::cerr << "hwloc_alloc_membind_policy() for remote memory failed"
+                //<< std::endl;
+      //exit(EXIT_FAILURE);
+    //}
+    //local_data_.reset(
+      //hwloc_alloc_membind_policy(topo_, memory_size_, local_node_set_.get(),
+                                 //HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_THREAD));
+    //std::cout << "DEBUG:init local_node_set: " << local_node_set_ << std::endl;
+    //if (local_data_.get() == nullptr) {
+      //std::cerr << "hwloc_alloc_membind_policy() for local memory failed"
+                //<< std::endl;
+      //exit(EXIT_FAILURE);
+    //}
   }
 
   void run_measurement() {
@@ -91,10 +91,22 @@ private:
     auto err =
       hwloc_set_cpubind(topo_, bind_cpu_set.get(),
                         HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_NOMEMBIND);
+    local_data_.reset(alloc(memory_size_));
+    if (local_data_.get() == nullptr) {
+      std::cerr << "hwloc_alloc_membind_policy() for local memory failed"
+                << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    remote_data_.reset(alloc(memory_size_));
+    if (remote_data_.get() == nullptr) {
+      std::cerr << "hwloc_alloc_membind_policy() for remote memory failed"
+                << std::endl;
+      exit(EXIT_FAILURE);
+    }
     std::cout << "DEBUG:run_measurement bind_cpu_set: " << bind_cpu_set << std::endl;
     if (err == -1) {
       std::cerr << "hwloc_set_cpubind() failed" << std::endl;
-      exit(EXIT_SUCCESS);
+      exit(EXIT_FAILURE);
     }
     while (running_->load() && !measuring_->load()) {
     }
@@ -115,8 +127,8 @@ private:
   bitmap_wrapper_t local_node_set_;
   bitmap_wrapper_t remote_node_set_;
   size_t memory_size_; // in bytes
-  std::unique_ptr<void, hwloc_mem_deposer> local_data_;
-  std::unique_ptr<void, hwloc_mem_deposer> remote_data_;
+  std::unique_ptr<void, hwloc_mem_disposer> local_data_;
+  std::unique_ptr<void, hwloc_mem_disposer> remote_data_;
   std::unique_ptr<std::atomic<bool>> running_;
   std::unique_ptr<std::atomic<bool>> measuring_;
   std::thread thread_;

@@ -29,15 +29,16 @@ using bitmap_wrapper_t =
 bitmap_wrapper_t hwloc_bitmap_make_wrapper();
 
 // allocator
-struct hwloc_mem_deposer {
-  hwloc_mem_deposer(hwloc_topology_t topo, size_t size)
+struct hwloc_mem_disposer {
+  hwloc_mem_disposer(hwloc_topology_t topo, size_t size)
     : topo(topo)
     , size(size) {
     // nop 
   }
 
   void operator()(void * p) {
-    hwloc_free(topo, p, size);
+    //hwloc_free(topo, p, size);
+    free(p);
   }
 
   hwloc_topology_t topo;

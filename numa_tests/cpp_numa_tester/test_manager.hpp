@@ -110,7 +110,7 @@ private:
     hwloc_bitmap_set(remote_node_set.get(), remote_node_id);
     auto testers =
       prepare_testers(topo.get(), num_of_threads, local_node_set.get(),
-                      remote_node_set.get(), memory_size );
+                      remote_node_set.get(), memory_size);
     run_testers(testers, seconds(test_duration));
     sum_tester_results(testers);
   } 
