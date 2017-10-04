@@ -94,6 +94,14 @@ private:
     allocate_node_specific_mem(src_data_, src_mem_node_set_);
   }
 
+  void my_memcyp(void* dst, void* src, size_t size) {
+    char* dp = static_cast<char*>(dst);
+    char* sp = static_cast<char*>(src);
+    for(size_t i = 0; i < size; ++i) { 
+      dp[i] = sp[i];
+    }
+  } 
+
   void run_measurement() {
     using namespace std::chrono;
     pin_this_thread(thread_node_set_);
@@ -103,7 +111,7 @@ private:
       auto start = std::chrono::high_resolution_clock::now();
       size_t iterations = 0;
       while (running_->load()) {
-        memcpy(dst_data_.get(), src_data_.get(), memory_size_);
+        my_memcyp(dst_data_.get(), src_data_.get(), memory_size_);
         ++iterations;
       }
       auto end = high_resolution_clock::now();
