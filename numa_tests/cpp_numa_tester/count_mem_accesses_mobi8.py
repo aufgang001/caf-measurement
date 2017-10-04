@@ -27,9 +27,9 @@ def load_raw_data(cmd):
 def get_accesses_per_core(raw_data):
     def fill_counters(data, counters):
         for line_idx in range(0, len(data), 2):
-            for column_idx in range(2, len(local_data[line_idx])):
-                header_line = local_data[line_idx]
-                value_line = local_data[line_idx+1]
+            for column_idx in range(2, len(data[line_idx])):
+                header_line = data[line_idx]
+                value_line = data[line_idx+1]
                 dict_value = int(header_line[column_idx][5:])
                 counters[dict_value] = int(value_line[column_idx])
     local_counters = dict()
@@ -44,12 +44,8 @@ def get_accesses_per_core(raw_data):
             local_data.append(line.split(","))
         if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM,UPMC1" in line:
             remote_data.append(line.split(","))
-    print(local_data)
-    print(remote_data)
     fill_counters(local_data, local_counters)
     fill_counters(remote_data, remote_counters)
-    print(local_counters)
-    print(remote_counters)
     return {"local":local_counters, "remote":remote_counters}
 
 def plot_data(data):
