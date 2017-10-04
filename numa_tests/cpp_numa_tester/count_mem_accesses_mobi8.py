@@ -18,11 +18,8 @@ def execute_cmd(cmd):
 def load_raw_data(cmd):
     a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1 "
     b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1 "
-    print("testXXX1")
     raw_data = execute_cmd(a + cmd)
-    print("testXXX2")
     raw_data += execute_cmd(b + cmd)
-    print("testXXX3")
     for line in raw_data:
         print(line)
     return raw_data
@@ -49,6 +46,8 @@ def get_accesses_per_core(raw_data):
             remote_data.append(line.split(","))
     fill_counters(local_data, local_counters)
     fill_counters(remote_data, remote_counters)
+    print(local_counters)
+    print(remote_counters)
     return {"local":local_counters, "remote":remote_counters}
 
 def plot_data(data):
