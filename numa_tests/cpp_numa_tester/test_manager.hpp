@@ -133,6 +133,7 @@ private:
       int local_node_id = hwloc_bitmap_first(remote_node.get());
       cout << setw(number_space) << right << local_node_id;
     }
+    cout << endl;
     //   plot content
     auto current_tester_it = testers.begin();
     for (auto& local_node: nodes) {
@@ -142,6 +143,7 @@ private:
         cout << setw(number_space) << right << data_rate_to_string(current_tester_it->get_copy_rate());
         ++current_tester_it;
       }
+      cout << endl;
     }
   } 
 
