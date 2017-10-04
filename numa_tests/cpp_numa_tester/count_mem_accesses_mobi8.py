@@ -16,10 +16,12 @@ def execute_cmd(cmd):
     return [line for line in out.split(sep="\n")]
 
 def load_raw_data(cmd):
-    a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM:UPMC2 "
-    b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM:UPMC2 "
+    # a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1 "
+    # b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1 "
     # a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1 "
     # b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1 "
+    a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM:UPMC2 "
+    b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM:UPMC2 "
     raw_data = execute_cmd(a + cmd)
     raw_data += execute_cmd(b + cmd)
     for line in raw_data:
@@ -28,6 +30,8 @@ def load_raw_data(cmd):
 
 def get_accesses_per_core(raw_data):
     def fill_counters(data, counters):
+        if len(data) <= 2:
+            return
         for line_idx in range(0, len(data), 2):
             for column_idx in range(2, len(data[line_idx])):
                 header_line = data[line_idx]
