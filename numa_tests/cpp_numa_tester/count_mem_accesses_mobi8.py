@@ -1,7 +1,8 @@
 #!/usr//bin/python3
 
-import sys
 import io
+import sys
+import subprocess
 
 def print_to_string(*args, **kwargs):
     output = io.StringIO()
