@@ -44,6 +44,7 @@ def get_accesses_per_core(raw_data):
         if "Event,Counter,Core" in line:
             local_data.append(line.split(","))
             remote_data.append(line.split(","))
+            sum_data.append(line.split(","))
         if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM,UPMC0" in line:
             local_data.append(line.split(","))
         if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM,UPMC1" in line:
