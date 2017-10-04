@@ -111,7 +111,7 @@ private:
       auto start = std::chrono::high_resolution_clock::now();
       size_t iterations = 0;
       while (running_->load()) {
-        memcyp(dst_data_.get(), src_data_.get(), memory_size_);
+        memcpy(dst_data_.get(), src_data_.get(), memory_size_);
         ++iterations;
       }
       auto end = high_resolution_clock::now();
