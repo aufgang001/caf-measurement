@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <type_traits>
+#include <iomanip>
 
 #include "hwloc_cpp_helper.hpp"
 #include "tester.hpp"
@@ -16,7 +17,6 @@ using namespace std::chrono;
 
 std::string data_rate_to_string(size_t rate_bytes_per_sec) {
   std::string result(std::to_string(rate_bytes_per_sec / (1 * 1024 * 1024)));  
-  result += " MBytes/s";
   return result;
 }
 
@@ -28,6 +28,8 @@ public:
     configuration_.read_ini(ini_file);
     available_tests_.insert(std::make_pair(
       "single", [this](const std::string& m) { run_test_single(m); }));
+    available_tests_.insert(std::make_pair(
+      "matrix", [this](const std::string& m) { run_test_matrix(m); }));
   }
 
   void plot_available_test_modes() {
@@ -38,7 +40,7 @@ public:
   } 
 
   struct meta_data {
-  
+    
   };
 
   using tester_t = tester<meta_data>;
@@ -91,6 +93,58 @@ private:
     const config_map& configuration_;
   };
 
+  void run_test_matrix(const std::string& test_mode) {
+    using namespace std;
+    auto& c = configuration_;
+    auto num_of_threads = get_config_value<int>(c)(test_mode, "num_of_threads");
+    auto test_duration = get_config_value<int>(c)(test_mode, "duration");
+    size_t memory_size =
+      one_gb * get_config_value<size_t>(c)(test_mode, "memory_size");
+    auto topo = hwloc_make_topology_wrapper();
+    auto tmp_node_set = hwloc_topology_get_allowed_nodeset(topo.get());
+    testers_t testers;
+    std::vector<bitmap_wrapper_t> nodes;
+    for (int i = hwloc_bitmap_first(tmp_node_set); i != -1;
+         i = hwloc_bitmap_next(tmp_node_set, i)) {
+      auto tmp_set = hwloc_bitmap_make_wrapper();
+      hwloc_bitmap_set(tmp_set.get(), i);
+      nodes.emplace_back(move(tmp_set));
+    }
+    // create matrix
+    testers.reserve(nodes.size()*nodes.size());
+    for (auto& local_node: nodes) {
+      for (auto& remote_node: nodes) {
+        auto tmp_ts =
+          prepare_testers(topo.get(), num_of_threads, local_node.get(),
+                          local_node.get(), remote_node.get(), memory_size);
+        for (auto& t: tmp_ts) {
+          testers.emplace_back(std::move(t)); 
+        }
+      }
+    }
+    // run  matrix
+    run_testers(testers, seconds(test_duration));
+    // plot matrix
+    size_t header_space = 3;
+    size_t number_space = 7;
+    //   plot header
+    cout << setw(header_space) << left << "";
+    for (auto& remote_node : nodes) {
+      int local_node_id = hwloc_bitmap_first(remote_node.get());
+      cout << setw(number_space) << right << local_node_id;
+    }
+    //   plot content
+    auto current_tester_it = testers.begin();
+    for (auto& local_node: nodes) {
+      int local_node_id = hwloc_bitmap_first(local_node.get());
+      cout << setw(header_space) << left << local_node_id;
+      for (auto& remote_node: nodes) {
+        cout << setw(number_space) << right << data_rate_to_string(current_tester_it->get_copy_rate());
+        ++current_tester_it;
+      }
+    }
+  } 
+
   void run_test_single(const std::string& test_mode) {
     auto& c = configuration_;
     auto thread_node_id = get_config_value<int>(c)(test_mode, "thread_node_id");
@@ -107,9 +161,9 @@ private:
     hwloc_bitmap_set(thread_node_set.get(), thread_node_id);
     hwloc_bitmap_set(dst_mem_node_set.get(), dst_mem_node_id);
     hwloc_bitmap_set(src_mem_node_set.get(), src_mem_node_id);
-    auto testers =
-      prepare_testers(topo.get(), num_of_threads, thread_node_set.get(), dst_mem_node_set.get(),
-                      src_mem_node_set.get(), memory_size);
+    auto testers = prepare_testers(
+      topo.get(), num_of_threads, thread_node_set.get(), dst_mem_node_set.get(),
+      src_mem_node_set.get(), memory_size);
     run_testers(testers, seconds(test_duration));
     sum_tester_results(testers);
   } 
@@ -155,7 +209,7 @@ private:
     for (auto& t : ts) {
       copy_rate_sum += t.get_copy_rate();
     }
-    std::cout << "sum copy rate: " << data_rate_to_string(copy_rate_sum) << std::endl;
+    std::cout << "sum copy rate: " << data_rate_to_string(copy_rate_sum) << " MBytes/s" << std::endl;
   }
 
   config_map configuration_;

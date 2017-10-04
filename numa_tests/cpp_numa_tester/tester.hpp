@@ -59,8 +59,20 @@ public:
   }
 
   // in bytes per seconds
-  size_t get_copy_rate() {
+  size_t get_copy_rate() const {
     return copy_rate_;
+  }
+
+  hwloc_const_bitmap_t get_thread_node_set() const {
+    return thread_node_set_.get(); 
+  };
+
+  hwloc_const_bitmap_t get_dst_mem_node_set() const {
+    return dst_mem_node_set_.get();
+  }
+
+  hwloc_const_bitmap_t get_src_mem_node_set() const {
+    return src_mem_node_set_.get(); 
   }
 
   meta_data_t meta_data;
