@@ -16,12 +16,10 @@ def execute_cmd(cmd):
     return [line for line in out.split(sep="\n")]
 
 def load_raw_data(cmd):
-    a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:UPMC2,DATA_CACHE_MISSES_ALL:UPMC3 "
-    b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:UPMC2,DATA_CACHE_MISSES_ALL:UPMC3 "
+    a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:PMC0,DATA_CACHE_MISSES_ALL:PMC1 "
+    b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:PMC0,DATA_CACHE_MISSES_ALL:PMC1 "
     raw_data = execute_cmd(a + cmd)
     raw_data += execute_cmd(b + cmd)
-    for line in raw_data:
-        print(line)
     return raw_data
 
 def get_accesses_per_core(raw_data):
