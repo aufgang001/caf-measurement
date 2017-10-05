@@ -16,8 +16,8 @@ def execute_cmd(cmd):
     return [line for line in out.split(sep="\n")]
 
 def load_raw_data(cmd):
-    a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM:UPMC2 "
-    b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM:UPMC2 "
+    a = "likwid-perfctr -f -O -c 0,16,32,48 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:UPMC2,DATA_CACHE_MISSES_ALL:UPMC3 "
+    b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:UPMC2,DATA_CACHE_MISSES_ALL:UPMC3 "
     raw_data = execute_cmd(a + cmd)
     raw_data += execute_cmd(b + cmd)
     for line in raw_data:
@@ -36,25 +36,31 @@ def get_accesses_per_core(raw_data):
                 counters[dict_value] = int(value_line[column_idx])
     local_counters = dict()
     remote_counters = dict()
-    sum_counters = dict()
+    suc_cache_counters = dict()
+    mis_cache_counters = dict()
     local_data = []
     remote_data = []
-    sum_data = []
+    suc_cache_data = []
+    mis_cache_data = []
     for line in raw_data:
         if "Event,Counter,Core" in line:
             local_data.append(line.split(","))
             remote_data.append(line.split(","))
-            sum_data.append(line.split(","))
+            suc_cache_data.append(line.split(","))
+            mis_cache_data.append(line.split(","))
         if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM,UPMC0" in line:
             local_data.append(line.split(","))
         if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM,UPMC1" in line:
             remote_data.append(line.split(","))
-        if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_ANY_CPU_MEM,UPMC2" in line:
-            sum_data.append(line.split(","))
+        if "DATA_CACHE_ACCESSES,UPMC2" in line:
+            suc_cache_data.append(line.split(","))
+        if "DATA_CACHE_MISSES_ALL:UPMC3" in line:
+            mis_cache_data.append(line.split(","))
     fill_counters(local_data, local_counters)
     fill_counters(remote_data, remote_counters)
-    fill_counters(sum_data, sum_counters)
-    return {"local":local_counters, "remote":remote_counters, "sum":sum_counters}
+    fill_counters(suc_cache_data, suc_cache_counters)
+    fill_counters(mis_cache_data, mis_cache_counters)
+    return {"local":local_counters, "remote":remote_counters, "suc_cache":suc_cache_data, "mis_cache":mis_cache_data}
 
 def plot_data(data):
     def to_string_in_million(v):
@@ -75,7 +81,9 @@ def plot_data(data):
     print("")
     print("REMOTE ACCESSES\n" +data_to_string(data["remote"]))
     print("")
-    print("SUM ACCESSES\n" +data_to_string(data["sum"]))
+    print("SUCCESS CACHE A.\n" +data_to_string(data["suc_cache"]))
+    print("")
+    print("MISS CACHE A.\n" +data_to_string(data["mis_cache"]))
 
 def load_dummy_raw_data():
     f = open("test_data/plot_a.txt", "r")
