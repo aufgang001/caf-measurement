@@ -140,8 +140,12 @@ private:
       int local_node_id = hwloc_bitmap_first(local_node.get());
       cout << setw(header_space) << left << local_node_id;
       for (auto& remote_node: nodes) {
-        cout << setw(number_space) << right << data_rate_to_string(current_tester_it->get_copy_rate());
-        ++current_tester_it;
+        size_t sum_copy_rate = 0; 
+        for (int i = 0; i < num_of_threads; ++i) {
+          sum_copy_rate = current_tester_it->get_copy_rate();   
+          ++current_tester_it;
+        }
+        cout << setw(number_space) << right << data_rate_to_string(sum_copy_rate);
       }
       cout << endl;
     }
