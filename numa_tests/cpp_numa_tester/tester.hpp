@@ -83,6 +83,11 @@ private:
     mem.reset(hwloc_alloc_membind_nodeset(
       topo_, memory_size_, from.get(), HWLOC_MEMBIND_BIND,
       HWLOC_MEMBIND_THREAD | HWLOC_MEMBIND_STRICT));
+    char* p = static_cast<char*>(mem.get());
+    // initialize with random values
+    for (size_t i = 0; i < memory_size_; ++i){
+      p[i] = static_cast<char>(i);
+    }
     if (mem.get() == nullptr) {
       std::cerr << "hwloc_alloc_membind_nodeset() failed" << std::endl;
       exit(EXIT_FAILURE);
