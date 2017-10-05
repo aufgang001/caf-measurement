@@ -20,6 +20,8 @@ def load_raw_data(cmd):
     b = "likwid-perfctr -f -O -c 8,24,40,56 -g UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM:UPMC0,UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM:UPMC1,DATA_CACHE_ACCESSES:PMC0,DATA_CACHE_MISSES_ALL:PMC1 "
     raw_data = execute_cmd(a + cmd)
     raw_data += execute_cmd(b + cmd)
+    for line in raw_data:
+        print(line)
     return raw_data
 
 def get_accesses_per_core(raw_data):
@@ -50,9 +52,9 @@ def get_accesses_per_core(raw_data):
             local_data.append(line.split(","))
         if "UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM,UPMC1" in line:
             remote_data.append(line.split(","))
-        if "DATA_CACHE_ACCESSES,UPMC2" in line:
+        if "DATA_CACHE_ACCESSES,PMC0" in line:
             suc_cache_data.append(line.split(","))
-        if "DATA_CACHE_MISSES_ALL:UPMC3" in line:
+        if "DATA_CACHE_MISSES_ALL,PMC1" in line:
             mis_cache_data.append(line.split(","))
     fill_counters(local_data, local_counters)
     fill_counters(remote_data, remote_counters)
