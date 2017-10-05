@@ -60,7 +60,7 @@ def get_accesses_per_core(raw_data):
     fill_counters(remote_data, remote_counters)
     fill_counters(suc_cache_data, suc_cache_counters)
     fill_counters(mis_cache_data, mis_cache_counters)
-    return {"local":local_counters, "remote":remote_counters, "suc_cache":suc_cache_data, "mis_cache":mis_cache_data}
+    return {"local":local_counters, "remote":remote_counters, "suc_cache":suc_cache_counters, "mis_cache":mis_cache_counters}
 
 def plot_data(data):
     def to_string_in_million(v):
