@@ -141,8 +141,8 @@ def run(args):
     perf_req.names_of_what_to_counts = ["LOCAL ACCESSES", "REMOTE ACCESSES"]
     perf_req.what_to_counts = [("UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM","UPMC"), ("UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM", "UPMC")]
 
-    raw_data = load_dummy_raw_data()
-    # raw_data = load_raw_data(cmd, perf_req)
+    # raw_data = load_dummy_raw_data()
+    raw_data = load_raw_data(cmd, perf_req)
     for line in raw_data:
         print(line)
     data = get_accesses_per_core(raw_data, perf_req)
