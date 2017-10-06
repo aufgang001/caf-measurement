@@ -23,16 +23,16 @@ def likwid_perfctr_cmd(perf_req):
         tmp_str = ""
         for counter_id, what_to_count in zip(range(0, len(perf_req.what_to_counts)),perf_req.what_to_counts):
             tmp_str += what_to_count[0] + ":" + what_to_count[1] + str(counter_id) + ","
-        tmp_str[-1] = " "
+        tmp_str = tmp_str[:-1] + " "
         return tmp_str
     likwid_program = "likwid-perfctr -f -O " 
     perf_req.cmd = []
-    for where_to_count in where_to_counts:
-        perf_req.cmd.append(likwid_prgram + "-c" + where_to_count + " -g " + hardware_counter_to_string() + " ")
+    for where_to_count in perf_req.where_to_counts:
+        perf_req.cmd.append(likwid_program + "-c" + where_to_count + " -g " + hardware_counter_to_string() + " ")
     return perf_req
 
 def load_raw_data(cmd, perf_req):
-    perf_req = likwperf_ctr_cmd(perf_req)
+    perf_req = likwid_perfctr_cmd(perf_req)
     raw_data = []
     for perf_cmd in perf_req.cmd:
         print("cmd: " + perf_cmd + cmd)
@@ -141,8 +141,8 @@ def run(args):
     perf_req.names_of_what_to_counts = ["LOCAL ACCESSES", "REMOTE ACCESSES"]
     perf_req.what_to_counts = [("UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM","UPMC"), ("UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM", "UPMC")]
 
-    # raw_data = load_dummy_raw_data()
     raw_data = load_raw_data(cmd, perf_req)
+    raw_data = load_dummy_raw_data()
     for line in raw_data:
         print(line)
     data = get_accesses_per_core(raw_data, perf_req)
