@@ -20,11 +20,11 @@ class perfctr_request(object):
 
 def likwid_perfctr_cmd(perf_req):
     def hardware_counter_to_string():
-        str = ""
+        tmp_str = ""
         for counter_id, what_to_count in zip(range(0, len(perf_req.what_to_counts)),perf_req.what_to_counts):
-            str += what_to_count[0] + ":" what_to_count[1] + str(counter_id) + ","
-        str[-1] = " "
-        return str
+            tmp_str += what_to_count[0] + ":" + what_to_count[1] + str(counter_id) + ","
+        tmp_str[-1] = " "
+        return tmp_str
     likwid_program = "likwid-perfctr -f -O " 
     perf_req.cmd = []
     for where_to_count in where_to_counts:
@@ -45,6 +45,7 @@ def get_accesses_per_core(raw_data, perf_req):
         result = dict()  #{LOCAL ACCESSES: UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM,UPMC0, ..}
         for i in range(0, len(perf_req.names_of_what_to_counts)):
             result[perf_req.names_of_what_to_counts[i]] = perf_req.what_to_counts[i][0] + "," + perf_req.what_to_counts[i][1] + str(i)
+        return result
     def fill_counter(data, counters):
         if len(data) <= 2:
             return
@@ -69,8 +70,8 @@ def get_accesses_per_core(raw_data, perf_req):
     # mis_cache_data = []
     for line in raw_data:
         if "Event,Counter,Core" in line:
-            for d in data:
-                d.append(line.split(","))
+            for vals in data.values():
+                vals.append(line.split(","))
             # local_data.appendline.split(",")()
             # remote_data.append(line.split(","))
             # suc_cache_data.append(line.split(","))
@@ -140,12 +141,12 @@ def run(args):
     perf_req.names_of_what_to_counts = ["LOCAL ACCESSES", "REMOTE ACCESSES"]
     perf_req.what_to_counts = [("UNC_CPU_REQUEST_TO_MEMORY_LOCAL_LOCAL_CPU_MEM","UPMC"), ("UNC_CPU_REQUEST_TO_MEMORY_LOCAL_REMOTE_CPU_MEM", "UPMC")]
 
-    raw_data = load_raw_data(cmd, perf_req)
+    raw_data = load_dummy_raw_data()
+    # raw_data = load_raw_data(cmd, perf_req)
     for line in raw_data:
         print(line)
     data = get_accesses_per_core(raw_data, perf_req)
-    for d in data:
-        print(line)
+    print(data)
     plot_data(data, perf_req)
 
 if __name__ == "__main__":
