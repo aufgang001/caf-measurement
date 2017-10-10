@@ -10,13 +10,13 @@ OUT_DIR="/users/localadmin/woelke/test_data"
 BIN_PATH="${CAF_HOME}/build/bin"
 CAF_INI_FILE="caf-application.ini"
 METRIC_SCRIPT="metric_template.py"
-REPITITIONS=1
+REPITITIONS=10
 MIN_CORES=4
-MAX_CORES=12
+MAX_CORES=64
 
 todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
 #bench_args="--worker=225 --controllers=1"
-bench_args="--searches=1 --msize=100"
+bench_args=""
 
 # Preperation
 rm -f ${OUT_DIR}/*
