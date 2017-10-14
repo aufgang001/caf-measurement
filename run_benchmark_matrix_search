@@ -49,8 +49,8 @@ actor-pinning-entity='$pinning_entity'
 w-stealing-entity='$stealing_entity'
 EOL
 
-  #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --label=caf --bench=numa_matrix_search_continues --custom-args="${bench_args}" --label-suffix=${name}
-  ./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=numa_matrix_search_continues --custom-args="${bench_args}" --label-suffix=${name} --pass_core_count_as_arg
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --label=caf --bench=numa_matrix_search_continues --custom-args="${bench_args}" --label-suffix=${name}
+  #./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=numa_matrix_search_continues --custom-args="${bench_args}" --label-suffix=${name} --pass_core_count_as_arg
 done
 
 # Create csv files
