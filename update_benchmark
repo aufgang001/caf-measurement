@@ -25,7 +25,8 @@ if [ "$1" == "actor-framework" ]; then
   cd actor-framework
   git fetch
   #git checkout -f origin/topic/lgs
-  git checkout -f origin/topic/lgs_steal_counting
+  #git checkout -f origin/topic/lgs_steal_counting
+  git checkout -f topic/lgs_fake_core_deactivation
 
   cd benchmarks
   git fetch
