@@ -11,8 +11,9 @@ BIN_PATH="${CAF_HOME}/build/bin"
 JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
-METRIC_SCRIPT="metric_count_steals.py"
-REPITITIONS=1
+#METRIC_SCRIPT="metric_count_steals.py"
+#METRIC_SCRIPT="cpu_counters.py"
+REPITITIONS=10
 MIN_CORES=4
 MAX_CORES=64
 
@@ -20,7 +21,8 @@ MAX_CORES=64
 #todo_array="stealing w-stealing"
 #todo_array="stealing"
 #todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
-todo_array="CLS-original;stealing;system;system LGS;w-stealing;node;node"
+#todo_array="CLS-original;stealing;system;system LGS;w-stealing;node;node"
+todo_array="CLS-original;w-stealing;nop;nop LGS;w-stealing;node;node"
 
 declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
@@ -182,7 +184,7 @@ EOL
   set_bench_and_suffix $bench_n_suffix $todo
   if ! [[ "$suffix" == *"NOCAF"* ]]; then 
     #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
-    ./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=$MIN_CORES --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=${bench} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}-${name}
+    ./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=$MIN_CORES --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=${bench} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}-${name} --pass_core_count_as_arg
   fi
 done
 done
