@@ -11,14 +11,16 @@ BIN_PATH="${CAF_HOME}/build/bin"
 JAR_FILE="/users/localadmin/woelke/savina/target/savina-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 JAVA_PATH="$(dirname $(whereis -b java | awk '{print $2}'))"
 CAF_INI_FILE="caf-application.ini"
-METRIC_SCRIPT="metric_template.py"
-REPITITIONS=10
+METRIC_SCRIPT="metric_count_steals.py"
+REPITITIONS=1
 MIN_CORES=4
 MAX_CORES=64
 
 # Define benchmarks to run
 #todo_array="stealing w-stealing"
-todo_array="stealing"
+#todo_array="stealing"
+#todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
+todo_array="CLS-original;stealing;system;system LGS;w-stealing;node;node"
 
 declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
@@ -89,7 +91,7 @@ declare -A bench_args
 #bench_args["savina_05_threadring"]="-n 1200 -r 1200000"
 #bench_args["savina_06_chameneos"]="-c 4000 -m 800000"
 #bench_args["savina_07_big"]="-n 60000 -w 360"
-bench_args["savina_08_concdict"]="-e 100 -m 50000"
+#bench_args["savina_08_concdict"]="-e 100 -m 50000"
 bench_args["savina_09_concsll"]="-e 20 -m 8000"
 #bench_args["savina_10_bndbuffer"]="-b 75 -p 60 -c 60 -i 1500"
 #bench_args["savina_11_philosopher"]="-n 80 -m 40000"
@@ -146,16 +148,25 @@ set_bench_and_suffix() {
   fi
 }
 
+unpack_props() {
+  IFS=';' read -ra PROPS <<< "$1"
+  name=${PROPS[0]}
+  policy=${PROPS[1]}
+  pinning_entity=${PROPS[2]}
+  stealing_entity=${PROPS[3]}
+}
+
 # Preperation
 rm -f ${OUT_DIR}/*
 cd ${CAF_HOME}/benchmarks/scripts
 
 # Run CAF benchmark suite
 for bench_n_suffix in ${!bench_args[@]} ; do
-for todo in $todo_array ; do
+for todo_props in $todo_array ; do
+  unpack_props $todo_props
 cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
 [scheduler]
-policy='$todo'
+policy='$policy'
 [work-stealing]
 aggressive-poll-attempts=100
 aggressive-steal-interval=10
@@ -165,13 +176,13 @@ moderate-sleep-duration=50
 relaxed-steal-interval=1
 relaxed-sleep-duration=10000
 [lgs]
-actor-pinning-entity='system'
-w-stealing-entity='system'
+actor-pinning-entity='$pinning_entity'
+w-stealing-entity='$stealing_entity'
 EOL
   set_bench_and_suffix $bench_n_suffix $todo
   if ! [[ "$suffix" == *"NOCAF"* ]]; then 
     #./caf_run_benchmarks default $BENCH_USER $OUT_DIR --min-cores=$MIN_CORES --label=caf --bench=${bench} --repetitions=${REPITITIONS} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
-    ./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=$MIN_CORES --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=${bench} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}
+    ./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=$MIN_CORES --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=${bench} --custom-args="${bench_args[$bench_n_suffix]}" --label-suffix=${suffix}-${name}
   fi
 done
 done
