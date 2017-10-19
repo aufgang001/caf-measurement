@@ -19,8 +19,8 @@ MAX_CORES=64
 
 # Define benchmarks to run
 #todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
-todo_array="CLS-original;stealing;system;system LGS;w-stealing;node;node"
-#todo_array="CLS-original;w-stealing;nop;nop LGS;w-stealing;node;node"
+#todo_array="CLS-original;stealing;system;system LGS;w-stealing;node;node"
+todo_array="CLS-original;w-stealing;nop;nop LGS;w-stealing;node;node"
 
 declare -A bench_names
 #bench_names["savina_01_pingpong"]="PingPongAkkaActor PingPongFuncJavaActor PingPongGparsActor PingPongHabaneroActor PingPongHabaneroSelector PingPongJetlangActor PingPongJumiActor PingPongLiftActor PingPongScalaActor PingPongScalazActor"
