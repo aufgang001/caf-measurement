@@ -1,4 +1,4 @@
-CAF Plot GUi
+CAF Plot Gui
 ============
 
 Nothing more to say at the moment.

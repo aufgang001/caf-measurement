@@ -1,0 +1,6 @@
+{
+    "csv_file_set":[],
+    "pdf_program":"gnome-open",
+    "plot_script":"caf_plot",
+    "plots":{}
+}

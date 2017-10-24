@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'data/view.ui'
+# Form implementation generated from reading ui file 'data/main_view.ui'
 #
 # Created by: PyQt5 UI code generator 5.7
 #
@@ -193,6 +193,8 @@ class Ui_MainWindow(object):
         self.menuPlot_all.setObjectName("menuPlot_all")
         self.menuConfiguration = QtWidgets.QMenu(self.menubar)
         self.menuConfiguration.setObjectName("menuConfiguration")
+        self.menuEdit = QtWidgets.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
         MainWindow.setMenuBar(self.menubar)
         self.action_plot_all = QtWidgets.QAction(MainWindow)
         icon1 = QtGui.QIcon()
@@ -213,6 +215,8 @@ class Ui_MainWindow(object):
         self.action_create_plot_script.setObjectName("action_create_plot_script")
         self.action_add_csv_folder = QtWidgets.QAction(MainWindow)
         self.action_add_csv_folder.setObjectName("action_add_csv_folder")
+        self.action_copy_format_toolbox = QtWidgets.QAction(MainWindow)
+        self.action_copy_format_toolbox.setObjectName("action_copy_format_toolbox")
         self.menuPlot_all.addAction(self.action_plot_all)
         self.menuPlot_all.addAction(self.action_preview)
         self.menuPlot_all.addAction(self.action_create_plot_script)
@@ -221,8 +225,10 @@ class Ui_MainWindow(object):
         self.menuConfiguration.addAction(self.action_set_pdf_program)
         self.menuConfiguration.addAction(self.action_add_csv_file)
         self.menuConfiguration.addAction(self.action_add_csv_folder)
+        self.menuEdit.addAction(self.action_copy_format_toolbox)
         self.menubar.addAction(self.menuPlot_all.menuAction())
         self.menubar.addAction(self.menuConfiguration.menuAction())
+        self.menubar.addAction(self.menuEdit.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -255,13 +261,15 @@ class Ui_MainWindow(object):
         self.btn_preview_plot.setText(_translate("MainWindow", "Preview"))
         self.menuPlot_all.setTitle(_translate("MainWindow", "Run"))
         self.menuConfiguration.setTitle(_translate("MainWindow", "Configuration"))
+        self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.action_plot_all.setText(_translate("MainWindow", "Plot all"))
         self.action_preview.setText(_translate("MainWindow", "Preview"))
         self.action_set_plot_script.setText(_translate("MainWindow", "Set plot-script"))
-        self.action_add_csv_file.setText(_translate("MainWindow", "Add CSV file"))
+        self.action_add_csv_file.setText(_translate("MainWindow", "Add CSV files"))
         self.action_set_pdf_program.setText(_translate("MainWindow", "Set pdf program"))
         self.action_save_and_print_config.setText(_translate("MainWindow", "Save and print config"))
         self.action_create_plot_script.setText(_translate("MainWindow", "Create plot script"))
-        self.action_add_csv_folder.setText(_translate("MainWindow", "Add CSV folder"))
+        self.action_add_csv_folder.setText(_translate("MainWindow", "Add CSV folders"))
+        self.action_copy_format_toolbox.setText(_translate("MainWindow", "Copy Format Toolbox"))
 
 import resource_file_rc

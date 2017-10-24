@@ -6,26 +6,20 @@ import copy
 import re
 
 # own imports
-from caf_plot_gui import view 
+from caf_plot_gui import main_view 
+from caf_plot_gui import copy_format
 from caf_plot_gui import model 
 
-class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
+class controller(QtWidgets.QMainWindow, main_view.Ui_MainWindow):
     def __init__(self, model, parent=None):
         super(controller, self).__init__(parent)
         self.setupUi(self)
         self.model = model # model
-        self.selected_data= dict()
-        self.modifing_on_tabel_tlabel = False
-        # set all handler
-        self.radiobtn_performance.clicked.connect(self.lst_csv_refresh)
-        self.radiobtn_memory.clicked.connect(self.lst_csv_refresh)
-        self.closeEvent = self.main_window_close_event
-        self.lst_csv.keyPressEvent = self.lst_csv_keyPressEvent
-        self.lst_csv.clicked.connect(self.lst_csv_clicked)
-        self.lst_label.doubleClicked.connect(self.lst_label_double_clicked)
-        self.table_tlabel.keyPressEvent = self.table_tlabel_keyPressEvent
-        self.table_tlabel.itemChanged.connect(self.table_tlabel_cellChanged)
-        self.btn_preview_plot.clicked.connect(self.preview_current_plot)
+        self.table_tlabel_handle = self.table_tlabel_handler(self.table_tlabel)
+        # load windows
+        self.form_format_copy = copy_format.copy_format(self)
+        # set all handlers
+        ## action buttons
         self.action_save_and_print_config.triggered.connect(self.save_and_print_config)
         self.action_preview.triggered.connect(self.preview_current_plot)
         self.action_plot_all.triggered.connect(self.plot_all_plots)
@@ -34,6 +28,17 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         self.action_set_plot_script.triggered.connect(self.set_plot_script)
         self.action_set_pdf_program.triggered.connect(self.set_pdf_program)
         self.action_create_plot_script.triggered.connect(self.create_plot_script)
+        self.action_copy_format_toolbox.triggered.connect(self.form_format_copy.show_window)
+        ## main_view
+        self.radiobtn_performance.clicked.connect(self.lst_csv_refresh)
+        self.radiobtn_memory.clicked.connect(self.lst_csv_refresh)
+        self.closeEvent = self.main_window_close_event
+        self.lst_csv.keyPressEvent = self.lst_csv_keyPressEvent
+        self.lst_csv.clicked.connect(self.lst_csv_clicked)
+        self.lst_label.doubleClicked.connect(self.lst_label_double_clicked)
+        self.table_tlabel.keyPressEvent = self.table_tlabel_handle.keyPressEvent
+        self.table_tlabel.itemChanged.connect(self.table_tlabel_handle.cellChanged)
+        self.btn_preview_plot.clicked.connect(self.preview_current_plot)
         self.bnt_save_plot.clicked.connect(self.btn_save_plot_clicked)
         self.cbox_plots.currentIndexChanged.connect(self.cbox_plots_current_index_changed)
         self.btn_delete_plot.clicked.connect(self.btn_delete_clicked)
@@ -49,6 +54,9 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
         # set mode performacne or memory and update csv_list
         self.lst_csv_refresh()
         self.cbox_plots_refresh(index=0)
+
+    def tmp(self):
+        print("test")
 
     def btn_delete_clicked(self):
         if self.cbox_plots.count() > 0:
@@ -90,10 +98,12 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
     def main_window_close_event(self, event):
         quit_msg = "Save changes?"
         reply = QtWidgets.QMessageBox.question(self, 'Message', quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
-
         if reply == QtWidgets.QMessageBox.Yes:
             self.btn_save_plot_clicked()
             self.model.save_config_file()
+
+        # close all windows
+        self.form_format_copy.close_window()
             
     def check_filters(str, filters):
         for filter in filters: 
@@ -162,100 +172,11 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
     def lst_label_double_clicked(self):
         csv_file = self.get_selected_csv_file()
         label = self.get_selected_label()
-        self.table_tlabel_add_label(csv_file, label)
+        self.table_tlabel_handle.add_label(csv_file, label)
 
-        index = self.table_tlabel_get_row_index(csv_file, label)
-        self.table_tlabel_select_row(index)
+        index = self.table_tlabel_handle.get_row_index(csv_file, label)
+        self.table_tlabel_handle.select_row(index)
 
-    def table_tlabel_cellChanged(self, witem):
-        if not self.modifing_on_tabel_tlabel:
-            index = witem.row()
-            to_tlabel = self.table_tlabel.model().index(index, 1).data()
-            csv_file, label = self.table_tlabel_get_row_data(index)
-            self.selected_data[csv_file][label] = to_tlabel
-
-    def table_tlabel_keyPressEvent(self, event):
-        if event.matches(QtGui.QKeySequence.Delete):
-            rows = self.table_tlabel.selectionModel().selectedRows()
-            if len(rows) > 0:
-                self.table_tlabel_remove_label(rows[0].row())
-                self.table_tlabel_redraw()
-
-    def table_tlabel_add_label(self, csv_file, label):
-        if csv_file and label:
-            if csv_file in self.selected_data:
-                if not label in self.selected_data[csv_file]:
-                    self.selected_data[csv_file][label] = label
-            else:
-                self.selected_data[csv_file] = dict()
-                self.selected_data[csv_file][label] = label
-        self.table_tlabel_redraw()
-    
-    def table_tlabel_get_row_index(self, csv_file, label):
-        y = 0
-        for csv_file_it in self.selected_data.keys():
-            y += 1
-            for label_it in self.selected_data[csv_file_it].keys():
-                if csv_file == csv_file_it:
-                    if label == label_it:
-                        return y
-                y += 1
-        return -1
-
-    def table_tlabel_get_row_data(self, index):
-        y = 0
-        for csv_file in self.selected_data.keys():
-            if index == y:
-                return (csv_file, None)
-            y += 1
-            for label in self.selected_data[csv_file].keys():
-                if index == y:
-                    return (csv_file, label)
-                y += 1
-        return (None, None)
-
-    def table_tlabel_redraw(self):
-        self.modifing_on_tabel_tlabel = True
-        header_font = QtGui.QFont()
-        header_font.setBold(True)
-        csv_file_dict = dict()
-        self.table_tlabel.clear()
-        self.table_tlabel.clearSpans()
-        self.table_tlabel.setColumnCount(2)
-        self.table_tlabel.setRowCount(sum([1 + len(csv_file_labels) for csv_file_labels in self.selected_data.values()]))
-        y = 0
-        for csv_file, labels in self.selected_data.items():
-            csv_file_dict[y] = csv_file
-            y += 1
-            for label, tlabel in labels.items():
-                # self.table_tlabel.setSpan(y, 0, 1, 1)
-                self.table_tlabel.setItem(y, 0, QtWidgets.QTableWidgetItem(label))
-                self.table_tlabel.setItem(y, 1, QtWidgets.QTableWidgetItem(tlabel))
-                y += 1
-            
-        self.table_tlabel.setHorizontalHeaderLabels(["Label", "TLabel"])
-        self.table_tlabel.resizeColumnsToContents()
-
-        for y, csv_file in csv_file_dict.items():
-            self.table_tlabel.setSpan(y, 0, 1, 2)
-            self.table_tlabel.setItem(y, 0, QtWidgets.QTableWidgetItem(csv_file))
-            self.table_tlabel.item(y, 0).setFont(header_font)
-
-        self.modifing_on_tabel_tlabel = False
-  
-    def table_tlabel_remove_label(self, index):
-        csv_file, label = self.table_tlabel_get_row_data(index)
-        if label:
-            del self.selected_data[csv_file][label]
-            if len(self.selected_data[csv_file]) == 0:
-                del self.selected_data[csv_file]
-        else:
-            del self.selected_data[csv_file]
-
-    def table_tlabel_select_row(self, index):
-        range = QtWidgets.QTableWidgetSelectionRange(index, 0, index, 1) 
-        self.table_tlabel.setRangeSelected(range, True)
-    
     def save_and_print_config(self):
         self.btn_save_plot_clicked()
         self.model.save_config_file()
@@ -330,7 +251,7 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             data["ylim"][0] = self.edit_ymin.text()
             data["ylim"][1] = self.edit_ymax.text()
             data["rscript"] = self.edit_r_script_file.text()
-            data["filelabel_data"] = copy.deepcopy(self.selected_data)
+            data["filelabel_data"] = copy.deepcopy(self.table_tlabel_handle.selected_data)
             return data
         else:
             return None
@@ -365,5 +286,108 @@ class controller(QtWidgets.QMainWindow, view.Ui_MainWindow):
             self.edit_ymin.setText(data["ylim"][0])
             self.edit_ymax.setText(data["ylim"][1])
             self.edit_r_script_file.setText(data["rscript"])
-            self.selected_data = copy.deepcopy(data["filelabel_data"])
-            self.table_tlabel_redraw()
+            self.table_tlabel_handle.selected_data = copy.deepcopy(data["filelabel_data"])
+            self.table_tlabel_handle.redraw()
+
+    class table_tlabel_handler():
+        def __init__(self, table_tlabel):
+            self.selected_data = dict()
+            self.table_tlabel = table_tlabel
+            self.modifing_on_tabel_tlabel = False
+
+        def cellChanged(self, witem):
+            if not self.modifing_on_tabel_tlabel:
+                index = witem.row()
+                to_tlabel = self.table_tlabel.model().index(index, 1).data()
+                csv_file, label = self.get_row_data(index)
+                self.selected_data[csv_file][label] = to_tlabel
+
+        def get_selected_row_idx(self):
+            rows = self.table_tlabel.selectionModel().selectedRows()
+            if len(rows) <= 0:
+                return -1
+            else:
+                return rows[0].row()
+
+        def keyPressEvent(self, event):
+            if event.matches(QtGui.QKeySequence.Delete):
+                row_idx = self.get_selected_row_idx()
+                if row_idx != -1:
+                    self.remove_label(row_idx)
+                    self.redraw()
+
+        def add_label(self, csv_file, label):
+            if csv_file and label:
+                if csv_file in self.selected_data:
+                    if not label in self.selected_data[csv_file]:
+                        self.selected_data[csv_file][label] = label
+                else:
+                    self.selected_data[csv_file] = dict()
+                    self.selected_data[csv_file][label] = label
+            self.redraw()
+        
+        def get_row_index(self, csv_file, label):
+            y = 0
+            for csv_file_it in self.selected_data.keys():
+                y += 1
+                for label_it in self.selected_data[csv_file_it].keys():
+                    if csv_file == csv_file_it:
+                        if label == label_it:
+                            return y
+                    y += 1
+            return -1
+
+        def get_row_data(self, index):
+            y = 0
+            for csv_file in self.selected_data.keys():
+                if index == y:
+                    return (csv_file, None)
+                y += 1
+                for label in self.selected_data[csv_file].keys():
+                    if index == y:
+                        return (csv_file, label)
+                    y += 1
+            return (None, None)
+
+        def redraw(self):
+            self.modifing_on_tabel_tlabel = True
+            header_font = QtGui.QFont()
+            header_font.setBold(True)
+            csv_file_dict = dict()
+            self.table_tlabel.clear()
+            self.table_tlabel.clearSpans()
+            self.table_tlabel.setColumnCount(2)
+            self.table_tlabel.setRowCount(sum([1 + len(csv_file_labels) for csv_file_labels in self.selected_data.values()]))
+            y = 0
+            for csv_file, labels in self.selected_data.items():
+                csv_file_dict[y] = csv_file
+                y += 1
+                for label, tlabel in labels.items():
+                    # self.table_tlabel.setSpan(y, 0, 1, 1)
+                    self.table_tlabel.setItem(y, 0, QtWidgets.QTableWidgetItem(label))
+                    self.table_tlabel.setItem(y, 1, QtWidgets.QTableWidgetItem(tlabel))
+                    y += 1
+                
+            self.table_tlabel.setHorizontalHeaderLabels(["Label", "TLabel"])
+            self.table_tlabel.resizeColumnsToContents()
+
+            for y, csv_file in csv_file_dict.items():
+                self.table_tlabel.setSpan(y, 0, 1, 2)
+                self.table_tlabel.setItem(y, 0, QtWidgets.QTableWidgetItem(csv_file))
+                self.table_tlabel.item(y, 0).setFont(header_font)
+
+            self.modifing_on_tabel_tlabel = False
+      
+        def remove_label(self, index):
+            csv_file, label = self.get_row_data(index)
+            if label:
+                del self.selected_data[csv_file][label]
+                if len(self.selected_data[csv_file]) == 0:
+                    del self.selected_data[csv_file]
+            else:
+                del self.selected_data[csv_file]
+
+        def select_row(self, index):
+            range = QtWidgets.QTableWidgetSelectionRange(index, 0, index, 1) 
+            self.table_tlabel.setRangeSelected(range, True)
+        
