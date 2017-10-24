@@ -37,7 +37,8 @@ class copy_format(QtWidgets.QMainWindow, copy_format_view.Ui_form_format_copy):
         self.btn_adopt_format_3.clicked.connect(self.adopt_fun(2))
 
     def adopt_format(self, button_id):
-        print("adopt " + str(button_id))
+        if not button_id in self.saved_format:
+            return
         tth = self.controller.table_tlabel_handle
         selected_row_idx = tth.get_selected_row_idx()
         if selected_row_idx != -1:
@@ -46,7 +47,6 @@ class copy_format(QtWidgets.QMainWindow, copy_format_view.Ui_form_format_copy):
             tth.redraw()
 
     def save_format(self, button_id):
-        print("save " + str(button_id))
         tth = self.controller.table_tlabel_handle
         selected_row_idx = tth.get_selected_row_idx()
         if selected_row_idx != -1:
