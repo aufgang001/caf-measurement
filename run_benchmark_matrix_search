@@ -16,9 +16,10 @@ MIN_CORES=4
 MAX_CORES=64
 
 #todo_array="CLS-original;w-stealing;nop;nop CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
-todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
-#bench_args="--worker=225 --controllers=1"
-bench_args="--task-assign-pattern=b"
+todo_array="CLS-original;stealing;system;system;b CLS-thread-pinning;w-stealing;system;system;b LGS;w-stealing;node;node;b LGS-cache-optimized;w-stealing;node;cache;b \
+CLS-original;stealing;system;system;c CLS-thread-pinning;w-stealing;system;system;c LGS;w-stealing;node;node;c LGS-cache-optimized;w-stealing;node;cache;c"
+
+bench_args=""
 
 # Preperation
 rm -f ${OUT_DIR}/*
@@ -26,10 +27,12 @@ cd ${CAF_HOME}/benchmarks/scripts
 
 unpack_props() {
   IFS=';' read -ra PROPS <<< "$1"
-  name=${PROPS[0]}
+  tap=${PROPS[4]} #task-assign-pattern
+  name="${PROPS[0]}-tap-${tap}"
   policy=${PROPS[1]}
   pinning_entity=${PROPS[2]}
   stealing_entity=${PROPS[3]}
+  all_bench_args="${bench_args} --task-assign-pattern=${tap}"
 }
 
 # Run CAF benchmark suite
@@ -51,7 +54,7 @@ actor-pinning-entity='$pinning_entity'
 w-stealing-entity='$stealing_entity'
 EOL
 
-  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --label=caf --bench=numa_matrix_search --custom-args="${bench_args}" --label-suffix=${name}
+  ./caf_run_benchmarks default $BENCH_USER $OUT_DIR --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --label=caf --bench=numa_matrix_search --custom-args="${all_bench_args}" --label-suffix=${name}
   #./caf_run_benchmarks.py --bench-user=${BENCH_USER} --out-dir=${OUT_DIR} --bin-path=${BIN_PATH} --min-cores=${MIN_CORES} --max-cores=${MAX_CORES} --repetitions=${REPITITIONS} --metric-script="./metrics/${METRIC_SCRIPT}" --label=caf --bench=numa_matrix_search_continues --custom-args="${bench_args}" --label-suffix=${name} #--pass_core_count_as_arg
 done
 
