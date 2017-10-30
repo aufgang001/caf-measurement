@@ -18,8 +18,8 @@ MIN_CORES=4
 MAX_CORES=64
 
 # Define benchmarks to run
-todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
-#todo_array="CLS-original;stealing;system;system LGS;w-stealing;node;node"
+#todo_array="CLS-original;stealing;system;system CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
+todo_array="LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
 #todo_array="CLS-original;w-stealing;nop;nop CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
 
 declare -A bench_names
