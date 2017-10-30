@@ -8,7 +8,8 @@ fi
 if [ "$1" == "caf-measurement" ]; then
   cd caf-measurement
   git fetch
-  git checkout -f origin/master
+  #git checkout -f origin/master
+  git chekcout -f origin/topic/update-test-star-shaped-network
 
   #cd ../hwloc
   #qmake
