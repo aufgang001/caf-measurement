@@ -24,17 +24,17 @@ fi
 if [ "$1" == "actor-framework" ]; then
   cd actor-framework
   git fetch
-  #git checkout -f origin/topic/lgs
+  git checkout -f origin/topic/lgs
   #git checkout -f origin/topic/lgs_steal_counting
   #git checkout -f origin/topic/lgs_fake_core_deactivation
-  git checkout -f origin/topic/lgs_fake_soft_pinning_api
+  #git checkout -f origin/topic/lgs_fake_soft_pinning_api
   #git checkout -f origin/topic/lgs_breadth_first
 
   cd benchmarks
   git fetch
-  #git checkout -f origin/topic/update
+  git checkout -f origin/topic/update
   #git checkout -f origin/topic/update-test-star-shaped-network
-  git checkout -f origin/topic/update-test-star-shaped-network-unpinned-spikes
+  #git checkout -f origin/topic/update-test-star-shaped-network-unpinned-spikes
 
   cd ..
   #./configure
