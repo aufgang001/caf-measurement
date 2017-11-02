@@ -17,13 +17,16 @@ MAX_CORES=64
 
 #todo_array="CLS-original;w-stealing;nop;nop CLS-thread-pinning;w-stealing;system;system LGS;w-stealing;node;node LGS-cache-optimized;w-stealing;node;cache"
 
-todo_array="CLS-original;stealing;system;system;br CLS-thread-pinning;w-stealing;system;system;br LGS;w-stealing;node;node;br LGS-cache-optimized;w-stealing;node;cache;br \
+#todo_array="CLS-original;stealing;system;system;br CLS-thread-pinning;w-stealing;system;system;br LGS;w-stealing;node;node;br LGS-cache-optimized;w-stealing;node;cache;br \
 #CLS-original;stealing;system;system;cr CLS-thread-pinning;w-stealing;system;system;cr LGS;w-stealing;node;node;cr LGS-cache-optimized;w-stealing;node;cache;cr"
 
 #todo_array="CLS-original;w-stealing;nop;nop;b CLS-thread-pinning;w-stealing;system;system;b LGS;w-stealing;node;node;b LGS-cache-optimized;w-stealing;node;cache;b \
 #CLS-original;w-stealing;nop;nop;c CLS-thread-pinning;w-stealing;system;system;c LGS;w-stealing;node;node;c LGS-cache-optimized;w-stealing;node;cache;c"
 
 #todo_array="LGS;w-stealing;node;node;b LGS-cache-optimized;w-stealing;node;cache;b LGS;w-stealing;node;node;c LGS-cache-optimized;w-stealing;node;cache;c"
+
+todo_array="CLS-original;stealing;system;system;br CLS-thread-pinning;w-stealing;system;system;br \
+CLS-original;stealing;system;system;cr CLS-thread-pinning;w-stealing;system;system;cr"
 
 bench_args=""
 
