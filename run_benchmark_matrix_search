@@ -25,8 +25,8 @@ MAX_CORES=64
 
 #todo_array="LGS;w-stealing;node;node;b LGS-cache-optimized;w-stealing;node;cache;b LGS;w-stealing;node;node;c LGS-cache-optimized;w-stealing;node;cache;c"
 
-todo_array="CLS-original;stealing;system;system;br CLS-thread-pinning;w-stealing;system;system;br \
-CLS-original;stealing;system;system;cr CLS-thread-pinning;w-stealing;system;system;cr"
+todo_array="CLS-original;stealing;system;system;bl CLS-thread-pinning;w-stealing;system;system;bl \
+CLS-original;stealing;system;system;cl CLS-thread-pinning;w-stealing;system;system;cl"
 
 bench_args=""
 
