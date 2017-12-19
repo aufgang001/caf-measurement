@@ -33,7 +33,8 @@ EOL
   rm -f ${OUT_DIR}/*
   sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict" 
   cd $BIN_PATH
-  sudo perf record -g --output=$PERF_FILE -- ./${bench} ${args}
+  #sudo perf record -g --output=$PERF_FILE -- ./${bench} ${args}
+  sudo perf record --output=$PERF_FILE -- ./${bench} ${args}
   sudo sh -c "echo 1 > /proc/sys/kernel/kptr_restrict" 
 fi
 
