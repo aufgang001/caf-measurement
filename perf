@@ -13,8 +13,8 @@ CAF_INI_FILE="caf-application.ini"
 
 #todo_array="stealing numa-steal"
 todo="stealing"
-bench="savina_05_threadring"
-args="-n 400 -r 100000"
+bench="numa_matrix_search"
+args=""
 
 PERF_FILE="${OUT_DIR}/${bench}-perf.data"
 STACK_FILE="${OUT_DIR}/${bench}-stack.data"
@@ -29,8 +29,6 @@ if [ "$1" == "run" ]; then
 cat >${BIN_PATH}/${CAF_INI_FILE} <<EOL
 [scheduler]
 policy='$todo'
-[numa]
-neighborhood-level=2
 EOL
   rm -f ${OUT_DIR}/*
   sudo sh -c "echo 0 > /proc/sys/kernel/kptr_restrict" 
